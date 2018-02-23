@@ -1,0 +1,8 @@
+@import "../valo/valo.scss";
+
+@mixin mytheme {
+  @include valo;
+  @include hybrid-menu;
+
+  // Insert your own theme rules here
+}
