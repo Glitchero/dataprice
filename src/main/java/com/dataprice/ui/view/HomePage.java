@@ -15,7 +15,7 @@ public class HomePage extends VerticalLayout implements View {
 	void init() {
 		Label title = new Label();
 		title.setCaption("Home");
-		title.setValue("Home view DATAPRICE ya chibgue que pedo, vete a la verga hahaha");
+		title.setValue("Home view DATAPRICE main page");
 		addComponent(title);
 	}
 

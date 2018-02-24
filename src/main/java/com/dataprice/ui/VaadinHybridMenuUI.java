@@ -13,6 +13,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.dataprice.ui.manager.SpringViewChangeManager;
+import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
 import com.dataprice.ui.view.GroupPage;
@@ -302,7 +303,7 @@ public class VaadinHybridMenuUI extends UI {
 		studentList.addLeftMenuButton(LeftMenuButtonBuilder.get()
 				.withCaption(StringUtils.MENU_ADD_STUDENT.getString())
 				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(AddStudent.class)
+				.withNavigateTo(StudentLayoutFactory.class)
 				.build());
 
 		studentList.addLeftMenuButton(LeftMenuButtonBuilder.get()

@@ -1,6 +1,8 @@
-package com.dataprice.ui.view;
+package com.dataprice.ui.students;
 
 import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.utils.StudentsStringUtils;
 import com.vaadin.navigator.View;
@@ -12,14 +14,18 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringView
-public class AddStudent extends VerticalLayout implements View{
+public class StudentLayoutFactory extends VerticalLayout implements View{
 
+	@Autowired
+	private AddStudentMainLayoutFactory mainLayoutFactory;
+	
 	private TabSheet tabSheet;
+	
 	private void addLayout() {
 		setMargin(true);
 		tabSheet = new TabSheet();
 		tabSheet.setWidth("100%");
-		Component addStudentMainTab = new Label("First Tab content");
+		Component addStudentMainTab = mainLayoutFactory.createComponent();
 		Component showStudentsTab = new Label("Show students tabs");
 		tabSheet.addTab(addStudentMainTab,StudentsStringUtils.MAIN_MENU.getString());
 		tabSheet.addTab(showStudentsTab,StudentsStringUtils.SHOW_ALL_STUDENTS.getString());
