@@ -2,7 +2,10 @@ package com.dataprice.utils;
 
 public enum NotificationsMessages {
 
-	STUDENT_SAVE_VALIDATION_ERROR("Person could not be saved, please check error messages for each field.");
+	STUDENT_SAVE_VALIDATION_ERROR_DESCRIPTION("Person could not be saved, please check error messages for each field."),
+	STUDENT_SAVE_VALIDATION_ERROR_TITLE("ERROR"),
+	STUDENT_SAVE_SUCCESS_TITLE("SAVE"),
+	STUDENT_SAVE_SUCCESS_DESCRIPTION("Students has been saved!");
 	
 	private final String string;
 

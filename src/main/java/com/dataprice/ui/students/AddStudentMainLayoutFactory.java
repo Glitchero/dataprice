@@ -11,13 +11,17 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.dataprice.model.entity.*;
+import com.dataprice.service.addstudent.AddStudentService;
 import com.dataprice.utils.Gender;
 import com.dataprice.utils.NotificationsMessages;
 import com.dataprice.utils.StudentsStringUtils;
@@ -129,11 +133,13 @@ public class AddStudentMainLayoutFactory {
 			try {
 				binder.writeBean(student);
 			} catch (ValidationException e) {
-				Notification.show(NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR.getString());
+				Notification.show(NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_TITLE.getString(),NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_DESCRIPTION.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			//System.out.println(student);
+			addStudentService.saveStudent(student);
 			clearField();
+			Notification.show(NotificationsMessages.STUDENT_SAVE_SUCCESS_TITLE.getString(), NotificationsMessages.STUDENT_SAVE_SUCCESS_DESCRIPTION.getString(), Type.WARNING_MESSAGE);
 		}
 
 		private void clearField() {
@@ -143,13 +149,12 @@ public class AddStudentMainLayoutFactory {
 			age.setValue("");
 			gender.setValue(null);
 		}
-
-
-
-
 	  
 	}
 	
+	@Autowired
+    private AddStudentService addStudentService;
+	    
 	public Component createComponent() {
 		return new AddStudentMainLayout().init().bind().layout();
 	}
