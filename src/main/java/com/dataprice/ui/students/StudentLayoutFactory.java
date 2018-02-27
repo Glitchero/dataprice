@@ -14,10 +14,13 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringView
-public class StudentLayoutFactory extends VerticalLayout implements View{
+public class StudentLayoutFactory extends VerticalLayout implements View, StudentSavedListener{
 
 	@Autowired
 	private AddStudentMainLayoutFactory mainLayoutFactory;
+	
+	@Autowired
+	private ShowAllStudentsLayoutFactory showStudentsLayoutFactory;
 	
 	private TabSheet tabSheet;
 	
@@ -25,12 +28,14 @@ public class StudentLayoutFactory extends VerticalLayout implements View{
 		setMargin(true);
 		tabSheet = new TabSheet();
 		tabSheet.setWidth("100%");
-		Component addStudentMainTab = mainLayoutFactory.createComponent();
-		Component showStudentsTab = new Label("Show students tabs");
-		tabSheet.addTab(addStudentMainTab,StudentsStringUtils.MAIN_MENU.getString());
-		tabSheet.addTab(showStudentsTab,StudentsStringUtils.SHOW_ALL_STUDENTS.getString());
+		Component addStudentMainTab = mainLayoutFactory.createComponent(this);
+		Component showStudentsTab = showStudentsLayoutFactory.createComponent();
+	 //	tabSheet.addTab(addStudentMainTab,StudentsStringUtils.MAIN_MENU.getString());
+	//	tabSheet.addTab(showStudentsTab,StudentsStringUtils.SHOW_ALL_STUDENTS.getString());
 		
-		addComponent(tabSheet);
+	//	addComponent(tabSheet);
+		addComponent(addStudentMainTab);
+		addComponent(showStudentsTab);
 	}
 	
 	
@@ -43,6 +48,13 @@ public class StudentLayoutFactory extends VerticalLayout implements View{
 	@Override
 	public void enter(ViewChangeListener.ViewChangeEvent event) {
 		// This view is constructed in the init() method()
+	}
+
+
+	@Override
+	public void studentSaved() {
+		showStudentsLayoutFactory.refreshTable();
+		
 	}
 	
 }

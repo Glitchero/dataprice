@@ -43,7 +43,13 @@ public class AddStudentMainLayoutFactory {
 	
 	    private Student student;
 	
-	    public AddStudentMainLayout init() {
+	    private StudentSavedListener studentSavedListener;
+	    
+	    public AddStudentMainLayout(StudentSavedListener studentSavedListener) {
+			this.studentSavedListener = studentSavedListener;
+		}
+
+		public AddStudentMainLayout init() {
 
 	    	binder = new Binder<>(Student.class);
 
@@ -138,6 +144,7 @@ public class AddStudentMainLayoutFactory {
 			}
 			//System.out.println(student);
 			addStudentService.saveStudent(student);
+			studentSavedListener.studentSaved();
 			clearField();
 			Notification.show(NotificationsMessages.STUDENT_SAVE_SUCCESS_TITLE.getString(), NotificationsMessages.STUDENT_SAVE_SUCCESS_DESCRIPTION.getString(), Type.WARNING_MESSAGE);
 		}
@@ -155,8 +162,8 @@ public class AddStudentMainLayoutFactory {
 	@Autowired
     private AddStudentService addStudentService;
 	    
-	public Component createComponent() {
-		return new AddStudentMainLayout().init().bind().layout();
+	public Component createComponent(StudentSavedListener studentSavedListener) {
+		return new AddStudentMainLayout(studentSavedListener).init().bind().layout();
 	}
 	
 }

@@ -13,6 +13,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.dataprice.ui.manager.SpringViewChangeManager;
+import com.dataprice.ui.students.RemoveStudentLayoutFactory;
 import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
@@ -225,7 +226,7 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(homeButton);
 
-		/**
+		
 		MenuButton themeBuilderButton = LeftMenuButtonBuilder.get()
 				.withCaption("Theme Builder")
 				.withIcon(FontAwesome.WRENCH)
@@ -234,7 +235,7 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(themeBuilderButton);
         
-		
+		/**
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")
 				.withIcon(VaadinIcons.COGS)
@@ -309,7 +310,7 @@ public class VaadinHybridMenuUI extends UI {
 		studentList.addLeftMenuButton(LeftMenuButtonBuilder.get()
 				.withCaption(StringUtils.MENU_REMOVE_STUDENT.getString())
 				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(RemoveStudent.class)
+				.withNavigateTo(RemoveStudentLayoutFactory.class)
 				.build());
 		
 		MenuSubMenu universityList = LeftMenuSubMenuBuilder.get()
