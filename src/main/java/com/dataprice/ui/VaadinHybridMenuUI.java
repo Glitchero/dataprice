@@ -16,6 +16,7 @@ import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.students.RemoveStudentLayoutFactory;
 import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
+import com.dataprice.ui.universities.UniversityLayoutFactory;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
 import com.dataprice.ui.view.GroupPage;
@@ -71,7 +72,7 @@ public class VaadinHybridMenuUI extends UI {
 		UI.getCurrent().setPollInterval(5000);
 
 		MenuConfig menuConfig = new MenuConfig();
-		menuConfig.setDesignItem(DesignItem.getDarkDesign());
+		menuConfig.setDesignItem(DesignItem.getWhiteBlueDesign());
 
 		this.notificationCenter = new NotificationCenter(5000);
 
@@ -227,14 +228,6 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(homeButton);
 
-		
-		MenuButton themeBuilderButton = LeftMenuButtonBuilder.get()
-				.withCaption("Theme Builder")
-				.withIcon(FontAwesome.WRENCH)
-				.withNavigateTo(ThemeBuilderPage.class)
-				.build();
-
-		hybridMenu.addLeftMenuButton(themeBuilderButton);
         
 		/**
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
@@ -323,7 +316,7 @@ public class VaadinHybridMenuUI extends UI {
 		universityList.addLeftMenuButton(LeftMenuButtonBuilder.get()
 				.withCaption(StringUtils.MENU_OPERATIONS.getString())
 				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(Operations.class)
+				.withNavigateTo(UniversityLayoutFactory.class)
 				.build());
 		
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
