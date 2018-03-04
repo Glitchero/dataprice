@@ -2,8 +2,11 @@ package com.dataprice.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,9 +27,16 @@ public class Student {
 	  @Column(name = "age")
       private Integer age;
        
-	  @Column(name = "gender")
+	
+
+	@Column(name = "gender")
       private String gender;
       
+	//@ManyToOne(fetch=FetchType.LAZY)
+	  @ManyToOne(fetch=FetchType.LAZY)
+	  @JoinColumn(name = "university_id")
+	  private University university;
+	  
       public Student() {
     	  
       }
@@ -71,6 +81,14 @@ public class Student {
 		this.gender = gender;
 	}
    
+	public University getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(University university) {
+		this.university = university;
+	}
+	
 	@Override
 	public String toString() {
 		return firstName + "-" + lastName + "-" + age;

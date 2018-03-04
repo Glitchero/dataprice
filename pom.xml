@@ -97,6 +97,11 @@
     		<version>5.2.13.Final</version>
 		 </dependency>
 
+    	<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-push</artifactId>
+		</dependency>
+		
     </dependencies>
 
     <repositories>

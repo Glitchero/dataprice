@@ -34,7 +34,7 @@ public class AddTaskMainLayoutFactory {
 	    private TextField taskName;
 	    private ComboBox retail;
 	    private TextField seed;
-	    private TextField status;
+	   // private TextField status;
 	    private Button saveButton;
 	    private Button clearButton;
 
@@ -57,7 +57,7 @@ public class AddTaskMainLayoutFactory {
 	    	taskName = new TextField("TaskName");
 	    	retail = new ComboBox("Retail");
 	    	seed = new TextField("Seed");
-			status = new TextField("Status");
+		//	status = new TextField("Status");
 			
 			saveButton = new Button("save");
 			clearButton = new Button("clear");
@@ -88,9 +88,9 @@ public class AddTaskMainLayoutFactory {
 			  .asRequired("Seed is required")
 			  .bind("seed");
 			
-			binder.forField(status)
-			  .asRequired("Status must be set")
-			  .bind("status");
+		//	binder.forField(status)
+		//	  .asRequired("Status must be set")
+		//	  .bind("status");
 			
 			binder.readBean(task);
 			
@@ -108,7 +108,7 @@ public class AddTaskMainLayoutFactory {
 			gridLayout.addComponent(retail, 1, 0);
 
 			gridLayout.addComponent(seed, 0, 1);
-			gridLayout.addComponent(status, 1, 1);
+		//	gridLayout.addComponent(status, 1, 1);
 
 
 			gridLayout.addComponent(new HorizontalLayout(saveButton, clearButton), 0, 2);
@@ -144,7 +144,7 @@ public class AddTaskMainLayoutFactory {
 
 			taskName.setValue("");
 			seed.setValue("");
-			status.setValue("");
+		//	status.setValue("");
 			retail.setValue(null);
 		}
 	  

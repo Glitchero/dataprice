@@ -14,5 +14,6 @@ public interface TaskRepository extends JpaRepository<Task,Integer> {
 
 	@Query("select t from Task t order by t.taskName")
 	List<Task> getAllTasks();
+
 	
 }

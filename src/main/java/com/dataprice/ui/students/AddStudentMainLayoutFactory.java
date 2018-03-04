@@ -17,11 +17,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.model.entity.*;
 import com.dataprice.service.addstudent.AddStudentService;
+import com.dataprice.service.showalluniversities.ShowAllUniversities;
 import com.dataprice.utils.Gender;
 import com.dataprice.utils.NotificationsMessages;
 import com.dataprice.utils.StudentsStringUtils;
@@ -36,6 +38,7 @@ public class AddStudentMainLayoutFactory {
 	    private TextField lastName;
 	    private TextField age;
 	    private ComboBox gender;
+	    private ComboBox university;
 	    private Button saveButton;
 	    private Button clearButton;
 
@@ -59,6 +62,7 @@ public class AddStudentMainLayoutFactory {
 			lastName = new TextField(StudentsStringUtils.LAST_NAME.getString());
 			age = new TextField(StudentsStringUtils.AGE.getString());
 			gender = new ComboBox(StudentsStringUtils.GENDER.getString());
+			university = new ComboBox("University");
 			
 			saveButton = new Button(StudentsStringUtils.SAVE.getString());
 			clearButton = new Button(StudentsStringUtils.CANCEL.getString());
@@ -100,6 +104,10 @@ public class AddStudentMainLayoutFactory {
 			  .asRequired("Gender must be set")
 			  .bind("gender");
 			
+			binder.forField(university)
+			  .asRequired("University must be set")
+			  .bind("university");
+					
 			binder.readBean(student);
 			
 			return this;
@@ -108,7 +116,7 @@ public class AddStudentMainLayoutFactory {
 	    public Component layout() {		
 	    	setMargin(true);
 
-			GridLayout gridLayout = new GridLayout(2, 3);
+			GridLayout gridLayout = new GridLayout(2, 4);
 			gridLayout.setSizeUndefined();
 			gridLayout.setSpacing(true);
 
@@ -118,8 +126,9 @@ public class AddStudentMainLayoutFactory {
 			gridLayout.addComponent(age, 0, 1);
 			gridLayout.addComponent(gender, 1, 1);
 
+			gridLayout.addComponent(university, 0, 2, 1, 2);
 
-			gridLayout.addComponent(new HorizontalLayout(saveButton, clearButton), 0, 2);
+			gridLayout.addComponent(new HorizontalLayout(saveButton, clearButton), 0, 3);
 
 			age.clear();
 			return gridLayout;
@@ -136,6 +145,11 @@ public class AddStudentMainLayoutFactory {
 		}
 
 		private void save() {
+			if(!isSaveOperationValid()) {
+				Notification.show("ERROR","Must have at least one university",Type.ERROR_MESSAGE);
+				return;
+			}
+			
 			try {
 				binder.writeBean(student);
 			} catch (ValidationException e) {
@@ -156,14 +170,28 @@ public class AddStudentMainLayoutFactory {
 			age.setValue("");
 			gender.setValue(null);
 		}
+
+		private boolean isSaveOperationValid() {
+			return showAllUniversitiesService.getAllUniversities().size() !=0;
+		}
+		
+		public AddStudentMainLayout load() {
+			List<University> universities = showAllUniversitiesService.getAllUniversities();
+			university.setItems(universities);
+			return this;
+		}
 	  
 	}
 	
 	@Autowired
     private AddStudentService addStudentService;
 	    
+	@Autowired
+    private ShowAllUniversities showAllUniversitiesService;
+	
+	
 	public Component createComponent(StudentSavedListener studentSavedListener) {
-		return new AddStudentMainLayout(studentSavedListener).init().bind().layout();
+		return new AddStudentMainLayout(studentSavedListener).init().load().bind().layout();
 	}
 	
 }

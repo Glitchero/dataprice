@@ -25,7 +25,7 @@ public class Task {
       private String seed;
 	  
 	  @Column(name = "status")
-      private String status;
+      private String status = "pendiente";
       
       public Task() {
     	  
@@ -95,7 +95,7 @@ public class Task {
 
 	@Override
 	public String toString() {
-		return taskName + "-" + retail + "-" + seed;
+		return taskName + "-" + retail + "-" + seed + "-" + status;
 		
 	}
 }
