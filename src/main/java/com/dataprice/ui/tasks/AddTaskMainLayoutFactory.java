@@ -69,7 +69,7 @@ public class AddTaskMainLayoutFactory {
 			clearButton.addClickListener(this);
 
 			//gender.setEmptySelectionAllowed(false);
-			retail.setItems("Liverpool","Sears");
+			retail.setItems("Liverpool","Sears","SuplementosFitness");
 
 			return this;
 		    

@@ -1,24 +1,23 @@
 package com.dataprice.model.crawlers;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.stereotype.Component;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
-@Component
-public class Sears extends AbstractCrawler{
+public class NutritionDepot extends AbstractCrawler{
 
 	@Override
 	public List<Product> getProductsFromTask(Task taskDAO) {
+		initialization(taskDAO.getSeed());
+		navigatePages();
 		return null;
 	}
 
 	@Override
 	public String getCrawlingStrategy() {
-		return "Sears";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

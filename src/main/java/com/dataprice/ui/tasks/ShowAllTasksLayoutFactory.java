@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Student;
 import com.dataprice.model.entity.Task;
+import com.dataprice.service.addproductservice.AddProductService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.crawltask.CrawlTaskServiceImpl;
 import com.dataprice.service.modifytask.ModifyTaskServiceImpl;
@@ -131,6 +132,7 @@ public class ShowAllTasksLayoutFactory implements UIComponentBuilder{
 	            	List<Product> products = CrawlTaskServiceImpl.getService(task.getRetail()).getProductsFromTask(task);
 	            	for (Product p : products) {
 	            		System.out.println(p);
+	            		addProductService.saveProduct(p);
 	            	}
                     //Task Done
 				    task.setStatus("Listo");
@@ -145,6 +147,10 @@ public class ShowAllTasksLayoutFactory implements UIComponentBuilder{
 	    
 		
 	}
+	
+	@Autowired
+	private AddProductService addProductService;
+	
 	
 	@Autowired
 	private ModifyTaskServiceImpl modifyTaskService;

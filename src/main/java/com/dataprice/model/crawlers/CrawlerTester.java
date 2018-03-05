@@ -1,9 +1,24 @@
 package com.dataprice.model.crawlers;
 
+import java.util.List;
+
+import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.Task;
+
 public class CrawlerTester {
 
 	public static void main(String[] args) {
-		System.out.println("hola");
+		Task t = new Task();
+		t.setRetail("Suplementosfitness");
+		t.setSeed("https://www.suplementosfitness.com.mx/categoria-producto/proteinas/");
+		t.setTaskName("Proteinas");
 		
+		Crawler c = new SuplementosFitness();
+		List<Product> products = c.getProductsFromTask(t);
+		
+    	for (Product p : products) {
+    		System.out.println(p);
+    	}
+    	
 	}
 }

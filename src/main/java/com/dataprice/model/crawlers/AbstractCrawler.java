@@ -1,5 +1,6 @@
 package com.dataprice.model.crawlers;
 
+import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
 public abstract class AbstractCrawler implements Crawler {
@@ -21,6 +22,15 @@ public abstract class AbstractCrawler implements Crawler {
 	public void setTask(Task task) {
 		this.task = task;
 	}
+	
+	
+	public abstract boolean initialization(String seed);
+	
+	public abstract void navigatePages();
+	
+	public abstract void getProductsUrl();
+	
+	public abstract Product parseProductFromURL(String urlStr);
 	
 	@Override
 	public String toString()
