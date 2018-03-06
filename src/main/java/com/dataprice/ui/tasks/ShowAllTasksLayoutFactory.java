@@ -54,6 +54,7 @@ public class ShowAllTasksLayoutFactory implements UIComponentBuilder{
 			runTasksButton = new Button("Run");
 			setMargin(true);
 			tasksTable = new Grid<>(Task.class);
+			tasksTable.setWidth("100%");
 			tasksTable.setColumnOrder("taskName", "retail", "seed", "status");
 			tasksTable.removeColumn("taskId");
 			tasksTable.setItems(tasks);

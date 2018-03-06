@@ -14,6 +14,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.dataprice.ui.manager.SpringViewChangeManager;
+import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.students.RemoveStudentLayoutFactory;
 import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
@@ -328,6 +329,14 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(tasksButton);
+		
+		MenuButton productsButton = LeftMenuButtonBuilder.get()
+				.withCaption("Products")
+				.withIcon(VaadinIcons.COGS)
+				.withNavigateTo(ProductLayoutFactory.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(productsButton);
 		
 		
 		
