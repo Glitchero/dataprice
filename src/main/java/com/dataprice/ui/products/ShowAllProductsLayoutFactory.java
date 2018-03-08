@@ -15,10 +15,12 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.renderers.ImageRenderer;
 
 @org.springframework.stereotype.Component
-public class ShowAllProductsLayoutFactory implements UIComponentBuilder {
+public class ShowAllProductsLayoutFactory {
 
 	private List<Product> products;
 	
@@ -30,25 +32,46 @@ public class ShowAllProductsLayoutFactory implements UIComponentBuilder {
 	
 	private class ShowAllProductsLayout extends VerticalLayout {
 
+		ProductEditListener productEditListener;
+		
+		public ShowAllProductsLayout(ProductEditListener productEditListener) {
+		   this.productEditListener = productEditListener;
+		}
+
+
 		public ShowAllProductsLayout init() {
 			
 			setMargin(true);
 			productsTable = new Grid<>(Product.class);
 			productsTable.setWidth("100%");
 			
-			productsTable.setColumnOrder("name", "precio", "imageUrl","productUrl");
-			productsTable.removeColumn("productKey");
+			productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl");
+			
 			productsTable.setItems(products);
 			
 			productsTable.addComponentColumn(probe -> {
 			    Image image = new Image("", new ExternalResource(probe.getImageUrl()));
-			    image.setWidth(100,Unit.PIXELS);
-			    image.setHeight(100,Unit.PIXELS);
+			    image.setWidth(80,Unit.PIXELS);
+			    image.setHeight(80,Unit.PIXELS);
 
 			    return image;
 			}).setCaption("Structureee");
 			
-			productsTable.setBodyRowHeight(80);
+			productsTable.addColumn(p ->
+		      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>product link</a>",
+		      new HtmlRenderer());
+			
+			productsTable.removeColumn("imageUrl");
+		    productsTable.removeColumn("productUrl");
+		    
+		   // Render a button that deletes the data row (item)
+		    productsTable.addColumn(product -> "Edit",
+		          new ButtonRenderer(clickEvent -> {
+		        	  productEditListener.productEdited(clickEvent.getItem());
+		        }));
+		    
+			
+			productsTable.setBodyRowHeight(100);
 			return this;
 		}
 		
@@ -67,9 +90,16 @@ public class ShowAllProductsLayoutFactory implements UIComponentBuilder {
 	}
 	
 
-	@Override
-	public Component createComponent() {
-		return new ShowAllProductsLayout().load().init().layout();
+	
+	public Component createComponent(ProductEditListener productEditListener) {
+		return new ShowAllProductsLayout(productEditListener).load().init().layout();
+	}
+
+
+
+	public void refresh() {
+		products = showAllProductsService.getAllProducts();
+		productsTable.setItems(products);
 	}
 
 }

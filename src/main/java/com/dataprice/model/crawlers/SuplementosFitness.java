@@ -120,9 +120,9 @@ public class SuplementosFitness extends AbstractCrawler{
 			if (id==null)
 				return null;
 			
-			ProductKey pKey = new ProductKey();
-			pKey.setProductId(id);
-			pKey.setRetail(getCrawlingStrategy());
+			//ProductKey pKey = new ProductKey();
+			//pKey.setProductId(id);
+			//pKey.setRetail(getCrawlingStrategy());
 			
 			String name = ContentParser.parseContent(urlContent, Regex.SUPLEMENTOSFITNESS_NAME);
 			if (name==null)
@@ -141,7 +141,7 @@ public class SuplementosFitness extends AbstractCrawler{
 			}
 					
 			
-			return new Product(name,Double.valueOf(price),imageUrl,urlStr, pKey);
+			return new Product(id,getCrawlingStrategy(),name,Double.valueOf(price),imageUrl,urlStr);
 	}
 
 }

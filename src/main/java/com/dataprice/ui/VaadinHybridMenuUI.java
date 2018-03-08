@@ -15,6 +15,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.products.ProductLayoutFactory;
+import com.dataprice.ui.reports.ReportsLayoutFactory;
+import com.dataprice.ui.settings.SettingsLayoutFactory;
 import com.dataprice.ui.students.RemoveStudentLayoutFactory;
 import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
@@ -290,7 +292,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.PALETE)
 				.withClickListener(e -> hybridMenu.setLeftMenuMinimal(!hybridMenu.isLeftMenuMinimal()))
 				.build(demoSettings);
-				*/
+				
 		
 		MenuSubMenu studentList = LeftMenuSubMenuBuilder.get()
 				.setCaption(StringUtils.MENU_STUDENT.getString())
@@ -322,6 +324,8 @@ public class VaadinHybridMenuUI extends UI {
 				.withNavigateTo(UniversityLayoutFactory.class)
 				.build());
 		
+		*/
+		
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
 				.withCaption("Tasks")
 				.withIcon(VaadinIcons.COGS)
@@ -337,6 +341,32 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(productsButton);
+		
+		MenuButton settingsButton = LeftMenuButtonBuilder.get()
+				.withCaption("Settings")
+				.withIcon(VaadinIcons.COGS)
+				.withNavigateTo(SettingsLayoutFactory.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(settingsButton);
+		
+		
+		MenuButton reportsButton = LeftMenuButtonBuilder.get()
+				.withCaption("Reports")
+				.withIcon(VaadinIcons.COGS)
+				.withNavigateTo(ReportsLayoutFactory.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(reportsButton);
+		
+		
+		MenuButton logoutButton = LeftMenuButtonBuilder.get()
+				.withCaption("Logout")
+				.withIcon(VaadinIcons.COGS)
+				.withNavigateTo(HomePage.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(logoutButton);
 		
 		
 		

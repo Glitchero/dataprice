@@ -5,16 +5,25 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-@Embeddable
+
 public class ProductKey implements Serializable{
 
-	@Column(name = "product_id", nullable = false)
+	
     private String productId;
 	
-	@Column(name = "retail", nullable = false)
+	
     private String retail;
 
-    public String getProductId() {
+
+	public ProductKey(String productId, String retail) {
+		this.productId = productId;
+		this.retail = retail;
+	}
+
+	public ProductKey() {
+	}
+
+	public String getProductId() {
 		return productId;
 	}
 
@@ -29,7 +38,6 @@ public class ProductKey implements Serializable{
 	public void setRetail(String retail) {
 		this.retail = retail;
 	}
-
 	
     
 }

@@ -14,11 +14,9 @@ public class CrawlerTester {
 		t.setTaskName("Proteinas");
 		
 		Crawler c = new SuplementosFitness();
-		List<Product> products = c.getProductsFromTask(t);
-		
-    	for (Product p : products) {
-    		System.out.println(p);
-    	}
+
+    	//boolean value = c.executeTask(t);
     	
+    
 	}
 }

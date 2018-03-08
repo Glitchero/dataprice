@@ -29,6 +29,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
@@ -57,6 +58,12 @@ public class ShowAllTasksLayoutFactory implements UIComponentBuilder{
 			tasksTable.setWidth("100%");
 			tasksTable.setColumnOrder("taskName", "retail", "seed", "status");
 			tasksTable.removeColumn("taskId");
+			tasksTable.addColumn(t ->
+		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>product link</a>",
+		      new HtmlRenderer());
+			
+			tasksTable.removeColumn("seed");
+			
 			tasksTable.setItems(tasks);
 			tasksTable.setSelectionMode(SelectionMode.MULTI);
 			removeTasksButton.addClickListener(this);
@@ -135,6 +142,7 @@ public class ShowAllTasksLayoutFactory implements UIComponentBuilder{
 	            		System.out.println(p);
 	            		addProductService.saveProduct(p);
 	            	}
+	            //	CrawlTaskServiceImpl.getService(task.getRetail()).executeTask(task);
                     //Task Done
 				    task.setStatus("Listo");
 	            	modifyTaskService.modifyTask(task);

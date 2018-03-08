@@ -9,6 +9,8 @@ public interface Crawler {
 
 	 public List<Product> getProductsFromTask(Task taskDAO);
 	 
+	 //public boolean executeTask(Task taskDAO);
+	
 	 public  String getCrawlingStrategy();
 	 
 }
