@@ -14,48 +14,48 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="GENDER")
-public class Gender {
+@Table(name="CATEGORY")
+public class Category {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "gender_id")
-	private Integer genderId;
+	@Column(name = "category_id")
+	private Integer categoryId;
 	
-	@Column(name = "gender_name")
-	private String genderName;
+	@Column(name = "category_name")
+	private String categoryName;
 	
-	@OneToMany(mappedBy="gender")
+	@OneToMany(mappedBy="category")
 	private List<Product> products;
 	
-	public Gender() {
+	public Category() {
 	  	  this.products = new ArrayList<>();
     }
 	
-	public Gender(String genderName) {
+	public Category(String categoryName) {
 		this();
-		this.genderName = genderName;
+		this.categoryName = categoryName;
 	}
 	
-	public String getGenderName() {
-		return genderName;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setGenderName(String genderName) {
-		this.genderName = genderName;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 
 	@PreRemove
 	private void removeAssociationsWithChilds() {
 	   for (Product p : products) {
-	        p.setGender(null);
+	        p.setCategory(null);
 	   }
 	}
 	
 	@Override
 	public String toString() {
-		return this.genderName;
+		return this.categoryName;
 	}
 	
 	

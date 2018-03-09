@@ -1,5 +1,6 @@
 package com.dataprice.model.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,6 +10,9 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name="PRODUCT")
@@ -34,11 +38,21 @@ public class Product {
 	@Column(name = "product_url")
 	private String productUrl;
 	
+	//private String brandHelper;
+	
+	//private String skuHelper;
+	
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "gender_id")
 	private Gender gender;
 		
 
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "category_id")
+	private Category category;
+	
+	
 	public Product() {
 		
 	}
@@ -53,7 +67,7 @@ public class Product {
 		this.productUrl = productUrl;
 	}
 	
-	
+	/**
 	public Product(String productId,String retail,String name, Double precio, String imageUrl, String productUrl, Gender gender) {
 		this.productId = productId;
 		this.retail = retail;
@@ -63,49 +77,52 @@ public class Product {
 		this.productUrl = productUrl;
 		this.gender = gender;
 	}
-	
+   */
 	
 	public String getProductId() {
 		return productId;
 	}
 
-
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
-
 
 	public String getRetail() {
 		return retail;
 	}
 
-
 	public void setRetail(String retail) {
 		this.retail = retail;
 	}
 
-
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public Double getPrecio() {
 		return precio;
 	}
+	
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
+	
 	public String getImageUrl() {
 		return imageUrl;
 	}
+	
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+	
 	public String getProductUrl() {
 		return productUrl;
 	}
+	
 	public void setProductUrl(String productUrl) {
 		this.productUrl = productUrl;
 	}
@@ -114,9 +131,16 @@ public class Product {
 		return gender;
 	}
 
-
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+	
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	
 	@Override

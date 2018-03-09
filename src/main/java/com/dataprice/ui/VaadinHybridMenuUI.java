@@ -21,6 +21,7 @@ import com.dataprice.ui.students.RemoveStudentLayoutFactory;
 import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
 import com.dataprice.ui.universities.UniversityLayoutFactory;
+import com.dataprice.ui.classification.ClassificationLayoutFactory;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
 import com.dataprice.ui.view.GroupPage;
@@ -293,7 +294,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withClickListener(e -> hybridMenu.setLeftMenuMinimal(!hybridMenu.isLeftMenuMinimal()))
 				.build(demoSettings);
 				
-		
+		*/
 		MenuSubMenu studentList = LeftMenuSubMenuBuilder.get()
 				.setCaption(StringUtils.MENU_STUDENT.getString())
 				.setIcon(VaadinIcons.USERS)
@@ -324,7 +325,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withNavigateTo(UniversityLayoutFactory.class)
 				.build());
 		
-		*/
+		
 		
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
 				.withCaption("Tasks")
@@ -334,6 +335,7 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(tasksButton);
 		
+		/**
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Products")
 				.withIcon(VaadinIcons.COGS)
@@ -341,6 +343,27 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(productsButton);
+		*/
+		
+		MenuSubMenu productList = LeftMenuSubMenuBuilder.get()
+				.setCaption("Products")
+				.setIcon(VaadinIcons.USERS)
+				.setConfig(hybridMenu.getConfig())
+				.build(hybridMenu);
+
+		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Main")
+				.withIcon(VaadinIcons.USER)
+				.withNavigateTo(ProductLayoutFactory.class)
+				.build());
+
+		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Classification")
+				.withIcon(VaadinIcons.USERS)
+				.withNavigateTo(ClassificationLayoutFactory.class)
+				.build());
+		
+		
 		
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")

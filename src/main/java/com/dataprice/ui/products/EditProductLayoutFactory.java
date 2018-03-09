@@ -29,12 +29,14 @@ import com.vaadin.ui.VerticalLayout;
 public class EditProductLayoutFactory {
 
    private Product product;
-	 
+   private ComboBox gender;
+   private Button editButton;
+   
    private class EditProductLayout extends VerticalLayout implements Button.ClickListener{
 
-		 private ComboBox gender;
+		 
 		
-		 private Button editButton;
+		 
 		
 		 private ProductSaveListener productSaveListener;
 
@@ -50,8 +52,10 @@ public class EditProductLayoutFactory {
 		public EditProductLayout init() {
 		   	binder = new Binder<>(Product.class);
 			gender = new ComboBox("Genders");
+			gender.setVisible(false);
 			editButton = new Button("Editar");
 			editButton.addClickListener(this);
+			editButton.setVisible(false);
 			return this;
 		}
 
@@ -75,6 +79,8 @@ public class EditProductLayoutFactory {
 		@Override
 		public void buttonClick(ClickEvent event) {
 			save();
+			gender.setVisible(false);
+			editButton.setVisible(false);
 		}
 
 
@@ -89,6 +95,7 @@ public class EditProductLayoutFactory {
 			//System.out.println(student);
 			modifyProductService.modifyProduct(product);
 			productSaveListener.productSaved();
+			
 			
 		}
 
@@ -121,6 +128,8 @@ public class EditProductLayoutFactory {
     	
 	public void loadData(Object item) {
 		this.product = (Product) item;
+		gender.setVisible(true);
+		editButton.setVisible(true);
 	}
 		
 		

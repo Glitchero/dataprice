@@ -1,4 +1,4 @@
-package com.dataprice.ui.settings;
+package com.dataprice.ui.classification;
 
 import javax.annotation.PostConstruct;
 
@@ -15,14 +15,13 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringView
-public class SettingsLayoutFactory extends VerticalLayout implements View,GenderSavedListener{
+public class ClassificationLayoutFactory extends VerticalLayout implements View{
 
 	@Autowired
-	private AddGenderMainLayoutFactory addGenderLayoutFactory;
+	private GenderLayoutFactory genderLayoutFactory;
 	
 	@Autowired
-	private ShowAllGendersLayoutFactory showGendersLayoutFactory;
-	
+	private CategoryLayoutFactory categoryLayoutFactory;
 	
 	private TabSheet tabSheet;
 
@@ -30,11 +29,13 @@ public class SettingsLayoutFactory extends VerticalLayout implements View,Gender
 		setMargin(true);
 		tabSheet = new TabSheet();
 		tabSheet.setWidth("100%");
-		Component addStudentMainTab = addGenderLayoutFactory.createComponent();
-	//	Component showStudentsTab = showGendersLayoutFactory.createComponent();
+		Component genderTab = genderLayoutFactory.createComponent();
+		Component categoryTab = categoryLayoutFactory.createComponent();
 		
-		addComponent(addStudentMainTab);
-	//	addComponent(showStudentsTab);
+		tabSheet.addTab(genderTab,"Generos");
+		tabSheet.addTab(categoryTab,"Categorias");
+			
+		addComponent(tabSheet);
 	}
 
 	@PostConstruct
@@ -49,10 +50,5 @@ public class SettingsLayoutFactory extends VerticalLayout implements View,Gender
 		// This view is constructed in the init() method()
 	}
 
-	@Override
-	public void genderSaved() {
-		showGendersLayoutFactory.refreshTable();
-		
-	}
 	
 }
