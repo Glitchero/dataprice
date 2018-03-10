@@ -39,5 +39,16 @@ public class ProductKey implements Serializable{
 		this.retail = retail;
 	}
 	
+	public int hashCode() {
+        return (int)this.productId.hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ProductKey)) return false;
+        ProductKey pk = (ProductKey) obj;
+        return pk.retail.equals(this.retail) && pk.productId.equals(this.productId);
+    }
+    
     
 }

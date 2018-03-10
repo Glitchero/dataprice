@@ -20,4 +20,19 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 		return productRepository.getAllProducts();
 	}
 
+
+	@Override
+	public List<Product> getAllProductsFromPid(String pid) {
+		return productRepository.getAllPrductsFromPid(pid);
+	}
+
+
+	@Override
+	public Product getProductFromKey(String productKey, String retailKey) {
+		return productRepository.getProductFromKey(productKey,retailKey);
+	}
+	
+
+	
+
 }

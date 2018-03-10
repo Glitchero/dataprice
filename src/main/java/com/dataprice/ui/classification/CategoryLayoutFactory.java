@@ -60,45 +60,29 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 		    	binder = new Binder<>(Category.class);
 
 		    	category = new Category();
-		    	
-		    	categoryName = new TextField("CategoryName");
-		    
+		    	categoryName = new TextField("CategoryName");		    
 		    	categoryName.setVisible(false);
 		    	
 				saveButton = new Button("Save");
-
-				saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-				
-				saveButton.addClickListener(this);
-				
-				saveButton.setVisible(false);
-				
+				saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
+				saveButton.addClickListener(this);				
+				saveButton.setVisible(false);				
 				saveButton.setWidth("100%");
 				
 				addNewButton = new Button("Add New Category");
-
-				addNewButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-				
-				addNewButton.addClickListener(this);
-				
+				addNewButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
+				addNewButton.addClickListener(this);				
 				addNewButton.setWidth("100%");
 				
 				editButton = new Button("Edit");
-
-				editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-				
-				editButton.addClickListener(this);
-				
-				editButton.setVisible(false);
-				
+				editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
+				editButton.addClickListener(this);			
+				editButton.setVisible(false);			
 				editButton.setWidth("100%");
 				
-				cancelButton = new Button("Cancel");
-				
-				cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);
-				
-				cancelButton.addClickListener(this);
-				
+				cancelButton = new Button("Cancel");				
+				cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);				
+				cancelButton.addClickListener(this);				
 				cancelButton.setVisible(false);
 				
 				cancelButton.setWidth("100%");

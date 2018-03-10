@@ -44,7 +44,7 @@ public class ProductLayoutFactory extends VerticalLayout implements View,Product
 
 	@Override
 	public void productEdited(Object item) {
-		editProductLayoutFactory.loadData(item);
+		editProductLayoutFactory.editData(item);
 		
 	}
 

@@ -42,6 +42,10 @@ public class Product {
 	
 	//private String skuHelper;
 	
+	//private String status;
+	
+	@Column(name = "pid")
+	private String pid;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "gender_id")
@@ -126,6 +130,15 @@ public class Product {
 	public void setProductUrl(String productUrl) {
 		this.productUrl = productUrl;
 	}
+	
+	public String getPid() {
+		return pid;
+	}
+	
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+	
 	
 	public Gender getGender() {
 		return gender;

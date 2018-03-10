@@ -46,6 +46,7 @@ public class Category {
 	}
 
 
+
 	@PreRemove
 	private void removeAssociationsWithChilds() {
 	   for (Product p : products) {
