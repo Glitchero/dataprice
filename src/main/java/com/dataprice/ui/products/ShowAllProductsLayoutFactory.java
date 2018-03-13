@@ -8,7 +8,7 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
-import com.dataprice.ui.students.UIComponentBuilder;
+import com.dataprice.ui.UIComponentBuilder;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Component;
@@ -45,7 +45,7 @@ public class ShowAllProductsLayoutFactory {
 			productsTable = new Grid<>(Product.class);
 			productsTable.setWidth("100%");
 			
-			productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl");
+			productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl","pid","gender","category","subcategory");
 			
 			productsTable.setItems(products);
 			

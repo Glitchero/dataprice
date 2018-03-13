@@ -8,18 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dataprice.model.entity.Category;
 import com.dataprice.model.entity.Gender;
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.Subcategory;
 import com.dataprice.model.entity.Task;
-import com.dataprice.model.entity.University;
 import com.dataprice.service.addgenderservice.AddGenderService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifyproduct.ModifyProductService;
 import com.dataprice.service.showallcategories.ShowAllCategoriesService;
 import com.dataprice.service.showallgenders.ShowAllGendersService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
+import com.dataprice.service.showallsubcategories.ShowAllSubcategoriesService;
 import com.dataprice.utils.NotificationsMessages;
 import com.dataprice.utils.StudentsStringUtils;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -39,9 +42,12 @@ public class EditProductLayoutFactory {
    private TextField pid;
    private ComboBox gender;
    private ComboBox category;
+   private ComboBox subcategory;
    private Button editButton;
    private Button cancelButton;
-   private class EditProductLayout extends VerticalLayout implements Button.ClickListener{
+   private boolean isSaveOperationValidForSubcategory;
+   
+   private class EditProductLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
 
 		 
 		
@@ -63,6 +69,10 @@ public class EditProductLayoutFactory {
 			
 			category = new ComboBox("Categories");
 			category.setVisible(false);
+			category.addValueChangeListener(this);
+			
+			subcategory = new ComboBox("Subcategories");
+			subcategory.setVisible(false);
 			
 			editButton = new Button("Editar");
 			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
@@ -77,6 +87,21 @@ public class EditProductLayoutFactory {
 			
 		}
 
+		 private void clearField() {
+			pid.setValue("");
+		    gender.setValue(null);
+			category.setValue(null);
+			subcategory.setValue(null);
+		 }
+		 
+		private boolean isSaveOperationValidForCategory() {
+			return showAllCategoriesService.getAllCategories().size() !=0;
+		}
+		
+		private boolean isSaveOperationValidForGender() {
+			return showAllGendersService.getAllGenders().size() !=0;
+		}
+		
 		public EditProductLayout load() {
 			List<Gender> genderList = showAllGendersService.getAllGenders();
 			gender.setItems(genderList);
@@ -88,13 +113,18 @@ public class EditProductLayoutFactory {
 
 		public Component layout() {
 			 setMargin(true);
-			 HorizontalLayout h = new HorizontalLayout();
-			 h.addComponent(pid);
-			 h.addComponent(gender);
-			 h.addComponent(category);
-			 h.addComponent(editButton);
-			 h.addComponent(cancelButton);
-			 return h;
+			 HorizontalLayout h1 = new HorizontalLayout();
+			 h1.addComponent(pid);
+			 h1.addComponent(gender);
+			 h1.addComponent(category);
+			 h1.addComponent(subcategory);
+			 
+			 HorizontalLayout h2 = new HorizontalLayout();
+			 h2.addComponent(editButton);
+			 h2.addComponent(cancelButton);
+			 
+			 VerticalLayout v1 = new VerticalLayout(h1,h2);
+			 return v1;
 		}
 		
 		
@@ -114,22 +144,35 @@ public class EditProductLayoutFactory {
 		private void cancel() {
 			gender.setVisible(false);
 			category.setVisible(false);
+			subcategory.setVisible(false);
 			editButton.setVisible(false);
 			cancelButton.setVisible(false);
-			//pid.setValue("");
-			//gender.setValue(null);
-			//category.setValue(null);
-			
 			pid.setVisible(false);
+			clearField();
+			
 		}
 
 		private void edit() {
 			
+			if(!isSaveOperationValidForGender()) {
+				Notification.show("ERROR","Must have at least one gender",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			if(!isSaveOperationValidForCategory()) {
+				Notification.show("ERROR","Must have at least one category",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			if(!isSaveOperationValidForSubcategory) {
+				Notification.show("ERROR","Must have at least one subcategory",Type.ERROR_MESSAGE);
+				return;
+			}
+						
 			BinderValidationStatus<Product> status = binder.validate();
 
 			if (status.hasErrors()) {
-			  Notification.show("Validation error count: "
-			    + status.getValidationErrors().size());
+				Notification.show(NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_TITLE.getString(),NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_DESCRIPTION.getString(),Type.ERROR_MESSAGE);
 			   return;
 			}
 			
@@ -145,12 +188,9 @@ public class EditProductLayoutFactory {
 				return;
 			}
 			
-
-			
-			cancel();
-			//System.out.println(student);
 			modifyProductService.modifyProduct(product);
 			productSaveListener.productSaved();
+			cancel();
 			Notification.show("EDIT","Product profile editted",Type.WARNING_MESSAGE);
 			
 		}
@@ -168,6 +208,10 @@ public class EditProductLayoutFactory {
 			binder.forField(category)
 			  .asRequired("category must be set")
 			  .bind("category");
+			
+			binder.forField(subcategory)
+			  .asRequired("subcategory must be set")
+			  .bind("subcategory");
 					
 			binder.readBean(product);
 			
@@ -191,7 +235,7 @@ public class EditProductLayoutFactory {
 				System.out.println("entre : " + product.getProductId() + " - " + product.getRetail());
 		    	Gender genderValue = (Gender) gender.getValue();
 			    Category categoryValue = (Category) category.getValue();
-			    
+			    Subcategory subcategoryValue = (Subcategory) subcategory.getValue();
 			
 			    for(Product product : productList) {
 				
@@ -205,10 +249,32 @@ public class EditProductLayoutFactory {
 				          if (!product.getCategory().getCategoryName().equals(categoryValue.getCategoryName())) {
 					          validation = false;
 				          }
+				     }     
+				     if (product.getSubcategory()!=null) {
+					      if (!product.getSubcategory().getSubcategoryName().equals(subcategoryValue.getSubcategoryName())) {
+						      validation = false;
+					      }         
 				     }   
+				     
 			     }
 			}
 			return validation;
+		}
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			subcategory.setValue(null);
+			Category categoryValue = (Category) category.getValue();
+			if (categoryValue!=null) {
+				List<Subcategory> subcategoryList = showAllSubcategoriesService.getAllSubcategoriesForCategory(categoryValue.getCategoryId());
+				if (subcategoryList.size() !=0) {
+					isSaveOperationValidForSubcategory = true;
+				}else {
+					isSaveOperationValidForSubcategory = false;
+				}
+				subcategory.setItems(subcategoryList);
+			}
+			
 		}
 		
 		
@@ -227,6 +293,9 @@ public class EditProductLayoutFactory {
    @Autowired
    private ShowAllCategoriesService showAllCategoriesService;
    
+   @Autowired
+   private ShowAllSubcategoriesService showAllSubcategoriesService;
+   
    public Component createComponent(ProductSaveListener productSaveListener) {
     		return new EditProductLayout(productSaveListener).init().load().bind().layout();
     }
@@ -235,18 +304,39 @@ public class EditProductLayoutFactory {
 	public void editData(Object item) {
 		this.product = (Product) item;
 		
+		//Set Pid
 		if (product.getPid()!=null) {
 			pid.setValue(product.getPid());
 		}else {
 			pid.setValue("");
 		}
+		//Set Gender
+		if (product.getGender()!=null) {
+			gender.setValue(product.getGender());
+		}else {
+			gender.setValue(null);
+		}
+		//Set Category
+		if (product.getCategory()!=null) {
+			category.setValue(product.getCategory());
+		}else {
+			category.setValue(null);
+		}
+		//Set Subcategory
+		if (product.getSubcategory()!=null) {
+			subcategory.setValue(product.getSubcategory());
+		}else {
+			subcategory.setValue(null);
+		}
 		
 		pid.setVisible(true);
 		gender.setVisible(true);
 		category.setVisible(true);
+		subcategory.setVisible(true);
 		editButton.setVisible(true);
 		cancelButton.setVisible(true);
 	}
-		
+	
+	
 		
 }

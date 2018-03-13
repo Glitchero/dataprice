@@ -6,17 +6,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.model.entity.Product;
-import com.dataprice.model.entity.Student;
 import com.dataprice.model.entity.Task;
 import com.dataprice.service.addproductservice.AddProductService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.crawltask.CrawlTaskServiceImpl;
 import com.dataprice.service.modifytask.ModifyTaskServiceImpl;
-import com.dataprice.service.removestudent.RemoveStudentService;
 import com.dataprice.service.removetask.RemoveTaskService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
-import com.dataprice.ui.students.UIComponentBuilder;
+import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.utils.NotificationsMessages;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.ListDataProvider;

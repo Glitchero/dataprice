@@ -17,11 +17,11 @@ import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.reports.ReportsLayoutFactory;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
-import com.dataprice.ui.students.RemoveStudentLayoutFactory;
-import com.dataprice.ui.students.StudentLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
-import com.dataprice.ui.universities.UniversityLayoutFactory;
+import com.dataprice.ui.classification.CategoryMainLayout;
 import com.dataprice.ui.classification.ClassificationLayoutFactory;
+import com.dataprice.ui.classification.GenderMainLayout;
+import com.dataprice.ui.classification.SubcategoryMainLayout;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
 import com.dataprice.ui.view.GroupPage;
@@ -295,37 +295,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build(demoSettings);
 				
 		*/
-		MenuSubMenu studentList = LeftMenuSubMenuBuilder.get()
-				.setCaption(StringUtils.MENU_STUDENT.getString())
-				.setIcon(VaadinIcons.USERS)
-				.setConfig(hybridMenu.getConfig())
-				.build(hybridMenu);
 
-		studentList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption(StringUtils.MENU_ADD_STUDENT.getString())
-				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(StudentLayoutFactory.class)
-				.build());
-
-		studentList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption(StringUtils.MENU_REMOVE_STUDENT.getString())
-				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(RemoveStudentLayoutFactory.class)
-				.build());
-		
-		MenuSubMenu universityList = LeftMenuSubMenuBuilder.get()
-				.setCaption(StringUtils.MENU_UNIVERSITY.getString())
-				.setIcon(VaadinIcons.USERS)
-				.setConfig(hybridMenu.getConfig())
-				.build(hybridMenu);
-
-		universityList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption(StringUtils.MENU_OPERATIONS.getString())
-				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(UniversityLayoutFactory.class)
-				.build());
-		
-		
 		
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
 				.withCaption("Tasks")
@@ -358,9 +328,22 @@ public class VaadinHybridMenuUI extends UI {
 				.build());
 
 		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Classification")
+				.withCaption("Gender")
 				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(ClassificationLayoutFactory.class)
+				.withNavigateTo(GenderMainLayout.class)
+				.build());
+		
+		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Category")
+				.withIcon(VaadinIcons.USERS)
+				.withNavigateTo(CategoryMainLayout.class)
+				.build());
+		
+		
+		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Subcategory")
+				.withIcon(VaadinIcons.USERS)
+				.withNavigateTo(SubcategoryMainLayout.class)
 				.build());
 		
 		

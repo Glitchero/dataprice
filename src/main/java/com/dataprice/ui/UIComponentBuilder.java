@@ -1,4 +1,4 @@
-package com.dataprice.ui.students;
+package com.dataprice.ui;
 
 import com.vaadin.ui.Component;
 

@@ -9,7 +9,7 @@ import com.dataprice.service.addgenderservice.AddGenderService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.removegender.RemoveGenderService;
 import com.dataprice.service.showallgenders.ShowAllGendersService;
-import com.dataprice.ui.students.UIComponentBuilder;
+import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;

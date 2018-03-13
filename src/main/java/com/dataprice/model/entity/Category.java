@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PostPersist;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
@@ -28,8 +29,12 @@ public class Category {
 	@OneToMany(mappedBy="category")
 	private List<Product> products;
 	
+	@OneToMany(mappedBy="category",cascade=CascadeType.ALL)
+	private List<Subcategory> subcategories;
+	
 	public Category() {
 	  	  this.products = new ArrayList<>();
+	  	  this.subcategories = new ArrayList<>();
     }
 	
 	public Category(String categoryName) {
@@ -37,6 +42,15 @@ public class Category {
 		this.categoryName = categoryName;
 	}
 	
+	
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
 	public String getCategoryName() {
 		return categoryName;
 	}
@@ -53,6 +67,7 @@ public class Category {
 	        p.setCategory(null);
 	   }
 	}
+	
 	
 	@Override
 	public String toString() {

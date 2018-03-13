@@ -19,4 +19,5 @@ public class ShowAllCategoriesServiceImpl implements ShowAllCategoriesService{
 		return categoryRepository.getAllCategories();
 	}
 
+
 }

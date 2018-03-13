@@ -23,6 +23,9 @@ public class ClassificationLayoutFactory extends VerticalLayout implements View{
 	@Autowired
 	private CategoryLayoutFactory categoryLayoutFactory;
 	
+	@Autowired
+	private SubcategoryLayoutFactory subcategoryLayoutFactory;
+	
 	private TabSheet tabSheet;
 
 	private void addLayout() {
@@ -31,10 +34,12 @@ public class ClassificationLayoutFactory extends VerticalLayout implements View{
 		tabSheet.setWidth("100%");
 		Component genderTab = genderLayoutFactory.createComponent();
 		Component categoryTab = categoryLayoutFactory.createComponent();
+		Component subcategoryTab = subcategoryLayoutFactory.createComponent();
+		
 		
 		tabSheet.addTab(genderTab,"Generos");
 		tabSheet.addTab(categoryTab,"Categorias");
-			
+		tabSheet.addTab(subcategoryTab,"Subcategorias");	
 		addComponent(tabSheet);
 	}
 

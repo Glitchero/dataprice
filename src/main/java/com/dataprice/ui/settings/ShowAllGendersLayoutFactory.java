@@ -10,7 +10,7 @@ import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.removegender.RemoveGenderService;
 import com.dataprice.service.removetask.RemoveTaskService;
 import com.dataprice.service.showallgenders.ShowAllGendersService;
-import com.dataprice.ui.students.UIComponentBuilder;
+import com.dataprice.ui.UIComponentBuilder;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.VerticalLayout;

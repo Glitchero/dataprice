@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.dataprice.model.entity.Gender;
 import com.dataprice.repository.gender.GenderRepository;
-import com.dataprice.repository.student.StudentRepository;
 
 @Service
 public class RemoveGenderServiceImpl implements RemoveGenderService {

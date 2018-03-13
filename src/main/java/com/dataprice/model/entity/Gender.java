@@ -37,11 +37,18 @@ public class Gender {
 		this.genderName = genderName;
 	}
 	
+	
+	public Integer getGenderId() {
+		return genderId;
+	}
+
+	public void setGenderId(Integer genderId) {
+		this.genderId = genderId;
+	}
+
 	public String getGenderName() {
 		return genderName;
 	}
-
-
 	
 	public void setGenderName(String genderName) {
 		this.genderName = genderName;

@@ -11,7 +11,7 @@ import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifygender.ModifyGenderService;
 import com.dataprice.service.removegender.RemoveGenderService;
 import com.dataprice.service.showallgenders.ShowAllGendersService;
-import com.dataprice.ui.students.UIComponentBuilder;
+import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -218,19 +218,17 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 					Notification.show("ERROR","Gender is not saved",Type.ERROR_MESSAGE);
 					return;
 				}
-				
-			    cancel();
-				
+					
 				modifyGenderService.modifyGender(gender);
-				//genderSavedListener.genderSaved();
 				refreshTable();
-				clearField();
+				cancel();
 				Notification.show("SAVE","Gender is saved",Type.WARNING_MESSAGE);
 				
 		}
 
 
 		private void addNew() {
+			 clearField();
 			 genderName.setVisible(true);
 			 saveButton.setVisible(true);
 			 cancelButton.setVisible(true);
@@ -245,13 +243,10 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 					Notification.show("ERROR","Gender is not saved",Type.ERROR_MESSAGE);
 					return;
 				}
-				
-				cancel();
-				 
+		 
 				addGenderService.saveGender(gender);
-				//genderSavedListener.genderSaved();
 				refreshTable();
-				clearField();
+				cancel();
 				Notification.show("SAVE","Gender is saved",Type.WARNING_MESSAGE);
 			}
 		
@@ -284,7 +279,7 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 	
 	public void editData(Object item) {
 		this.gender = (Gender) item;
-		genderName.setValue(gender.toString());
+		genderName.setValue(gender.getGenderName());
 		genderName.setVisible(true);
 		editButton.setVisible(true);
 		cancelButton.setVisible(true);

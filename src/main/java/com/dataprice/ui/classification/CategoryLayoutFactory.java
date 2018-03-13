@@ -10,7 +10,7 @@ import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifycategory.ModifyCategoryService;
 import com.dataprice.service.removecategory.RemoveCategoryService;
 import com.dataprice.service.showallcategories.ShowAllCategoriesService;
-import com.dataprice.ui.students.UIComponentBuilder;
+import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -189,19 +189,17 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 					Notification.show("ERROR","Category is not editted",Type.ERROR_MESSAGE);
 					return;
 				}
-				
-			    cancel();
-				
+			 
 				modifycategoryservice.modifyCategory(category);
-				//categoriesavedListener.categoriesaved();
 				refreshTable();
-				clearField();
+				cancel();
 				Notification.show("EDIT","Category is editted",Type.WARNING_MESSAGE);
 				
 		}
 
 
 		private void addNew() {
+			 clearField();
 			 categoryName.setVisible(true);
 			 saveButton.setVisible(true);
 			 cancelButton.setVisible(true);
@@ -215,14 +213,10 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 				} catch (ValidationException e) {
 					Notification.show("ERROR","Category is not saved",Type.ERROR_MESSAGE);
 					return;
-				}
-				
-				cancel();
-				 
+				}				
 				addcategoryservice.saveCategory(category);
-				//categoriesavedListener.categoriesaved();
 				refreshTable();
-				clearField();
+				cancel();
 				Notification.show("SAVE","Category is saved",Type.WARNING_MESSAGE);
 			}
 		
@@ -251,7 +245,7 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 	
 	public void editData(Object item) {
 		this.category = (Category) item;
-		categoryName.setValue(category.toString());
+		categoryName.setValue(category.getCategoryName());
 		categoryName.setVisible(true);
 		editButton.setVisible(true);
 		cancelButton.setVisible(true);
