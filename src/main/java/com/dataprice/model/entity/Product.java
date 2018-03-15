@@ -60,6 +60,9 @@ public class Product {
 	@JoinColumn(name = "subcategory_id")
 	private Subcategory subcategory;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "brand_id")
+	private Brand brand;
 	
 	public Product() {
 		
@@ -168,6 +171,13 @@ public class Product {
 		this.subcategory = subcategory;
 	}
 	
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Brand brand) {
+		this.brand = brand;
+	}
 	
 	@Override
 	public String toString() {

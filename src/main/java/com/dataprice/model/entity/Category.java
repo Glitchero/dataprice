@@ -32,9 +32,13 @@ public class Category {
 	@OneToMany(mappedBy="category",cascade=CascadeType.ALL)
 	private List<Subcategory> subcategories;
 	
+	@OneToMany(mappedBy="category",cascade=CascadeType.ALL)
+	private List<Brand> brands;
+	
 	public Category() {
 	  	  this.products = new ArrayList<>();
 	  	  this.subcategories = new ArrayList<>();
+	  	  this.brands = new ArrayList<>();
     }
 	
 	public Category(String categoryName) {

@@ -29,4 +29,7 @@ public interface ProductRepository extends JpaRepository<Product,ProductKey>{
 	
 	@Query("select p from Product p where p.subcategory.subcategoryId=:subcategoryKey")
 	List<Product> getProductsFromSubcategory(@Param("subcategoryKey") Integer subcategoryKey);
+	
+	@Query("select p from Product p where p.retail=:retailName")
+	List<Product> getProductsFromRetailName(@Param("retailName") String retailName);
 }

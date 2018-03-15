@@ -18,6 +18,7 @@ import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.reports.ReportsLayoutFactory;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
+import com.dataprice.ui.classification.BrandMainLayout;
 import com.dataprice.ui.classification.CategoryMainLayout;
 import com.dataprice.ui.classification.ClassificationLayoutFactory;
 import com.dataprice.ui.classification.GenderMainLayout;
@@ -346,7 +347,11 @@ public class VaadinHybridMenuUI extends UI {
 				.withNavigateTo(SubcategoryMainLayout.class)
 				.build());
 		
-		
+		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Brands")
+				.withIcon(VaadinIcons.USERS)
+				.withNavigateTo(BrandMainLayout.class)
+				.build());
 		
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")

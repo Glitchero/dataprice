@@ -112,6 +112,8 @@ public class SubcategoryLayoutFactory implements UIComponentBuilder {
 				.setMaximumWidth(100)
 				.setResizable(false);
 				
+				//subcategoriesTable.setWidth("100%");
+				subcategoriesTable.removeColumn("subcategoryId");
 				
 				return this;
 			    
@@ -201,7 +203,7 @@ public class SubcategoryLayoutFactory implements UIComponentBuilder {
 				}
 			    
 				modifySubcategoryService.modifySubcategory(subcategory);
-				modifyProductService.updateCategoryFromSubcategory(subcategory.getCategory().getCategoryId(), subcategory.getSubcategoryId());
+				//modifyProductService.updateCategoryFromSubcategory(subcategory.getCategory().getCategoryId(), subcategory.getSubcategoryId());
 				refreshTable();
 				cancel();
 				Notification.show("EDIT","Subcategory is editted",Type.WARNING_MESSAGE);
@@ -278,7 +280,7 @@ public class SubcategoryLayoutFactory implements UIComponentBuilder {
 		category.setValue(subcategory.getCategory());
 		//Change visibility
 		subcategoryName.setVisible(true);
-		category.setVisible(true);
+		category.setVisible(false);
 		editButton.setVisible(true);
 		cancelButton.setVisible(true);
 		saveButton.setVisible(false);

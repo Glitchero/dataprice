@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dataprice.model.entity.Brand;
 import com.dataprice.model.entity.Category;
 import com.dataprice.model.entity.Gender;
 import com.dataprice.model.entity.Product;
@@ -13,6 +14,7 @@ import com.dataprice.model.entity.Task;
 import com.dataprice.service.addgenderservice.AddGenderService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifyproduct.ModifyProductService;
+import com.dataprice.service.showallbrands.ShowAllBrandsService;
 import com.dataprice.service.showallcategories.ShowAllCategoriesService;
 import com.dataprice.service.showallgenders.ShowAllGendersService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
@@ -24,6 +26,7 @@ import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.ValidationException;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -43,9 +46,12 @@ public class EditProductLayoutFactory {
    private ComboBox gender;
    private ComboBox category;
    private ComboBox subcategory;
+   private ComboBox brand;
    private Button editButton;
    private Button cancelButton;
    private boolean isSaveOperationValidForSubcategory;
+   private boolean isSaveOperationValidForBrand;
+   
    
    private class EditProductLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
 
@@ -74,6 +80,9 @@ public class EditProductLayoutFactory {
 			subcategory = new ComboBox("Subcategories");
 			subcategory.setVisible(false);
 			
+			brand = new ComboBox("Brand");
+			brand.setVisible(false);
+			
 			editButton = new Button("Editar");
 			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			editButton.addClickListener(this);
@@ -92,6 +101,7 @@ public class EditProductLayoutFactory {
 		    gender.setValue(null);
 			category.setValue(null);
 			subcategory.setValue(null);
+			brand.setValue(null);
 		 }
 		 
 		private boolean isSaveOperationValidForCategory() {
@@ -118,13 +128,17 @@ public class EditProductLayoutFactory {
 			 h1.addComponent(gender);
 			 h1.addComponent(category);
 			 h1.addComponent(subcategory);
+			 h1.addComponent(brand);
+			 h1.addComponent(editButton);
+			 h1.addComponent(cancelButton);
+			 h1.setComponentAlignment(editButton, Alignment.BOTTOM_CENTER);
+			 h1.setComponentAlignment(cancelButton, Alignment.BOTTOM_CENTER);
+		//	 HorizontalLayout h2 = new HorizontalLayout();
+		//	 h2.addComponent(editButton);
+		//	 h2.addComponent(cancelButton);
 			 
-			 HorizontalLayout h2 = new HorizontalLayout();
-			 h2.addComponent(editButton);
-			 h2.addComponent(cancelButton);
-			 
-			 VerticalLayout v1 = new VerticalLayout(h1,h2);
-			 return v1;
+		//	 VerticalLayout v1 = new VerticalLayout(h1,h2);
+			 return h1;
 		}
 		
 		
@@ -145,6 +159,7 @@ public class EditProductLayoutFactory {
 			gender.setVisible(false);
 			category.setVisible(false);
 			subcategory.setVisible(false);
+			brand.setVisible(false);
 			editButton.setVisible(false);
 			cancelButton.setVisible(false);
 			pid.setVisible(false);
@@ -166,6 +181,11 @@ public class EditProductLayoutFactory {
 			
 			if(!isSaveOperationValidForSubcategory) {
 				Notification.show("ERROR","Must have at least one subcategory",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			if(!isSaveOperationValidForBrand) {
+				Notification.show("ERROR","Must have at least one Brand",Type.ERROR_MESSAGE);
 				return;
 			}
 						
@@ -213,6 +233,10 @@ public class EditProductLayoutFactory {
 			  .asRequired("subcategory must be set")
 			  .bind("subcategory");
 					
+			binder.forField(brand)
+			  .asRequired("brand must be set")
+			  .bind("brand");
+			
 			binder.readBean(product);
 			
 			return this;
@@ -236,6 +260,7 @@ public class EditProductLayoutFactory {
 		    	Gender genderValue = (Gender) gender.getValue();
 			    Category categoryValue = (Category) category.getValue();
 			    Subcategory subcategoryValue = (Subcategory) subcategory.getValue();
+			    Brand brandValue = (Brand) brand.getValue();
 			
 			    for(Product product : productList) {
 				
@@ -256,6 +281,12 @@ public class EditProductLayoutFactory {
 					      }         
 				     }   
 				     
+				     if (product.getBrand()!=null) {
+					      if (!product.getBrand().getBrandName().equals(brandValue.getBrandName())) {
+						      validation = false;
+					      }         
+				     }  
+				     
 			     }
 			}
 			return validation;
@@ -263,7 +294,10 @@ public class EditProductLayoutFactory {
 
 		@Override
 		public void valueChange(ValueChangeEvent event) {
+			
 			subcategory.setValue(null);
+			brand.setValue(null);
+			
 			Category categoryValue = (Category) category.getValue();
 			if (categoryValue!=null) {
 				List<Subcategory> subcategoryList = showAllSubcategoriesService.getAllSubcategoriesForCategory(categoryValue.getCategoryId());
@@ -273,8 +307,18 @@ public class EditProductLayoutFactory {
 					isSaveOperationValidForSubcategory = false;
 				}
 				subcategory.setItems(subcategoryList);
+				
+				
+				List<Brand> brandList = showAllBrandsService.getAllBrandsForCategory(categoryValue.getCategoryId());
+				if (brandList.size() !=0) {
+					isSaveOperationValidForBrand = true;
+				}else {
+					isSaveOperationValidForBrand = false;
+				}
+				brand.setItems(brandList);
+				
 			}
-			
+				
 		}
 		
 		
@@ -295,6 +339,9 @@ public class EditProductLayoutFactory {
    
    @Autowired
    private ShowAllSubcategoriesService showAllSubcategoriesService;
+   
+   @Autowired
+   private ShowAllBrandsService showAllBrandsService;
    
    public Component createComponent(ProductSaveListener productSaveListener) {
     		return new EditProductLayout(productSaveListener).init().load().bind().layout();
@@ -329,10 +376,18 @@ public class EditProductLayoutFactory {
 			subcategory.setValue(null);
 		}
 		
+		//Set Brand
+		if (product.getBrand()!=null) {
+			brand.setValue(product.getBrand());
+		}else {
+			brand.setValue(null);
+		}
+				
 		pid.setVisible(true);
 		gender.setVisible(true);
 		category.setVisible(true);
 		subcategory.setVisible(true);
+		brand.setVisible(true);
 		editButton.setVisible(true);
 		cancelButton.setVisible(true);
 	}

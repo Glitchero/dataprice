@@ -4,6 +4,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.converter.StringToIntegerConverter;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
@@ -55,12 +56,20 @@ public class AddTaskMainLayoutFactory {
 	    	task = new Task();
 	    	
 	    	taskName = new TextField("TaskName");
+	    	taskName.setWidth("100%");
+	    	
 	    	retail = new ComboBox("Retail");
+	    	retail.setWidth("100%");
+	    	
 	    	seed = new TextField("Seed");
+	    	seed.setWidth("100%");
 		//	status = new TextField("Status");
 			
 			saveButton = new Button("save");
+			
+			
 			clearButton = new Button("clear");
+			
 
 			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			clearButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -100,6 +109,7 @@ public class AddTaskMainLayoutFactory {
 	    public Component layout() {		
 	    	setMargin(true);
 
+	    	/**
 			GridLayout gridLayout = new GridLayout(2, 3);
 			gridLayout.setSizeUndefined();
 			gridLayout.setSpacing(true);
@@ -114,7 +124,27 @@ public class AddTaskMainLayoutFactory {
 			gridLayout.addComponent(new HorizontalLayout(saveButton, clearButton), 0, 2);
 
 			return gridLayout;
+            */
+	    	
+	    
+	    	
+	    	
+	    	HorizontalLayout h2 = new HorizontalLayout(taskName,retail);
+	    	h2.setWidth("100%");
+	    	
+	    	HorizontalLayout h3 = new HorizontalLayout(seed);
+	    	h3.setWidth("100%");
+	    	
+	    	HorizontalLayout h1 = new HorizontalLayout(h2,h3);
+	    	
+	    	h1.setWidth("100%");
+	    	
+	    	
+	    	HorizontalLayout h4 = new HorizontalLayout(saveButton,clearButton);
 
+            VerticalLayout v1 = new VerticalLayout(h1,h4);
+	    	
+	    	return v1;
 	    }
 
 		@Override

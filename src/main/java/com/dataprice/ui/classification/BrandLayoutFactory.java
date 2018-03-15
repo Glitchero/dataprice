@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.dataprice.model.entity.Product;
-import com.dataprice.service.addcategory.AddCategoryService;
-import com.dataprice.service.addtask.AddTaskService;
-import com.dataprice.service.modifycategory.ModifyCategoryService;
-import com.dataprice.service.removecategory.RemoveCategoryService;
+import com.dataprice.model.entity.Brand;
+import com.dataprice.model.entity.Category;
+import com.dataprice.service.addbrand.AddBrandService;
+import com.dataprice.service.modifybrand.ModifyBrandService;
+import com.dataprice.service.modifyproduct.ModifyProductService;
+import com.dataprice.service.removebrand.RemoveBrandService;
+import com.dataprice.service.showallbrands.ShowAllBrandsService;
 import com.dataprice.service.showallcategories.ShowAllCategoriesService;
 import com.dataprice.ui.UIComponentBuilder;
-import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -28,19 +28,19 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import com.dataprice.model.entity.Category;
-import net.bytebuddy.asm.Advice.This;
 
 @org.springframework.stereotype.Component
-public class CategoryLayoutFactory implements UIComponentBuilder {
+public class BrandLayoutFactory implements UIComponentBuilder{
+
+	private List<Brand> brands;
 	
-	 private List<Category> categories;
+	 private Grid<Brand> brandsTable;
 		
-	 private Grid<Category> categoriesTable;
-		
-	 private Category category;
+	 private Brand brand;
 	 
-	 private TextField categoryName;
+	 private ComboBox category;
+	 
+	 private TextField brandName;
 	 
 	 private Button saveButton;
 	
@@ -50,18 +50,23 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 		
 	 private Button cancelButton;
 	 
-	 private Binder<Category> binder;
-		
-	private class CategoryLayout extends VerticalLayout implements Button.ClickListener{
+	 private Binder<Brand> binder;
+	 
+	 
+	 private class BrandLayout extends VerticalLayout implements Button.ClickListener{
 		 
-		
-		 public CategoryLayout init() {
+			
+		 public BrandLayout init() {
 
-		    	binder = new Binder<>(Category.class);
+		    	binder = new Binder<>(Brand.class);
 
-		    	category = new Category();
-		    	categoryName = new TextField("CategoryName");		    
-		    	categoryName.setVisible(false);
+		    	brand = new Brand();
+		    	
+		    	category = new ComboBox("Category");
+		    	category.setVisible(false);
+		    	
+		    	brandName = new TextField("BrandName");		    
+		    	brandName.setVisible(false);
 		    	
 				saveButton = new Button("Save");
 				saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
@@ -69,7 +74,7 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 				saveButton.setVisible(false);				
 				saveButton.setWidth("100%");
 				
-				addNewButton = new Button("Add New Category");
+				addNewButton = new Button("Add New Brand");
 				addNewButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
 				addNewButton.addClickListener(this);				
 				addNewButton.setWidth("100%");
@@ -86,21 +91,21 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 				cancelButton.setVisible(false);
 				
 				cancelButton.setWidth("100%");
-				categoriesTable = new Grid<>(Category.class);
-				categoriesTable.setItems(categories);
+				brandsTable = new Grid<>(Brand.class);
+				
 				
 				// Render a button that deletes the data row (item)
-				categoriesTable.addColumn(Category -> "Delete",
+				brandsTable.addColumn(Brands -> "Delete",
 				      new ButtonRenderer(clickEvent -> {
-				    	  categories.remove(clickEvent.getItem());
-				    	  removecategoryservice.removeCategory((Category) clickEvent.getItem());
-				    	  categoriesTable.setItems(categories);
+				    	  brands.remove(clickEvent.getItem());
+				    	  removeBrandService.removeBrand((Brand) clickEvent.getItem());
+				    	  brandsTable.setItems(brands);
 				    }))
 				.setCaption("Delete")
 				.setMaximumWidth(100)
 				.setResizable(false);
 
-				categoriesTable.addColumn(product -> "Edit",
+				brandsTable.addColumn(product -> "Edit",
 				          new ButtonRenderer(clickEvent -> {
 				        	  editData(clickEvent.getItem());
 				        }))
@@ -108,20 +113,24 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 				.setMaximumWidth(100)
 				.setResizable(false);
 				
-				//categoriesTable.setWidth("100%");
-				categoriesTable.removeColumn("categoryId");
+				//brandsTable.setWidth("100%");
+				brandsTable.removeColumn("brandId");
 				
 				return this;
 			    
 		    }
 		 
 		 
-		 public CategoryLayout bind() {
-				binder.forField(categoryName)
-				  .asRequired("CategoryName is required")
-				  .bind("categoryName");
+		 public BrandLayout bind() {
+			    binder.forField(category)
+			      .asRequired("Category is required")
+			      .bind("category");
+			 
+				binder.forField(brandName)
+				  .asRequired("BrandName is required")
+				  .bind("brandName");
 				
-				binder.readBean(category);
+				binder.readBean(brand);
 				
 				return this;
 			}	
@@ -138,18 +147,19 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 				HorizontalLayout h = new HorizontalLayout(saveButton,editButton);
 				h.setWidth("100%");
 
-				GridLayout g1 = new GridLayout(3, 3);
+				GridLayout g1 = new GridLayout(3, 4);
 				g1.setSizeUndefined();
 				g1.setSpacing(true);
 
-				g1.addComponent(categoryName,0,0,2,0);
-				g1.addComponent(h,0,1,2,1);
-				g1.addComponent(cancelButton,0,2,2,2);
 				
+				g1.addComponent(brandName,0,0,2,0);
+				g1.addComponent(category,0,1,2,1);
+				g1.addComponent(h,0,2,2,2);
+				g1.addComponent(cancelButton,0,3,2,3);
 				
 				gridLayout.addComponent(g1,1,1);
 				gridLayout.addComponent(addNewButton,0,0);
-				gridLayout.addComponent(categoriesTable,0,1,0,3);
+				gridLayout.addComponent(brandsTable,0,1,0,3);
 				
 				return gridLayout;
 
@@ -175,7 +185,8 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 		 
 		 
 		 private void cancel() {
-			 categoryName.setVisible(false);
+			 category.setVisible(false);
+			 brandName.setVisible(false);
 			 editButton.setVisible(false);
 			 saveButton.setVisible(false);
 			 cancelButton.setVisible(false);
@@ -186,23 +197,25 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 		private void edit() {
 			
 			 try {
-					binder.writeBean(category);
+					binder.writeBean(brand);
 				} catch (ValidationException e) {
-					Notification.show("ERROR","Category is not editted",Type.ERROR_MESSAGE);
+					Notification.show("ERROR","Brand is not editted",Type.ERROR_MESSAGE);
 					return;
 				}
-			 
-				modifycategoryservice.modifyCategory(category);
+			    
+				modifyBrandService.modifyBrand(brand);
+				//modifyProductService.updateCategoryFromSubcategory(subcategory.getCategory().getCategoryId(), subcategory.getSubcategoryId());
 				refreshTable();
 				cancel();
-				Notification.show("EDIT","Category is editted",Type.WARNING_MESSAGE);
+				Notification.show("EDIT","Brand is editted",Type.WARNING_MESSAGE);
 				
 		}
 
 
 		private void addNew() {
 			 clearField();
-			 categoryName.setVisible(true);
+			 category.setVisible(true);
+			 brandName.setVisible(true);
 			 saveButton.setVisible(true);
 			 cancelButton.setVisible(true);
 			 editButton.setVisible(false);
@@ -210,26 +223,42 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 
 
 		private void save() {
-				try {
-					binder.writeBean(category);
-				} catch (ValidationException e) {
-					Notification.show("ERROR","Category is not saved",Type.ERROR_MESSAGE);
+			
+			if(!isSaveOperationValid()) {
+				Notification.show("ERROR","Must have at least one category",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			try {
+					binder.writeBean(brand);
+			} catch (ValidationException e) {
+					Notification.show("ERROR","Brand is not saved",Type.ERROR_MESSAGE);
 					return;
-				}				
-				addcategoryservice.saveCategory(category);
+			}
+			      
+				addBrandService.saveBrand(brand);
 				refreshTable();
 				cancel();
-				Notification.show("SAVE","Category is saved",Type.WARNING_MESSAGE);
+				Notification.show("SAVE","Brand is saved",Type.WARNING_MESSAGE);
 			}
 		
 		 
 		 private void clearField() {
-				categoryName.setValue("");
+				brandName.setValue("");
+		        category.setValue(null); 
 		 }
 
-
-		public CategoryLayout load() {
-			categories = showAllcategoriesService.getAllCategories();    			
+		 
+		private boolean isSaveOperationValid() {
+			return showAllcategoriesService.getAllCategories().size() !=0;
+		}
+			
+			
+		public BrandLayout load() {
+			brands = showAllBrandsService.getAllBrands();    	
+			brandsTable.setItems(brands);
+			List<Category> categories = showAllcategoriesService.getAllCategories();
+			category.setItems(categories);
 			return this;
 		}
 		 
@@ -240,37 +269,46 @@ public class CategoryLayoutFactory implements UIComponentBuilder {
 
 
 	public void refreshTable() {
-		categories = showAllcategoriesService.getAllCategories();
-        categoriesTable.setItems(categories);
+		brands = showAllBrandsService.getAllBrands(); 
+		brandsTable.setItems(brands);
 		
 	}
 	
 	public void editData(Object item) {
-		this.category = (Category) item;
-		categoryName.setValue(category.getCategoryName());
-		categoryName.setVisible(true);
+		this.brand = (Brand) item;
+		//Set the values from the edit!!
+		brandName.setValue(brand.getBrandName());
+		category.setValue(brand.getCategory());
+		//Change visibility
+		brandName.setVisible(true);
+		category.setVisible(false);
 		editButton.setVisible(true);
 		cancelButton.setVisible(true);
 		saveButton.setVisible(false);
 	}
 	
 	@Autowired
-    private AddCategoryService addcategoryservice;
+	private ModifyProductService modifyProductService;
 	
 	@Autowired
     private ShowAllCategoriesService showAllcategoriesService;
 	
 	@Autowired
-	private RemoveCategoryService removecategoryservice;
+    private AddBrandService addBrandService;
 	
 	@Autowired
-	private ModifyCategoryService modifycategoryservice;
+    private ShowAllBrandsService showAllBrandsService;
+	
+	@Autowired
+	private RemoveBrandService removeBrandService;
+	
+	@Autowired
+	private ModifyBrandService modifyBrandService;
 	
 	
 	@Override
 	public Component createComponent() {
-		return new CategoryLayout().load().init().bind().layout();
+		return new BrandLayout().init().load().bind().layout();
 	}
-	
 	
 }

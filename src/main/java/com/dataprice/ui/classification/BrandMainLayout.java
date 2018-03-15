@@ -1,36 +1,32 @@
 package com.dataprice.ui.classification;
 
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
+
 @SpringView
-public class GenderMainLayout extends VerticalLayout implements View {
+public class BrandMainLayout extends VerticalLayout implements View{
 
 	@Autowired
-	private GenderLayoutFactory genderLayoutFactory;
+	private BrandLayoutFactory brandLayoutFactory;
 	
-
-
 	private void addLayout() {
 		setMargin(true);
 
-		Component genderTab = genderLayoutFactory.createComponent();
-		addComponent(genderTab);
+		Component brandTab = brandLayoutFactory.createComponent();
+		
+		addComponent(brandTab);
 	}
 	
 	@PostConstruct
 	void init() {
 			removeAllComponents();
-			//this.setHeight("100%");
 			addLayout();
 	}
 
@@ -38,4 +34,5 @@ public class GenderMainLayout extends VerticalLayout implements View {
 	public void enter(ViewChangeListener.ViewChangeEvent event) {
 		// This view is constructed in the init() method()
 	}
+	
 }

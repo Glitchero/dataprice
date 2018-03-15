@@ -32,6 +32,8 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import net.bytebuddy.asm.Advice.This;
 
+import static com.dataprice.ui.EasyLayout.*;
+
 @org.springframework.stereotype.Component
 public class GenderLayoutFactory implements UIComponentBuilder {
 	
@@ -137,7 +139,8 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				.setMaximumWidth(100)
 				.setResizable(false);
 				
-				
+				//gendersTable.setHeight("100%");
+				gendersTable.removeColumn("genderId");
 				return this;
 			    
 		    }
@@ -157,7 +160,7 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 		 public Component layout() {		
 		    	setMargin(true);
                 
-		    		    	
+		    
 		    	GridLayout gridLayout = new GridLayout(2, 4);
 		    	gridLayout.setSizeUndefined();
 				gridLayout.setSpacing(true);
@@ -177,9 +180,10 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				gridLayout.addComponent(g1,1,1);
 				gridLayout.addComponent(addNewButton,0,0);
 				gridLayout.addComponent(gendersTable,0,1,0,3);
-				
+				gridLayout.setHeight("100%");
 				return gridLayout;
-
+               
+		    	
 		    }
 
 		 

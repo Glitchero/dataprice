@@ -11,13 +11,20 @@ import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.UIComponentBuilder;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.renderers.ImageRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 @org.springframework.stereotype.Component
 public class ShowAllProductsLayoutFactory {
@@ -26,11 +33,15 @@ public class ShowAllProductsLayoutFactory {
 	
 	private Grid<Product> productsTable;
 	
+	private TextField search;
+	
+	private Button searchButton;
+	
 	@Autowired
 	private ShowAllProductsService showAllProductsService;
 	
 	
-	private class ShowAllProductsLayout extends VerticalLayout {
+	private class ShowAllProductsLayout extends VerticalLayout implements Button.ClickListener {
 
 		ProductEditListener productEditListener;
 		
@@ -42,8 +53,18 @@ public class ShowAllProductsLayoutFactory {
 		public ShowAllProductsLayout init() {
 			
 			setMargin(true);
+			
+			search = new TextField("Search");			
+			search.setWidth("100%");
+		   	
+			searchButton = new Button("Search");
+			searchButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			searchButton.addClickListener(this);		
+			searchButton.setWidth("30%");
+			
 			productsTable = new Grid<>(Product.class);
 			productsTable.setWidth("100%");
+			productsTable.setHeight("100%");
 			
 			productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl","pid","gender","category","subcategory");
 			
@@ -51,8 +72,8 @@ public class ShowAllProductsLayoutFactory {
 			
 			productsTable.addComponentColumn(probe -> {
 			    Image image = new Image("", new ExternalResource(probe.getImageUrl()));
-			    image.setWidth(80,Unit.PIXELS);
-			    image.setHeight(80,Unit.PIXELS);
+			    image.setWidth(100,Unit.PIXELS);
+			    image.setHeight(100,Unit.PIXELS);
 
 			    return image;
 			}).setCaption("Structureee");
@@ -82,8 +103,23 @@ public class ShowAllProductsLayoutFactory {
 		}
 		
 		public ShowAllProductsLayout layout() {
-			addComponent(productsTable); //Add component to the verticalLayout, That's why we extend the class.
+			HorizontalLayout hl = new HorizontalLayout(search,searchButton);
+			hl.addComponent(search);
+			hl.addComponent(searchButton); //Add component to the verticalLayout, That's why we extend the class.
+			//hl.setComponentAlignment(search, Alignment.MIDDLE_CENTER);
+			hl.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
+			hl.setSpacing(true);
+			hl.setWidth("70%");
+			addComponent(hl);
+			addComponent(productsTable);
 			return this;
+		}
+
+
+		@Override
+		public void buttonClick(ClickEvent event) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 		
@@ -101,5 +137,9 @@ public class ShowAllProductsLayoutFactory {
 		products = showAllProductsService.getAllProducts();
 		productsTable.setItems(products);
 	}
+
+
+
+	
 
 }
