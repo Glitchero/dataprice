@@ -93,6 +93,7 @@ public class ShowAllProductsLayoutFactory {
 		    
 			
 			productsTable.setBodyRowHeight(100);
+			productsTable.setHeight("500px");
 			return this;
 		}
 		

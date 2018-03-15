@@ -139,7 +139,8 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				.setMaximumWidth(100)
 				.setResizable(false);
 				
-				//gendersTable.setHeight("100%");
+				//This is working, only for increasing the high of the table.
+				//gendersTable.setHeight("650px");
 				gendersTable.removeColumn("genderId");
 				return this;
 			    
@@ -182,8 +183,7 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				gridLayout.addComponent(gendersTable,0,1,0,3);
 				gridLayout.setHeight("100%");
 				return gridLayout;
-               
-		    	
+           
 		    }
 
 		 

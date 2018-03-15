@@ -13,16 +13,23 @@ import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.reports.ReportsLayoutFactory;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
+
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.dataprice.ui.classification.BrandMainLayout;
 import com.dataprice.ui.classification.CategoryMainLayout;
 import com.dataprice.ui.classification.ClassificationLayoutFactory;
 import com.dataprice.ui.classification.GenderMainLayout;
 import com.dataprice.ui.classification.SubcategoryMainLayout;
+import com.dataprice.ui.login.LoginUI;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
 import com.dataprice.ui.view.GroupPage;
@@ -54,14 +61,16 @@ import kaesdingeling.hybridmenu.data.top.TopMenuButton;
 import kaesdingeling.hybridmenu.data.top.TopMenuLabel;
 import kaesdingeling.hybridmenu.data.top.TopMenuSubContent;
 
-@Push
-@SpringUI
+@SpringUI(path=VaadinHybridMenuUI.NAME)
 @Theme("mytheme")
 @Viewport("width=device-width,initial-scale=1.0,user-scalable=no")
 @Title("HybridMenu Spring Boot Test")
 @SuppressWarnings("serial")
+@org.springframework.stereotype.Component
 public class VaadinHybridMenuUI extends UI {
 
+	public static final String NAME = "/ui";
+	
 	private final SpringViewProvider viewProvider;
 	private final NavigationManager navigationManager;
 
@@ -143,8 +152,15 @@ public class VaadinHybridMenuUI extends UI {
 		userAccountMenu.addHr();
 		userAccountMenu.addButton("Ayuda");
 		userAccountMenu.addHr();
-		userAccountMenu.addButton("Cerrar Sesión");
-
+		userAccountMenu.addButton("Cerrar Sesión").addClickListener(new ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				//SecurityContext context = SecurityContextHolder.getContext();
+		        //context.setAuthentication(null);
+				SecurityContextHolder.clearContext();
+				UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/login");
+			}
+		});
+		
 		/**
 		TopMenuButtonBuilder.get()
 				.setCaption("Home")
@@ -371,13 +387,7 @@ public class VaadinHybridMenuUI extends UI {
 		hybridMenu.addLeftMenuButton(reportsButton);
 		
 		
-		MenuButton logoutButton = LeftMenuButtonBuilder.get()
-				.withCaption("Logout")
-				.withIcon(VaadinIcons.COGS)
-				.withNavigateTo(HomePage.class)
-				.build();
 
-		hybridMenu.addLeftMenuButton(logoutButton);
 		
 		
 		

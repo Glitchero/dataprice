@@ -7,8 +7,12 @@ import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+@Configuration
+@EnableWebSecurity
 @ComponentScan({"com.dataprice"})
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class )
 @EnableJpaRepositories({"com.dataprice"})
