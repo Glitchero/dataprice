@@ -1,7 +1,9 @@
 package com.dataprice.model.crawlers;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,20 +17,20 @@ import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
 import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
-import com.dataprice.model.entity.ProductKey;
 import com.dataprice.model.entity.Task;
 
 @Component
-public class Chedraui extends AbstractCrawler{
+public class Walmart extends AbstractCrawler{
 	
 	
 	private WebDriver driver = null;
 	private List<String> LinksList;
+	private Set<String> LinksSet;
 	private Task taskDAO;
 
 	@Override
 	public String getCrawlingStrategy() {
-		return "Chedraui";
+		return "Walmart";
 	}
 
 	@Override
@@ -37,6 +39,7 @@ public class Chedraui extends AbstractCrawler{
 		this.driver.get(seed);
 		System.out.println("Inicializando Phantom");
 		this.LinksList = new LinkedList<String>();
+		this.LinksSet = new HashSet<String>();
 		Thread.sleep(1000);
 		return true;
 		
@@ -45,12 +48,21 @@ public class Chedraui extends AbstractCrawler{
 	@Override
 	public void navigatePages() throws InterruptedException {
         
-		getProductsUrl();
+		for (WebElement we : driver.findElements(By.xpath("//*[@id='atg_store_pagination']/li/a"))) {	   
+		    if (we.getAttribute("href")!=null){
+				this.LinksSet.add(we.getAttribute("href"));
+			}
+        }
 		
-		while (driver.findElements(By.cssSelector("a.glyphicon.glyphicon-chevron-right")).size()>0){
-		    driver.findElement(By.cssSelector("a.glyphicon.glyphicon-chevron-right")).click();
+		if (this.LinksSet.size() == 0){   //In case we don't have pagination.
+			getProductsUrl();
+		}
+		
+		//Navigate all web pages 
+		for (String taskLink : this.LinksSet) {
+			driver.get(taskLink);
 			
-		    Thread.sleep(Configuration.DRIVERDELAY);
+			Thread.sleep(Configuration.DRIVERDELAY);
 			
 			getProductsUrl();
 		}
@@ -60,8 +72,8 @@ public class Chedraui extends AbstractCrawler{
 
 	@Override
 	public void getProductsUrl() {
-		for (WebElement we : driver.findElements(By.xpath("//*[@id='plp_display']/li/a"))) {	   
-		    this.LinksList.add(we.getAttribute("href"));
+		for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'container-listing_')]/div[1]/div[2]/div[1]/a"))) {	   
+			this.LinksList.add(we.getAttribute("href"));
         }
 	}
 
@@ -79,17 +91,17 @@ public class Chedraui extends AbstractCrawler{
 	    	
 			String urlContent = urlResponse.getContent(); 
 			
-			String id = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_ID);
+			String id = ContentParser.parseContent(urlContent, Regex.WALMART_ID);
 			if (id==null)
 				return null;
 			
-			String name = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_NAME);
+			String name = ContentParser.parseContent(urlContent, Regex.WALMART_NAME);
 			if (name==null)
 				return null;
 			name = name.trim();
 			
 	 		 
-			String price = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_PRICE); 
+			String price = ContentParser.parseContent(urlContent, Regex.WALMART_PRICE); 
 			if (price == null) {  
 				return null;
 			}
@@ -99,13 +111,12 @@ public class Chedraui extends AbstractCrawler{
 			price = price.replaceAll("[^\\d.]", "");
 			price = price.trim();
 			
-			String imageUrl = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_IMAGEURL);
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.WALMART_IMAGEURL);
 			if (imageUrl == null) {  
 				return null;
 			}
-				
-			imageUrl = "https://www.chedraui.com.mx" + imageUrl;
-			
+			imageUrl = imageUrl.trim();
+			imageUrl = "https://super.walmart.com.mx" + imageUrl;
 				
 			return new Product(id,getCrawlingStrategy(),taskDAO,name,Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {

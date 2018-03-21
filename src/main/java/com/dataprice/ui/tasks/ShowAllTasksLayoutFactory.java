@@ -240,8 +240,10 @@ public class ShowAllTasksLayoutFactory{
 	                      	    long totalTime = endTime - startTime;
 	                     		setTodayDateAndExecutionTime(task,totalTime);
 	                     		
-	          	              	taskFinishedListener.taskFinished();
+	          	                
+	          	              	//taskFinishedListener.taskFinished();
 	          	              	
+	          	                
 	                  	    }else {
 	                  	    	setTaskStatus(task,"Error fatál en descarga" );
 	                  	    	setTaskProgress(task,0.0);

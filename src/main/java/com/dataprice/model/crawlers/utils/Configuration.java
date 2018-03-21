@@ -25,8 +25,8 @@ public class Configuration {
 	 */
 	
 	public final static int MAXLOADPAGEDELAY = 30; //30 seconds (minimum), units = seconds
-	public final static int DRIVERDELAY = 5000; //5 seconds , units = milliseconds
-	public final static int POLITENESSDELAY = 500; // 1 second for politeness within the same host!.
+	public final static int DRIVERDELAY = 4000; //5 seconds , units = milliseconds
+	public final static int POLITENESSDELAY = 1000; // 1 second for politeness within the same host!.
 	public final static int LIMIT_NUMBER_OF_URLS_PER_TASK = 5000;
 	public final static boolean USER_AGENT_ROTATION = false;
 	public final static String DRIVER = "PhantomJS"; //Default_driver

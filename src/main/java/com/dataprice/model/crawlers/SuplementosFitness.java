@@ -52,7 +52,7 @@ public class SuplementosFitness extends AbstractCrawler{
 			   driver.findElement(By.cssSelector("a.next.page-number")).click();
 			
 			   Thread.sleep(Configuration.DRIVERDELAY);
-		       System.out.println("click");    
+		      
 			   getProductsUrl();
 		}
 						
