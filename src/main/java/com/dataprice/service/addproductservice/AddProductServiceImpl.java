@@ -20,7 +20,7 @@ public class AddProductServiceImpl implements AddProductService {
 		
 		if (productRepository.exists(pk)) {
 			Product rp = productRepository.findOne(pk);
-			rp.setPrecio(0.0);
+			//rp.setPrecio(0.0); This was only for checking that it was working
 			productRepository.save(rp);
 		}else {
 			
@@ -31,6 +31,7 @@ public class AddProductServiceImpl implements AddProductService {
 			product.setPrecio(productDAO.getPrecio());
 			product.setProductUrl(productDAO.getProductUrl());
 			product.setImageUrl(productDAO.getImageUrl());
+			product.setTask(productDAO.getTask());
 			productRepository.save(product);	
 			
 		}	

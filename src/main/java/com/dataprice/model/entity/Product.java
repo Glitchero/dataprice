@@ -64,18 +64,25 @@ public class Product {
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "task_id")
+	private Task task;
+	
+
+
 	public Product() {
 		
 	}
 	
 	
-	public Product(String productId,String retail,String name, Double precio, String imageUrl, String productUrl) {
+	public Product(String productId,String retail,Task task,String name, Double precio, String imageUrl, String productUrl) {
 		this.productId = productId;
 		this.retail = retail;
 		this.name = name;
 		this.precio = precio;
 		this.imageUrl = imageUrl;
 		this.productUrl = productUrl;
+		this.task = task;
 	}
 	
 	/**
@@ -177,6 +184,16 @@ public class Product {
 
 	public void setBrand(Brand brand) {
 		this.brand = brand;
+	}
+	
+	
+	public Task getTask() {
+		return task;
+	}
+
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 	
 	@Override

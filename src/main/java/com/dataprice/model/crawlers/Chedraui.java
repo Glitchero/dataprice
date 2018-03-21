@@ -19,54 +19,58 @@ import com.dataprice.model.entity.ProductKey;
 import com.dataprice.model.entity.Task;
 
 @Component
-public class SuplementosFitness extends AbstractCrawler{
+public class Chedraui extends AbstractCrawler{
 	
 	
-	private WebDriver driver = null;
+	private WebDriver driver;
+	private List<Product> ProdList;
 	private List<String> LinksList;
 	private Task taskDAO;
 
-
 	@Override
 	public String getCrawlingStrategy() {
-		return "SuplementosFitness";
+		return "Chedraui";
 	}
 
 	@Override
-	public boolean init(String seed) throws InterruptedException{
+	public boolean init(String seed) {
 		this.driver = PhantomFactory.getInstance().getDriver();
 		this.driver.get(seed);
 		System.out.println("Inicializando Phantom");
-	    LinksList = new LinkedList<String>();
-	    Thread.sleep(1000);
-	    return true;
+		this.LinksList = new LinkedList<String>();
+		ProdList = new LinkedList<Product>();
+		return true;
+		
 	}
 
 	@Override
-	public void navigatePages() throws InterruptedException {
-		
+	public void navigatePages() {
+        
 		getProductsUrl();
 		
-		while (driver.findElements(By.cssSelector("a.next.page-number")).size()>0){
-			  
-			   driver.findElement(By.cssSelector("a.next.page-number")).click();
-			
-			   Thread.sleep(Configuration.DRIVERDELAY);
-		       System.out.println("click");    
-			   getProductsUrl();
+		while (driver.findElements(By.cssSelector("a.glyphicon.glyphicon-chevron-right")).size()>0){
+		    driver.findElement(By.cssSelector("a.glyphicon.glyphicon-chevron-right")).click();
+			try {
+				Thread.sleep(4*1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			getProductsUrl();
 		}
-						
+		
+				
+		PhantomFactory.getInstance().removeDriver();		
+		
 		
 		
 	}
 
 	@Override
 	public void getProductsUrl() {
-		for (WebElement we : driver.findElements(By.xpath("//*[@id='main']/div/div[1]/div/div[1]/div/div/div[2]/div[1]/div[1]/a"))) {	   
-			   // System.out.println(we.getAttribute("href"));
-			    this.LinksList.add(we.getAttribute("href"));
-	        }
-		
+		for (WebElement we : driver.findElements(By.xpath("//*[@id='plp_display']/li/a"))) {	   
+		    this.LinksList.add(we.getAttribute("href"));
+        }
 	}
 
 	@Override
@@ -83,27 +87,34 @@ public class SuplementosFitness extends AbstractCrawler{
 	    	
 			String urlContent = urlResponse.getContent(); 
 			
-			String id = ContentParser.parseContent(urlContent, Regex.SUPLEMENTOSFITNESS_ID);
+			String id = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_ID);
 			if (id==null)
 				return null;
 			
-			String name = ContentParser.parseContent(urlContent, Regex.SUPLEMENTOSFITNESS_NAME);
+			String name = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_NAME);
 			if (name==null)
 				return null;
 			name = name.trim();
 			
 	 		 
-			String price = ContentParser.parseContent(urlContent, Regex.SUPLEMENTOSFITNESS_PRICE); 
+			String price = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_PRICE); 
 			if (price == null) {  
 				return null;
 			}
 
-			String imageUrl = ContentParser.parseContent(urlContent, Regex.SUPLEMENTOSFITNESS_IMAGEURL);
+			price = price.replace(",", "");
+			price = price.replace("$", "");
+			price = price.replaceAll("[^\\d.]", "");
+			price = price.trim();
+			
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_IMAGEURL);
 			if (imageUrl == null) {  
 				return null;
 			}
-					
+				
+			imageUrl = "https://www.chedraui.com.mx" + imageUrl;
 			
+				
 			return new Product(id,getCrawlingStrategy(),taskDAO,name,Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {
 			return null;
@@ -116,23 +127,16 @@ public class SuplementosFitness extends AbstractCrawler{
 			this.taskDAO = taskDAO;
 			init(taskDAO.getSeed());
 			navigatePages();
-			destroy();
 			return LinksList;
-		} catch (InterruptedException ie) {
-			if (this.driver!=null) {
-				PhantomFactory.getInstance().removeDriver();
-			}
-			return null;
 		} catch (Exception e) {
 			return new LinkedList<String>();
 		}
 	}
 
 	@Override
-	public void destroy() throws InterruptedException{
-		PhantomFactory.getInstance().removeDriver();		
-		this.driver = null;  //Garbage collector
-		Thread.sleep(1000);
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

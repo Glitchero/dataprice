@@ -1,6 +1,6 @@
 package com.dataprice.ui;
 
-import com.vaadin.annotations.Push;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Viewport;
@@ -21,7 +21,6 @@ import com.dataprice.ui.reports.ReportsLayoutFactory;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
 
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dataprice.ui.classification.BrandMainLayout;
@@ -61,6 +60,26 @@ import kaesdingeling.hybridmenu.data.top.TopMenuButton;
 import kaesdingeling.hybridmenu.data.top.TopMenuLabel;
 import kaesdingeling.hybridmenu.data.top.TopMenuSubContent;
 
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import javax.servlet.annotation.WebServlet;
+
+import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
+import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+@PreserveOnRefresh
 @SpringUI(path=VaadinHybridMenuUI.NAME)
 @Theme("mytheme")
 @Viewport("width=device-width,initial-scale=1.0,user-scalable=no")
@@ -70,6 +89,8 @@ import kaesdingeling.hybridmenu.data.top.TopMenuSubContent;
 public class VaadinHybridMenuUI extends UI {
 
 	public static final String NAME = "/ui";
+	
+	private Future<?> job = null;
 	
 	private final SpringViewProvider viewProvider;
 	private final NavigationManager navigationManager;
@@ -111,6 +132,9 @@ public class VaadinHybridMenuUI extends UI {
 		navigationManager.init(this, hybridMenu.getContent());
 
 		navigationManager.navigateToDefaultView();
+		
+		
+	
 	}
 
 	private void buildTopMenu(HybridMenu hybridMenu) {
@@ -150,7 +174,11 @@ public class VaadinHybridMenuUI extends UI {
 
 		userAccountMenu.addLabel("Account");
 		userAccountMenu.addHr();
-		userAccountMenu.addButton("Ayuda");
+		userAccountMenu.addButton("Ayuda").addClickListener(new ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				//startTasksExecution();
+			}
+		});
 		userAccountMenu.addHr();
 		userAccountMenu.addButton("Cerrar Sesión").addClickListener(new ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -385,15 +413,109 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(reportsButton);
-		
-		
 
-		
-		
-		
 	}
 
 	public HybridMenu getHybridMenu() {
 		return hybridMenu;
 	}
+	
+	/**
+	 * Tasks Execution Section
+	 *
+	 */
+	
+	/*
+	 * Hard Coded way to solve task execution from a button!
+	 */
+	public void startTasksExecution(Runnable run) {
+		
+	   if (job==null) {		   
+		   job = ThreadPoolInit.executorService.submit(run);	
+		     NotificationBuilder.get(this.notificationCenter)
+				.withCaption("Test")
+				.withDescription("Tasks have been submitted")
+				.withPriority(ENotificationPriority.MEDIUM)
+				.withIcon(VaadinIcons.INFO)
+				.withCloseButton()
+				.build();
+	   }
+	   if (job.isDone()) {
+		   job = ThreadPoolInit.executorService.submit(run);
+		     NotificationBuilder.get(this.notificationCenter)
+				.withCaption("Test")
+				.withDescription("Tasks have been submitted")
+				.withPriority(ENotificationPriority.MEDIUM)
+				.withIcon(VaadinIcons.INFO)
+				.withCloseButton()
+				.build();
+	   }
+	 
+	}
+	
+	public void finishTasksExecution(){
+				NotificationBuilder.get(this.notificationCenter)
+				.withCaption("Test")
+				.withDescription("Tasks completed")
+				.withPriority(ENotificationPriority.HIGH)
+				.withIcon(VaadinIcons.INFO)
+				.withCloseButton()
+				.build();	
+	}
+	
+	
+	public void stopTasksExecution(){
+		if (job!=null) {
+		
+			if (!job.isDone()) {
+				job.cancel(true);
+				NotificationBuilder.get(this.notificationCenter)
+				.withCaption("Test")
+				.withDescription("Tasks stopped")
+				.withPriority(ENotificationPriority.HIGH)
+				.withIcon(VaadinIcons.INFO)
+				.withCloseButton()
+				.build();	
+			}
+		}
+
+    }
+	
+
+	public boolean isTaskSetRunning(){
+		if (job!=null) {
+		
+			if (!job.isDone()) {
+				return true;
+			}
+		}
+		
+		return false;
+
+    }
+
+
+	//@WebServlet(urlPatterns = "/*")
+    //@VaadinServletConfiguration(ui = VaadinHybridMenuUI.class, productionMode = false)
+    //public static class Servlet extends VaadinServlet {
+    //}
+
+    @WebListener
+    public static class ThreadPoolInit implements ServletContextListener {
+
+        static ExecutorService executorService;
+
+        @Override
+        public void contextInitialized(ServletContextEvent sce) {
+        	System.out.println("Empezando executor");
+            executorService = Executors.newSingleThreadExecutor();
+        }
+
+        @Override
+        public void contextDestroyed(ServletContextEvent sce) {
+        	executorService.shutdown();
+        }
+    }
+    
+    
 }

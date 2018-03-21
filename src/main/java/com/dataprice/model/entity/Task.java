@@ -1,10 +1,18 @@
 package com.dataprice.model.entity;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="TASK")
@@ -25,13 +33,27 @@ public class Task {
       private String seed;
 	  
 	  @Column(name = "status")
-      private String status = "pendiente";
+      private String status = "Pendiente a descarga";
+	  
+	  @Column(name = "progress")
+      private Double progress = 0.0;
       
+	  @Temporal(TemporalType.TIMESTAMP)
+	  @Column(name = "run_datetime")
+	  private Date runDateTime = null;
+	  
+	  @OneToMany(mappedBy="task",cascade=CascadeType.ALL)
+		private List<Product> products;
+	  
+	  
       public Task() {
-    	  
+    	  this.products = new ArrayList<>();
       }
 
-
+  //    public Task(String categoryName) {
+  //		this();
+  //		this.categoryName = categoryName;
+  //	}
    
 	public Integer getTaskId() {
 		return taskId;
@@ -91,7 +113,21 @@ public class Task {
 		this.status = status;
 	}
 
+	public Double getProgress() {
+			return progress;
+	}
 
+	public void setProgress(Double progress) {
+			this.progress = progress;
+	}
+
+	public Date getRunDateTime() {
+		return runDateTime;
+	}
+
+	public void setRunDateTime(Date runDateTime) {
+		this.runDateTime = runDateTime;
+	}
 
 	@Override
 	public String toString() {

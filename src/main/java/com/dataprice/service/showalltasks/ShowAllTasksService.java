@@ -8,4 +8,5 @@ public interface ShowAllTasksService {
 
 	public List<Task> getAllTasks();
 
+	public List<Task> getAllPendingTasks(String status);
 }

@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.products.ShowAllProductsLayoutFactory;
 import com.dataprice.utils.StudentsStringUtils;
 import com.vaadin.navigator.View;
@@ -16,7 +17,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringView
-public class TaskLayoutFactory extends VerticalLayout implements View, TaskSavedListener,TaskFinishedListener {
+public class TaskLayoutFactory extends VerticalLayout implements View, TaskSavedListener,TaskFinishedListener,TaskSetFinishedListener {
 
 	@Autowired
 	private AddTaskMainLayoutFactory mainLayoutFactory;
@@ -27,6 +28,8 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 	@Autowired
 	private ShowAllProductsLayoutFactory showAllProductsLayoutFactory;
 	
+	@Autowired
+	private VaadinHybridMenuUI vaadinHybridMenuUI;
 	
 	private TabSheet tabSheet;
 	
@@ -35,7 +38,7 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 		tabSheet = new TabSheet();
 		tabSheet.setWidth("100%");
 		Component addStudentMainTab = mainLayoutFactory.createComponent(this);
-		Component showStudentsTab = showTasksLayoutFactory.createComponent(this);
+		Component showStudentsTab = showTasksLayoutFactory.createComponent(this,this);
 	 //	tabSheet.addTab(addStudentMainTab,StudentsStringUtils.MAIN_MENU.getString());
 	//	tabSheet.addTab(showStudentsTab,StudentsStringUtils.SHOW_ALL_STUDENTS.getString());
 		
@@ -66,8 +69,13 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 
 	@Override
 	public void taskFinished() {
-		showAllProductsLayoutFactory.refresh();
-		
+		showAllProductsLayoutFactory.refresh();	
+	}
+
+
+	@Override
+	public void taskSetFinished() {
+		vaadinHybridMenuUI.finishTasksExecution();	
 	}
 	
 }

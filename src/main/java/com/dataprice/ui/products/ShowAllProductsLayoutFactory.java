@@ -66,7 +66,8 @@ public class ShowAllProductsLayoutFactory {
 			productsTable.setWidth("100%");
 			productsTable.setHeight("100%");
 			
-			productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl","pid","gender","category","subcategory");
+			productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
+			productsTable.removeColumn("task");
 			
 			productsTable.setItems(products);
 			

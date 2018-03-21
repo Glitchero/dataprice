@@ -7,10 +7,14 @@ import com.dataprice.model.entity.Task;
 
 public interface Crawler {
 
-	 public List<Product> getProductsFromTask(Task taskDAO);
+	//public List<Product> getProductsFromTask(Task taskDAO);
 	 
-	 //public boolean executeTask(Task taskDAO);
+	//public boolean executeTask(Task taskDAO);
 	
-	 public  String getCrawlingStrategy();
+	public List<String> getUrlsFromTask(Task taskDAO);
+	
+	public Product parseProductFromURL(String url);
+	
+	public String getCrawlingStrategy();
 	 
 }

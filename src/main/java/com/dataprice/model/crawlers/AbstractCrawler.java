@@ -24,13 +24,13 @@ public abstract class AbstractCrawler implements Crawler {
 	}
 	
 	
-	public abstract boolean initialization(String seed);
+	public abstract boolean init(String seed) throws InterruptedException;
 	
-	public abstract void navigatePages();
+	public abstract void navigatePages() throws InterruptedException;
 	
-	public abstract void getProductsUrl();
+	public abstract void getProductsUrl();	
 	
-	public abstract Product parseProductFromURL(String urlStr);
+	public abstract void destroy() throws InterruptedException;	
 	
 	@Override
 	public String toString()
