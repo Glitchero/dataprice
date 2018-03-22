@@ -1,6 +1,7 @@
 package com.dataprice.model.crawlers.utils;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -46,6 +47,11 @@ public class PhantomFactory
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
+
+  		
+  	    phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
+  	  		
+ 
   		
   		return phantomDriver;   
       }

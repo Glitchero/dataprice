@@ -7,9 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 import com.dataprice.service.addproductservice.AddProductService;
@@ -20,6 +23,9 @@ import com.dataprice.service.removeproduct.RemoveProductService;
 import com.dataprice.service.removetask.RemoveTaskService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
+import com.dataprice.ui.tasks.TaskExecuteOrder.OriginalIterator;
+import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
 import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.utils.NotificationsMessages;
 import com.vaadin.annotations.Push;
@@ -165,7 +171,7 @@ public class ShowAllTasksLayoutFactory{
 		private void runTasks() {
 			
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
-				vaadinHybridMenuUI.startTasksExecution(new TaskRunner());
+				vaadinHybridMenuUI.startTasksExecution(new TasksExecutor());
 			}else {
 				Notification.show("CUIDADO","Los tasks se están ejecutando", Type.ERROR_MESSAGE);
 			}
@@ -211,60 +217,70 @@ public class ShowAllTasksLayoutFactory{
 		}
 		
 		
-	    private class TaskRunner implements Runnable {
+	    private class TasksExecutor implements Runnable {
 
 	        @Override
 	        public void run() {
-	        	List<Task> tasks = null;                   	
+	        	List<Task> tasks = null;    
+	        	ExecutorService executor = null;
 	        	try {
+	        		long startTime   = System.currentTimeMillis();
 	                System.out.println("....run()::Extraction::starting");
 	
 	                tasks = showAllTasksService.getAllTasks();  
 	                initialization(tasks);
 	                
-	                //Should be multithreaded
-	                for(Task task : tasks) {
-	                	
-	                	long startTime = System.currentTimeMillis();
-	                	
-	                    List<String> productsUrl = crawling(task);
-	                    	                    
-	                    if (productsUrl.size()!=0) {
-	                    
-	                    	int downloadedProducts = scraping(task,productsUrl);
-	                    	
-	                    	if (downloadedProducts!=0) {
-	                    		setTaskStatus(task,"Productos descargados: " + downloadedProducts);  
-	                    		
-	                      	    long endTime   = System.currentTimeMillis();
-	                      	    long totalTime = endTime - startTime;
-	                     		setTodayDateAndExecutionTime(task,totalTime);
-	                     		
-	          	                
-	          	              	//taskFinishedListener.taskFinished();
-	          	              	
-	          	                
-	                  	    }else {
-	                  	    	setTaskStatus(task,"Error fatál en descarga" );
-	                  	    	setTaskProgress(task,0.0);
-	                  	   }
-	                   
-	                    }  else {       	   
-	                    	setTaskStatus(task,"Error fatál en escaneo");
-	                    	setTaskProgress(task,0.0);
-		            	}
-	                    	                    
-	                }
-	                taskSetFinishedListener.taskSetFinished();
-	                System.out.println("....run()::Extraction::ended");
-	            } catch (InterruptedException x) {
-	            	//In case of interruption, ended nicely
+	                Task task = null;
 
-	            	//initialization(tasks);
-	  			   
-	                System.out.println("....run()::Extraction::CANCELED::INTERRUPTED");
+	        		executor = Executors.newFixedThreadPool(Configuration.NUMBEROFCORES);		
+	        		TaskExecute taskexecute = null;
+	        		//ITaskIterator taskIterator = new OriginalIterator(tasks);
+	        		ITaskIterator taskIterator = new RandomTaskIterator(tasks);
+	        		
+	                while ((task = taskIterator.getNextTask()) != null){
+	                	   
+	                	System.out.println("Starting task: " + task.toString());
+	         		    taskexecute = new TaskExecute(task);
+	         			executor.execute(taskexecute);
+	         			/**
+	         			if (Thread.currentThread().isInterrupted()) {
+	         			     System.out.println("....run()::Extraction::TasksExecutor::isInterrupted():" + Thread.currentThread().isInterrupted());
+	         			     Thread.sleep(500);
+	         			}
+	         			*/
+	         			   	                    
+	                }
+	                   
+	                executor.shutdown();
+	               
+	        		while (!executor.isTerminated())
+	        		  {
+	        			
+	        			if (Thread.currentThread().isInterrupted()) {
+	         			     System.out.println("....run()::Extraction::TasksExecutor::isInterrupted():" + Thread.currentThread().isInterrupted());
+	         			     Thread.sleep(500);
+	         			}
+	        			//wait for all experiments
+	        		  }
+	        		
+	                taskSetFinishedListener.taskSetFinished();
+	                long endTime   = System.currentTimeMillis();
+               	    long totalTime = endTime - startTime;
+               	    System.out.println("Total time execution: " + totalTime);
+	                System.out.println("....run()::Extraction::ended");
+	                
+	            } catch (InterruptedException x) {	  			   
+	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");
+	                executor.shutdownNow();
 	                return;
-	            }
+	                
+	            } catch (Exception ex) {
+	            	ex.printStackTrace();
+	                System.out.println("....run()::Extraction::ERROR::FATAL");
+	                return;
+	                
+	            }   
+	        	
 	            System.out.println("....run()::Extraction::leaving normally");  
 	        }
 	        
@@ -273,66 +289,121 @@ public class ShowAllTasksLayoutFactory{
 	            	setTaskStatus(task,"Pendiente a descarga");
 	            	setTaskProgress(task,0.0);
 	            	setTodayDateAndExecutionTime(task,(long) 0);	            
-	            }
-                
-            }
-
-			
-			public List<String> crawling(Task task) throws InterruptedException {
-				    
-				    setTaskStatus(task,"Escaneando productos");
-            	    List<String> productsUrl = CrawlTaskServiceImpl.getService(task.getRetail()).getUrlsFromTask(task);
-            	    
-            	    if (productsUrl==null)
-            	    	Thread.currentThread().interrupt();
-            	    
-            	    if (Thread.currentThread().isInterrupted()) {
-            	    	setTaskStatus(task,"Error fatál en escaneo");
-            	    	setTaskProgress(task,0.0);
-                        System.out.println("....run()::Extraction::Crawling::isInterrupted():" + Thread.currentThread().isInterrupted());
-                        Thread.sleep(1000);
-                    } 
-                  
-					return productsUrl;    
-	        }
-			
-			
-			public int scraping(Task task, List<String> productsUrl) throws InterruptedException {
-				int downloadedProducts = 0;
-        		int errorProducts = 0;
-	
-        		setTaskStatus(task,"Descargando productos");
-        		
-        		for (int i = 0; i<productsUrl.size(); i++) {
-        			
-        		   String url = productsUrl.get(i);
-        		 
-        		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(url);
-        		   
-        		   if (p!=null) {
-        			   downloadedProducts++;
-        			   addProductService.saveProduct(p);
-        			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
-        		   }else {
-        			   errorProducts++;
-        			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
-        		   }
-        		   
-                   if (Thread.currentThread().isInterrupted()) {
-                	   setTaskStatus(task,"Error fatál en descarga");
-                	   setTaskProgress(task,0.0);
-                       System.out.println("....run()::Extraction::Scraping::isInterrupted():" + Thread.currentThread().isInterrupted());
-                       Thread.sleep(1000);
-                   } 
-        		   
-        	       }
-
-            
-				return downloadedProducts;
-
+	            } 
             }	
-			
+
 	    }    
+	    
+	    
+	    /**
+	     * Execution of a single task
+	     * @author rene
+	     *
+	     */
+	    
+	    private class TaskExecute implements Runnable  {
+
+	    	private Task task;
+	    	
+			public TaskExecute(Task task) {
+				this.task = task;
+			}
+
+			@Override
+			public void run() {
+				try {
+				 long startTime = System.currentTimeMillis();
+             	
+                 List<String> productsUrl = crawling(task);
+                 	                    
+                 if (productsUrl.size()!=0) {
+                 
+                 	int downloadedProducts = scraping(task,productsUrl);
+                 	
+                 	if (downloadedProducts!=0) {
+                 		setTaskStatus(task,"Productos descargados: " + downloadedProducts);  
+                 		
+                   	    long endTime   = System.currentTimeMillis();
+                   	    long totalTime = endTime - startTime;
+                  		setTodayDateAndExecutionTime(task,totalTime);
+       	              	
+       	                
+               	    }else {
+               	    	setTaskStatus(task,"Error fatál en descarga" );
+               	    	setTaskProgress(task,0.0);
+               	   }
+                
+                 }  else {       	   
+                 	setTaskStatus(task,"Error fatál en escaneo");
+                 	setTaskProgress(task,0.0);
+	            	}
+                 
+                } catch (InterruptedException x) {
+	            	
+	                System.out.println("....run()::Extraction::CANCELED::INTERRUPTED");
+	                return;
+	            }
+				
+			}
+
+			public List<String> crawling(Task task) throws InterruptedException {
+			    
+			    setTaskStatus(task,"Escaneando productos");
+        	    List<String> productsUrl = CrawlTaskServiceImpl.getService(task.getRetail()).getUrlsFromTask(task);
+        	    
+        	    if (productsUrl==null)
+        	    	Thread.currentThread().interrupt();
+        	    
+        	    if (Thread.currentThread().isInterrupted()) {
+        	    	setTaskStatus(task,"Error fatál en escaneo");
+        	    	setTaskProgress(task,0.0);
+                    System.out.println("....run()::Extraction::Crawling::isInterrupted():" + Thread.currentThread().isInterrupted());
+                    Thread.sleep(1000);
+                } 
+              
+				return productsUrl;    
+        }
+		
+		
+		public int scraping(Task task, List<String> productsUrl) throws InterruptedException {
+			 
+			int downloadedProducts = 0;
+    		int errorProducts = 0;
+
+    		setTaskStatus(task,"Descargando productos");
+    		
+    		for (int i = 0; i<productsUrl.size(); i++) {
+    			
+    		   String url = productsUrl.get(i);
+    		 
+    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(url);
+    		   
+    		   if (p!=null) {
+    			   downloadedProducts++;
+    			   addProductService.saveProduct(p);
+    			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
+    		   }else {
+    			   errorProducts++;
+    			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
+    		   }
+    		   
+               if (Thread.currentThread().isInterrupted()) {
+            	   setTaskStatus(task,"Error fatál en descarga");
+            	   setTaskProgress(task,0.0);
+                   System.out.println("....run()::Extraction::Scraping::isInterrupted():" + Thread.currentThread().isInterrupted());
+                   Thread.sleep(1000);
+               } 
+    		   
+    	       }
+
+        
+			return downloadedProducts;
+
+        }	
+	    	
+	}
+	    
+	    
 	    
 	    
 	    private void setTaskStatus(Task task,String status) {

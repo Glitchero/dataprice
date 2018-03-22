@@ -31,7 +31,7 @@ public class CrawlerTester {
 		// 10009090 = 2 h 46 m 49 s
 		// 299643635825
 		Calendar today = Calendar.getInstance();
-		long milliseconds = 0;
+		long milliseconds = 1140784;
 		int seconds = (int) (milliseconds / 1000) % 60 ;
 		int minutes = (int) ((milliseconds / (1000*60)) % 60);
 		int hours   = (int) ((milliseconds / (1000*60*60)) % 24);

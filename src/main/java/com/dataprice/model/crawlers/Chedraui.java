@@ -127,6 +127,10 @@ public class Chedraui extends AbstractCrawler{
 			}
 			return null;
 		} catch (Exception e) {
+			System.out.println("Error en phantom" + e);
+			if (this.driver!=null) {
+				PhantomFactory.getInstance().removeDriver();
+			}
 			return new LinkedList<String>();
 		}
 	}
@@ -134,7 +138,6 @@ public class Chedraui extends AbstractCrawler{
 	@Override
 	public void destroy() throws InterruptedException{
 		PhantomFactory.getInstance().removeDriver();		
-		this.driver = null;  //Garbage collector
 		Thread.sleep(1000);
 	}
 

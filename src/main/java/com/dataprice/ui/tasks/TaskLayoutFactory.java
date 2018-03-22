@@ -76,7 +76,6 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 	@Override
 	public void taskSetFinished() {
 		vaadinHybridMenuUI.finishTasksExecution();	
-		showAllProductsLayoutFactory.refresh();	
 	}
 	
 }

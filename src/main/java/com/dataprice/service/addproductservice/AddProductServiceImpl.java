@@ -2,17 +2,20 @@ package com.dataprice.service.addproductservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.ProductKey;
 import com.dataprice.repository.product.ProductRepository;
 
 @Service
+@Transactional(readOnly=true)
 public class AddProductServiceImpl implements AddProductService {
 
 	@Autowired
 	private ProductRepository productRepository;
 
+	@Transactional
 	@Override
 	public void saveProduct(Product productDAO) {
 		
