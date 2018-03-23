@@ -5,12 +5,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.entity.Product;
@@ -40,6 +42,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
@@ -251,8 +254,8 @@ public class ShowAllTasksLayoutFactory{
 	         			   	                    
 	                }
 	                   
-	                executor.shutdown();
-	               
+	               executor.shutdown();
+	           
 	        		while (!executor.isTerminated())
 	        		  {
 	        			
@@ -269,26 +272,27 @@ public class ShowAllTasksLayoutFactory{
                	    System.out.println("Total time execution: " + totalTime);
 	                System.out.println("....run()::Extraction::ended");
 	                
-	            } catch (InterruptedException x) {	  			   
+	            } catch (InterruptedException x) {	  
+	            	executor.shutdownNow();
 	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");
-	                executor.shutdownNow();
+	                
 	                return;
 	                
 	            } catch (Exception ex) {
 	            	ex.printStackTrace();
+	            	executor.shutdownNow();
 	                System.out.println("....run()::Extraction::ERROR::FATAL");
 	                return;
 	                
 	            }   
-	        	
 	            System.out.println("....run()::Extraction::leaving normally");  
 	        }
 	        
 			public void initialization(List<Task> tasks) {
 	                for(Task task : tasks) {
-	            	setTaskStatus(task,"Pendiente a descarga");
 	            	setTaskProgress(task,0.0);
-	            	setTodayDateAndExecutionTime(task,(long) 0);	            
+	            	setTodayDateAndExecutionTime(task,(long) 0);	
+	            	setTaskStatus(task,"Pendiente a descarga");
 	            } 
             }	
 
@@ -321,12 +325,12 @@ public class ShowAllTasksLayoutFactory{
                  	int downloadedProducts = scraping(task,productsUrl);
                  	
                  	if (downloadedProducts!=0) {
-                 		setTaskStatus(task,"Productos descargados: " + downloadedProducts);  
+                 		
                  		
                    	    long endTime   = System.currentTimeMillis();
                    	    long totalTime = endTime - startTime;
                   		setTodayDateAndExecutionTime(task,totalTime);
-       	              	
+                  		setTaskStatus(task,"Productos descargados: " + downloadedProducts);  
        	                
                	    }else {
                	    	setTaskStatus(task,"Error fatál en descarga" );
@@ -349,16 +353,15 @@ public class ShowAllTasksLayoutFactory{
 			public List<String> crawling(Task task) throws InterruptedException {
 			    
 			    setTaskStatus(task,"Escaneando productos");
+			    //System.out.println("Task nombreeee " + task.toString());
         	    List<String> productsUrl = CrawlTaskServiceImpl.getService(task.getRetail()).getUrlsFromTask(task);
-        	    
+        	    //System.out.println("Tamaño del array " + productsUrl.size());
         	    if (productsUrl==null)
         	    	Thread.currentThread().interrupt();
         	    
         	    if (Thread.currentThread().isInterrupted()) {
-        	    	setTaskStatus(task,"Error fatál en escaneo");
-        	    	setTaskProgress(task,0.0);
                     System.out.println("....run()::Extraction::Crawling::isInterrupted():" + Thread.currentThread().isInterrupted());
-                    Thread.sleep(1000);
+                    return new LinkedList<String>();
                 } 
               
 				return productsUrl;    
@@ -376,9 +379,18 @@ public class ShowAllTasksLayoutFactory{
     			
     		   String url = productsUrl.get(i);
     		 
-    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(url);
+    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(url, task);
+    		
+    		   if (p==null)
+    			   Thread.currentThread().interrupt();  
     		   
-    		   if (p!=null) {
+    		   
+    		   if (Thread.currentThread().isInterrupted()) {
+                System.out.println("....run()::Extraction::Scraper::isInterrupted():" + Thread.currentThread().isInterrupted());
+                return 0;
+               } 
+    		   
+    		   if (!p.getProductId().equals("")) {
     			   downloadedProducts++;
     			   addProductService.saveProduct(p);
     			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
@@ -387,15 +399,10 @@ public class ShowAllTasksLayoutFactory{
     			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
     		   }
     		   
-               if (Thread.currentThread().isInterrupted()) {
-            	   setTaskStatus(task,"Error fatál en descarga");
-            	   setTaskProgress(task,0.0);
-                   System.out.println("....run()::Extraction::Scraping::isInterrupted():" + Thread.currentThread().isInterrupted());
-                   Thread.sleep(1000);
-               } 
     		   
-    	       }
-
+    	     }
+             
+    	    System.out.println("Total de Errores: " + errorProducts );
         
 			return downloadedProducts;
 
@@ -469,7 +476,15 @@ public class ShowAllTasksLayoutFactory{
 
 	public void refreshTable() {
              tasks = showAllTasksService.getAllTasks();
-             tasksTable.setItems(tasks);
+        
+             vaadinHybridMenuUI.access(new Runnable() {     
+            	   @Override     
+            	   public void run() {         
+            		   tasksTable.setItems(tasks); 
+            	   }
+            	});
+             
+            
 	}
 
 	

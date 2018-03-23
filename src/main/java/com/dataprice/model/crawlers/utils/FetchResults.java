@@ -2,10 +2,10 @@ package com.dataprice.model.crawlers.utils;
 
 public class FetchResults {
 
-	private String url;
-	private String content;
-	private int servercode;
-	private String response;
+	private String url="";
+	private String content="";
+	private int servercode=0;
+	private String response="";
 	
 	public FetchResults() {
            //Constructor

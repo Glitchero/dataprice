@@ -16,6 +16,7 @@ import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -141,6 +142,7 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				
 				//This is working, only for increasing the high of the table.
 				//gendersTable.setHeight("650px");
+			//	gendersTable.setWidth("100%");
 				gendersTable.removeColumn("genderId");
 				return this;
 			    
@@ -160,12 +162,12 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 		 
 		 public Component layout() {		
 		    	setMargin(true);
-                
+             
 		    
 		    	GridLayout gridLayout = new GridLayout(2, 4);
 		    	gridLayout.setSizeUndefined();
 				gridLayout.setSpacing(true);
-         
+      
 				HorizontalLayout h = new HorizontalLayout(saveButton,editButton);
 				h.setWidth("100%");
 
@@ -183,7 +185,7 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				gridLayout.addComponent(gendersTable,0,1,0,3);
 				gridLayout.setHeight("100%");
 				return gridLayout;
-           
+        
 		   
 		    }
 

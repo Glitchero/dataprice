@@ -26,7 +26,7 @@ public class Walmart extends AbstractCrawler{
 	private WebDriver driver = null;
 	private List<String> LinksList;
 	private Set<String> LinksSet;
-	private Task taskDAO;
+
 
 	@Override
 	public String getCrawlingStrategy() {
@@ -34,7 +34,7 @@ public class Walmart extends AbstractCrawler{
 	}
 
 	@Override
-	public boolean init(String seed) throws InterruptedException {
+	public synchronized boolean init(String seed) throws InterruptedException {
 		this.driver = PhantomFactory.getInstance().getDriver();
 		this.driver.get(seed);
 		System.out.println("Inicializando Phantom");
@@ -78,32 +78,36 @@ public class Walmart extends AbstractCrawler{
 	}
 
 	@Override
-	public Product parseProductFromURL(String urlStr) {
+	public Product parseProductFromURL(String urlStr, Task task) {
 		try {
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(urlStr);
 			
-			if (urlResponse == null){
+			if (urlResponse == null){  //Task fatal error.
 				return null;
+	    	}
+			
+			if (urlResponse.getContent().equals("")){   
+				return new Product();
 	    	}
 	    	
 			String urlContent = urlResponse.getContent(); 
 			
 			String id = ContentParser.parseContent(urlContent, Regex.WALMART_ID);
 			if (id==null)
-				return null;
+				return new Product();
 			
 			String name = ContentParser.parseContent(urlContent, Regex.WALMART_NAME);
 			if (name==null)
-				return null;
+				return new Product();
 			name = name.trim();
 			
 	 		 
 			String price = ContentParser.parseContent(urlContent, Regex.WALMART_PRICE); 
 			if (price == null) {  
-				return null;
+				return new Product();
 			}
 
 			price = price.replace(",", "");
@@ -113,12 +117,12 @@ public class Walmart extends AbstractCrawler{
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.WALMART_IMAGEURL);
 			if (imageUrl == null) {  
-				return null;
+				return new Product();
 			}
 			imageUrl = imageUrl.trim();
 			imageUrl = "https://super.walmart.com.mx" + imageUrl;
 				
-			return new Product(id,getCrawlingStrategy(),taskDAO,name,Double.valueOf(price),imageUrl,urlStr);
+			return new Product(id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {
 			return null;
 		}
@@ -127,22 +131,16 @@ public class Walmart extends AbstractCrawler{
 	@Override
 	public List<String> getUrlsFromTask(Task taskDAO) {
 		try {
-			this.taskDAO = taskDAO;
 			init(taskDAO.getSeed());
 			navigatePages();
 			destroy();
 			return LinksList;
-		} catch (InterruptedException ie) {
+		} catch (Exception e) {
+		//	System.out.println("Error en phantom" + e);
 			if (this.driver!=null) {
 				PhantomFactory.getInstance().removeDriver();
 			}
 			return null;
-		} catch (Exception e) {
-			System.out.println("Error en phantom" + e);
-			if (this.driver!=null) {
-				PhantomFactory.getInstance().removeDriver();
-			}
-			return new LinkedList<String>();
 		}
 	}
 

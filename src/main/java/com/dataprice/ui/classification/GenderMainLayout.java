@@ -25,6 +25,7 @@ public class GenderMainLayout extends VerticalLayout implements View {
 
 		Component genderTab = genderLayoutFactory.createComponent();
 		addComponent(genderTab);
+		
 	}
 	
 	@PostConstruct

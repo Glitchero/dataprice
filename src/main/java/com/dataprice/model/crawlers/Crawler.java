@@ -13,7 +13,7 @@ public interface Crawler {
 	
 	public List<String> getUrlsFromTask(Task taskDAO);
 	
-	public Product parseProductFromURL(String url);
+	public Product parseProductFromURL(String url,Task taskDAO);
 	
 	public String getCrawlingStrategy();
 	 

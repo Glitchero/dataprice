@@ -8,12 +8,14 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.crawlers.Crawler;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
 @Service
+@Transactional
 public class CrawlTaskServiceImpl implements CrawlTaskService{
 
 	@Autowired

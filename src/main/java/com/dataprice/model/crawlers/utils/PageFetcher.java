@@ -57,7 +57,9 @@ public class PageFetcher {
 						   Thread.sleep(Configuration.POLITENESSDELAY - (now - lastFetchTime));
 					     } catch (InterruptedException e) {
 						   // TODO Auto-generated catch block
-						   e.printStackTrace();
+						   //e.printStackTrace();
+						   System.out.println("....run()::Extraction::Scraping::isInterrupted");
+						   return null;
 					  }
                 }
                 lastFetchTime = (new Date()).getTime();
@@ -75,12 +77,12 @@ public class PageFetcher {
 			fetchResults.setContent(sb.toString());
 			fetchResults.setServercode(code);
 
-			return (fetchResults);
+			return fetchResults;
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("El servido tiene algún problema con la peticiÃ³n, de repente pasa!!");
-			return (null);
+			return new FetchResults();
 		}
 	}
 	

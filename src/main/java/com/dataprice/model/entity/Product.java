@@ -21,7 +21,7 @@ public class Product {
 	
 		
 	@Id
-	private String productId;
+	private String productId="";
 	 
 	@Id
 	private String retail;
