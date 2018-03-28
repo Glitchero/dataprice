@@ -10,23 +10,51 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.snowball.*;
+import org.hibernate.search.annotations.TokenizerDef;
+import org.hibernate.search.bridge.builtin.ByteBridge;
 
+@Indexed
+@AnalyzerDef(name = "customanalyzer",
+tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+filters = {
+  @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+  @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+    @Parameter(name = "language", value = "Spanish")
+  })
+})
 @Entity
 @Table(name="PRODUCT")
-@IdClass(ProductKey.class)
 public class Product {
 	
-		
 	@Id
-	private String productId="";
+	private String productKey="";
 	 
-	@Id
+	@Field
+	@Column(name = "product_id")
+	private String productId;
+	
+	@Field
+	@Column(name = "retail")
 	private String retail;
-	   
+	
+	@Field
 	@Column(name = "name")
+	@Analyzer(definition = "customanalyzer")
 	private String name;
 	
 	@Column(name = "precio")
@@ -75,7 +103,8 @@ public class Product {
 	}
 	
 	
-	public Product(String productId,String retail,Task task,String name, Double precio, String imageUrl, String productUrl) {
+	public Product(String productKey, String productId,String retail,Task task,String name, Double precio, String imageUrl, String productUrl) {
+		this.productKey = productKey;
 		this.productId = productId;
 		this.retail = retail;
 		this.name = name;
@@ -84,19 +113,18 @@ public class Product {
 		this.productUrl = productUrl;
 		this.task = task;
 	}
+
 	
-	/**
-	public Product(String productId,String retail,String name, Double precio, String imageUrl, String productUrl, Gender gender) {
-		this.productId = productId;
-		this.retail = retail;
-		this.name = name;
-		this.precio = precio;
-		this.imageUrl = imageUrl;
-		this.productUrl = productUrl;
-		this.gender = gender;
+	public String getProductKey() {
+		return productKey;
 	}
-   */
-	
+
+
+	public void setProductKey(String productKey) {
+		this.productKey = productKey;
+	}
+
+
 	public String getProductId() {
 		return productId;
 	}
@@ -105,6 +133,7 @@ public class Product {
 		this.productId = productId;
 	}
 
+	
 	public String getRetail() {
 		return retail;
 	}
@@ -112,7 +141,7 @@ public class Product {
 	public void setRetail(String retail) {
 		this.retail = retail;
 	}
-
+   
 	public String getName() {
 		return name;
 	}
@@ -198,7 +227,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return name + "-" + precio;	
+		return productKey + "-" + "name" + "-" + precio;	
 	}
 	
 }

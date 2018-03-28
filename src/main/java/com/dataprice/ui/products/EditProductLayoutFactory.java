@@ -248,7 +248,8 @@ public class EditProductLayoutFactory {
 			boolean validation = true;
 			boolean isSameProduct = false;
 			if (productList.size()==1) {
-				if (productList.get(0).getProductId().equals(product.getProductId()) && productList.get(0).getRetail().equals(product.getRetail())){
+			  //	if (productList.get(0).getProductId().equals(product.getProductId()) && productList.get(0).getRetail().equals(product.getRetail())){
+				if (productList.get(0).getProductKey().equals(product.getProductKey())){
 					isSameProduct = true;
 				}else {
 					isSameProduct = false;
@@ -256,7 +257,7 @@ public class EditProductLayoutFactory {
 			}
 			
 			if (!isSameProduct) {
-				System.out.println("entre : " + product.getProductId() + " - " + product.getRetail());
+				//System.out.println("entre : " + product.getProductId() + " - " + product.getRetail());
 		    	Gender genderValue = (Gender) gender.getValue();
 			    Category categoryValue = (Category) category.getValue();
 			    Subcategory subcategoryValue = (Subcategory) subcategory.getValue();

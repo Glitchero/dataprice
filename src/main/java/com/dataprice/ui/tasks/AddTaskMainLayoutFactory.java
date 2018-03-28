@@ -38,7 +38,8 @@ public class AddTaskMainLayoutFactory {
 	   // private TextField status;
 	    private Button saveButton;
 	    private Button clearButton;
-
+        
+	    
 	    private Binder<Task> binder;
 	
 	    private Task task;
@@ -78,7 +79,7 @@ public class AddTaskMainLayoutFactory {
 			clearButton.addClickListener(this);
 
 			//gender.setEmptySelectionAllowed(false);
-			retail.setItems("Walmart","Chedraui","SuplementosFitness");
+			retail.setItems("Walmart","Chedraui","SuplementosFitness","NutritionDepot");
 
 			return this;
 		    

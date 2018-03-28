@@ -45,6 +45,7 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 	//	addComponent(tabSheet);
 		addComponent(addStudentMainTab);
 		addComponent(showStudentsTab);
+		
 	}
 	
 	

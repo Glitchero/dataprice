@@ -25,5 +25,10 @@ public class ShowAllTasksServiceImpl implements ShowAllTasksService{
 	public List<Task> getAllPendingTasks(String status) {
 		return taskRepository.getAllPendingTasks(status);
 	}
+	
+	@Override
+	public List<Task> getAllTasksFromRetail(String retail) {
+		return taskRepository.getAllTasksFromRetail(retail);
+	}
 
 }

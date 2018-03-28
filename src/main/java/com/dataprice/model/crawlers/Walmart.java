@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
@@ -22,60 +23,70 @@ import com.dataprice.model.entity.Task;
 @Component
 public class Walmart extends AbstractCrawler{
 	
-	
-	private WebDriver driver = null;
-	private List<String> LinksList;
-	private Set<String> LinksSet;
-
 
 	@Override
 	public String getCrawlingStrategy() {
 		return "Walmart";
 	}
 
-	@Override
-	public synchronized boolean init(String seed) throws InterruptedException {
-		this.driver = PhantomFactory.getInstance().getDriver();
-		this.driver.get(seed);
-		System.out.println("Inicializando Phantom");
-		this.LinksList = new LinkedList<String>();
-		this.LinksSet = new HashSet<String>();
-		Thread.sleep(1000);
-		return true;
-		
-	}
 
 	@Override
-	public void navigatePages() throws InterruptedException {
-        
-		for (WebElement we : driver.findElements(By.xpath("//*[@id='atg_store_pagination']/li/a"))) {	   
-		    if (we.getAttribute("href")!=null){
-				this.LinksSet.add(we.getAttribute("href"));
+	public List<String> getUrlsFromTask(Task taskDAO) {
+		WebDriver driver = null;
+		try {
+			//Initialization Phase
+			driver = PhantomFactory.getInstance().getDriver();
+			driver.get(taskDAO.getSeed());
+			System.out.println("Inicializando Phantom");
+			LinkedList<String> linksList = new LinkedList<String>();
+			HashSet<String> linksSet = new HashSet<String>();
+			Thread.sleep(1000);
+			
+			//Navigation
+			for (WebElement we : driver.findElements(By.xpath("//*[@id='atg_store_pagination']/li/a"))) {	   
+			    if (we.getAttribute("href")!=null){
+			    	linksSet.add(we.getAttribute("href"));
+				}
+	        }
+			
+			if (linksSet.size() == 0){   //In case we don't have pagination.
+				for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'container-listing_')]/div[1]/div[2]/div[1]/a"))) {	   
+					linksList.add(we.getAttribute("href"));
+		        }
 			}
-        }
-		
-		if (this.LinksSet.size() == 0){   //In case we don't have pagination.
-			getProductsUrl();
-		}
-		
-		//Navigate all web pages 
-		for (String taskLink : this.LinksSet) {
-			driver.get(taskLink);
 			
-			Thread.sleep(Configuration.DRIVERDELAY);
+			for (String taskLink : linksSet) { //In case we have pagination.
+				driver.get(taskLink);
+				
+				Thread.sleep(Configuration.DRIVERDELAY);
+				
+				for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'container-listing_')]/div[1]/div[2]/div[1]/a"))) {	   
+					linksList.add(we.getAttribute("href"));
+		        }
+			}
 			
-			getProductsUrl();
-		}
+			//Destroy
+			PhantomFactory.getInstance().removeDriver();		
+			Thread.sleep(1000);
+			return linksList;
+			
+		} catch (Exception e) {
+			System.out.println("Error en phantom" + e);
+			
+			try {
+			   if (driver!=null) { //Check if driver exists, research another option for checking this.
+				   PhantomFactory.getInstance().removeDriver();
+			   }
+			} catch (Exception e2) {
+				return null;
+			}
+			
+			return null;
+		} 
 		
 		
 	}
 
-	@Override
-	public void getProductsUrl() {
-		for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'container-listing_')]/div[1]/div[2]/div[1]/a"))) {	   
-			this.LinksList.add(we.getAttribute("href"));
-        }
-	}
 
 	@Override
 	public Product parseProductFromURL(String urlStr, Task task) {
@@ -122,32 +133,12 @@ public class Walmart extends AbstractCrawler{
 			imageUrl = imageUrl.trim();
 			imageUrl = "https://super.walmart.com.mx" + imageUrl;
 				
-			return new Product(id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	@Override
-	public List<String> getUrlsFromTask(Task taskDAO) {
-		try {
-			init(taskDAO.getSeed());
-			navigatePages();
-			destroy();
-			return LinksList;
-		} catch (Exception e) {
-		//	System.out.println("Error en phantom" + e);
-			if (this.driver!=null) {
-				PhantomFactory.getInstance().removeDriver();
-			}
-			return null;
-		}
-	}
 
-	@Override
-	public void destroy() throws InterruptedException{
-		PhantomFactory.getInstance().removeDriver();		
-		Thread.sleep(1000);
-	}
 
 }

@@ -28,8 +28,14 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 
 
 	@Override
-	public Product getProductFromKey(String productKey, String retailKey) {
-		return productRepository.getProductFromKey(productKey,retailKey);
+	public Product getProductFromKey(String productKey) {
+		return productRepository.getProductFromKey(productKey);
+	}
+
+
+	@Override
+	public List<Product> getAllProductsFromRetail(String retail) {
+		return productRepository.getProductsFromRetailName(retail);
 	}
 	
 

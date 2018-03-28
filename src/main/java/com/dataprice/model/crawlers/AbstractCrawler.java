@@ -23,7 +23,7 @@ public abstract class AbstractCrawler implements Crawler {
 		this.task = task;
 	}
 	
-	
+	/**
 	public abstract boolean init(String seed) throws InterruptedException;
 	
 	public abstract void navigatePages() throws InterruptedException;
@@ -31,6 +31,7 @@ public abstract class AbstractCrawler implements Crawler {
 	public abstract void getProductsUrl();	
 	
 	public abstract void destroy() throws InterruptedException;	
+	*/
 	
 	@Override
 	public String toString()

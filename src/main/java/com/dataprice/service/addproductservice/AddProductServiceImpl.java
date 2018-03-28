@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.entity.Product;
-import com.dataprice.model.entity.ProductKey;
 import com.dataprice.repository.product.ProductRepository;
 
 @Service
@@ -16,18 +15,17 @@ public class AddProductServiceImpl implements AddProductService {
 	private ProductRepository productRepository;
 
 	@Transactional
-	@Override
 	public void saveProduct(Product productDAO) {
 		
-		ProductKey pk= new ProductKey(productDAO.getProductId(),productDAO.getRetail());
-		
-		if (productRepository.exists(pk)) {
-			Product rp = productRepository.findOne(pk);
-			//rp.setPrecio(0.0); This was only for checking that it was working
-			productRepository.save(rp);
+		String productkey = productDAO.getProductKey();
+		if (productRepository.exists(productkey)) {
+			Product retrievedProduct = productRepository.findOne(productkey);
+			//retrievedProduct.setPrecio(0.0);
+			productRepository.save(retrievedProduct);
 		}else {
 			
 			Product product = new Product();
+			product.setProductKey(productDAO.getProductKey());
 			product.setProductId(productDAO.getProductId());
 			product.setRetail(productDAO.getRetail());
 			product.setName(productDAO.getName());

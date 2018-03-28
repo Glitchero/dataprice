@@ -58,7 +58,7 @@ public class PageFetcher {
 					     } catch (InterruptedException e) {
 						   // TODO Auto-generated catch block
 						   //e.printStackTrace();
-						   System.out.println("....run()::Extraction::Scraping::isInterrupted");
+						   //System.out.println("....run()::Extraction::Scraping::isInterrupted");
 						   return null;
 					  }
                 }

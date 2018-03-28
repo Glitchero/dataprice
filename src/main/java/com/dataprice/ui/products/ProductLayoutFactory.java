@@ -29,11 +29,14 @@ public class ProductLayoutFactory extends VerticalLayout implements View,Product
 	}
 
 	private void addLayout() {
-		setMargin(true);
+		//setMargin(true);
 		Component showProducts = showProductsLayoutFactory.createComponent(this);
 		Component editProducts = editProductLayoutFactory.createComponent(this);
+		showProducts.setSizeFull();
 		addComponent(showProducts);
 		addComponent(editProducts);
+		
+	
 	}
 
 	@Override

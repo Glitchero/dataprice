@@ -48,10 +48,7 @@ public class PhantomFactory
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
 
-  		
   	    phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
-  	  		
- 
   		
   		return phantomDriver;   
       }

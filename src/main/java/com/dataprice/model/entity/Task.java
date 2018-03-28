@@ -33,7 +33,7 @@ public class Task {
       private String seed;
 	  
 	  @Column(name = "status")
-      private String status = "Pendiente a descarga";
+      private String status = "Pendiente";
 	  
 	  @Column(name = "progress")
       private Double progress = 0.0;
@@ -45,6 +45,9 @@ public class Task {
 	  @OneToMany(mappedBy="task",cascade=CascadeType.ALL)
 		private List<Product> products;
 	  
+	  @Column(name = "downloadedProducts")
+      private Integer downloadedProducts = 0;
+	  
 	  
       public Task() {
     	  this.products = new ArrayList<>();
@@ -55,6 +58,14 @@ public class Task {
   //		this.categoryName = categoryName;
   //	}
    
+	public Integer getDownloadedProducts() {
+		return downloadedProducts;
+	}
+
+	public void setDownloadedProducts(Integer downloadedProducts) {
+		this.downloadedProducts = downloadedProducts;
+	}
+
 	public Integer getTaskId() {
 		return taskId;
 	}

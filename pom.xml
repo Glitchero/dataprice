@@ -85,28 +85,34 @@
          </dependency>
          
          <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.2.Final</version>
-         </dependency>
-         
-         <dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-entitymanager</artifactId>
-    		<version>5.2.13.Final</version>
-		 </dependency>
-		 
-		 <dependency>
-            <groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-core</artifactId>
-    		<version>5.2.13.Final</version>
-		 </dependency>
-
-    	<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-push</artifactId>
 		</dependency>
 		
+		 <!--HIBERNATE JARS FILES -->
+		
+         <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.2.Final</version>        
+         </dependency>
+         
+         <dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-entitymanager</artifactId>		
+		 </dependency>
+		 
+		 <dependency>
+            <groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-core</artifactId>		
+		 </dependency>
+
+       <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-search-orm</artifactId>
+          <version>5.5.8.Final</version>        
+       </dependency>
+
 	<!--HTML parser -->
     <dependency>
       <groupId>org.jsoup</groupId>
@@ -150,14 +156,33 @@
         <version>22.0</version>
     </dependency>
     
+    <!--Vaadin charts -->
+    
+    <dependency>
+      <groupId>com.byteowls</groupId>
+      <artifactId>vaadin-chartjs</artifactId>
+      <version>LATEST</version>
+    </dependency>
+    
     
     </dependencies>
 
     <repositories>
+    
         <repository>
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
+        
+        <repository>
+           <snapshots>
+           <enabled>false</enabled>
+           </snapshots>
+           <id>central</id>
+           <name>bintray</name>
+           <url>http://jcenter.bintray.com</url>
+        </repository>
+  
     </repositories>
 
     <dependencyManagement>

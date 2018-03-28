@@ -454,6 +454,19 @@ public class VaadinHybridMenuUI extends UI {
 	}
 	
 	public void finishTasksExecution(){
+		access(new Runnable() {     
+     	   @Override     
+     	   public void run() {         
+     		     NotificationBuilder.get(notificationCenter)
+				.withCaption("Test")
+				.withDescription("Tasks completed")
+				.withPriority(ENotificationPriority.HIGH)
+				.withIcon(VaadinIcons.INFO)
+				.withCloseButton()
+				.build(); 
+     	   }
+     	});
+		/**
 				NotificationBuilder.get(this.notificationCenter)
 				.withCaption("Test")
 				.withDescription("Tasks completed")
@@ -461,6 +474,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.INFO)
 				.withCloseButton()
 				.build();	
+	    */
 	}
 	
 	
@@ -468,6 +482,12 @@ public class VaadinHybridMenuUI extends UI {
 		if (job!=null) {
 		
 			if (!job.isDone()) {
+				job.cancel(true);	
+			}
+		}
+    }
+	
+	public void cancelNotification(){
 				job.cancel(true);
 				NotificationBuilder.get(this.notificationCenter)
 				.withCaption("Test")
@@ -476,11 +496,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.INFO)
 				.withCloseButton()
 				.build();	
-			}
-		}
-
     }
-	
 
 	public boolean isTaskSetRunning(){
 		if (job!=null) {

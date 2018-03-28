@@ -10,5 +10,7 @@ public interface ShowAllProductsService {
 	
 	public List<Product> getAllProductsFromPid(String pid);
 	
-	public Product getProductFromKey(String productKey,String retailKey);
+	public Product getProductFromKey(String productKey);
+	
+	public List<Product> getAllProductsFromRetail(String retail);
 }

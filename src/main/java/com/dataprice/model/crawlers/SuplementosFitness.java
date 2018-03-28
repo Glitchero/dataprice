@@ -15,16 +15,12 @@ import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
 import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
-import com.dataprice.model.entity.ProductKey;
 import com.dataprice.model.entity.Task;
 
 @Component
 public class SuplementosFitness extends AbstractCrawler{
 	
 	
-	private WebDriver driver = null;
-	private List<String> LinksList = null;
-
 
 	@Override
 	public String getCrawlingStrategy() {
@@ -32,40 +28,50 @@ public class SuplementosFitness extends AbstractCrawler{
 	}
 
 	@Override
-	public synchronized boolean init(String seed) throws InterruptedException{
-		this.driver = PhantomFactory.getInstance().getDriver();
-		this.driver.get(seed);
-		System.out.println("Inicializando Phantom");
-	    LinksList = new LinkedList<String>();
-	    Thread.sleep(1000);
-	    return true;
-	}
-
-	@Override
-	public void navigatePages() throws InterruptedException {
+	public List<String> getUrlsFromTask(Task taskDAO) {
 		
-		getProductsUrl();
+		WebDriver driver = null;
 		
-		while (driver.findElements(By.cssSelector("a.next.page-number")).size()>0){
-			  
-			   driver.findElement(By.cssSelector("a.next.page-number")).click();
+		try {
+		
+			//Initialization Phase
+			driver = PhantomFactory.getInstance().getDriver();
+			driver.get(taskDAO.getSeed());
+			System.out.println("Inicializando Phantom");
+			LinkedList<String> linksList = new LinkedList<String>();
+			Thread.sleep(1000);
 			
-			   Thread.sleep(Configuration.DRIVERDELAY);
-		      
-			   getProductsUrl();
+			//Navigation
+			for (WebElement we : driver.findElements(By.xpath("//*[@id='main']/div/div[1]/div/div[1]/div/div/div[2]/div[1]/div[1]/a"))) {	   
+				linksList.add(we.getAttribute("href"));
+		        }
+			
+			while (driver.findElements(By.cssSelector("a.next.page-number")).size()>0){
+				  
+				   driver.findElement(By.cssSelector("a.next.page-number")).click();
+				
+				   Thread.sleep(Configuration.DRIVERDELAY);
+			      
+				   for (WebElement we : driver.findElements(By.xpath("//*[@id='main']/div/div[1]/div/div[1]/div/div/div[2]/div[1]/div[1]/a"))) {	   
+					   linksList.add(we.getAttribute("href"));
+			        }
+			}
+			
+			//Destroy
+			PhantomFactory.getInstance().removeDriver();		
+			Thread.sleep(1000);
+			return linksList;
+		}  catch (Exception e) {
+			//System.out.println("Error en phantom" + e);
+			try {
+				   if (driver!=null) { //Check if driver exists, research another option for checking this.
+					   PhantomFactory.getInstance().removeDriver();
+				   }
+				} catch (Exception e2) {
+					return null;
+				}
+			return null;
 		}
-						
-		
-		
-	}
-
-	@Override
-	public void getProductsUrl() {
-		for (WebElement we : driver.findElements(By.xpath("//*[@id='main']/div/div[1]/div/div[1]/div/div/div[2]/div[1]/div[1]/a"))) {	   
-			   // System.out.println(we.getAttribute("href"));
-			    this.LinksList.add(we.getAttribute("href"));
-	        }
-		
 	}
 
 	@Override
@@ -112,32 +118,13 @@ public class SuplementosFitness extends AbstractCrawler{
 				return new Product();
 			}
 
-			return new Product(id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {			
 			return null;
 		}
 	}
 
-	@Override
-	public List<String> getUrlsFromTask(Task taskDAO) {
-		try {
-			init(taskDAO.getSeed());
-			navigatePages();
-			destroy();
-			return LinksList;
-		}  catch (Exception e) {
-			//System.out.println("Error en phantom" + e);
-			if (this.driver!=null) {
-				PhantomFactory.getInstance().removeDriver();
-			}
-			return null;
-		}
-	}
+	
 
-	@Override
-	public void destroy() throws InterruptedException{
-		PhantomFactory.getInstance().removeDriver();		
-		Thread.sleep(1000);
-	}
 
 }
