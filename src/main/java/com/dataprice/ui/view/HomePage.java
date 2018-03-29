@@ -14,18 +14,26 @@ package com.dataprice.ui.view;
  */
 import com.byteowls.vaadin.chartjs.ChartJs;
 import com.byteowls.vaadin.chartjs.config.BarChartConfig;
+import com.byteowls.vaadin.chartjs.config.LineChartConfig;
 import com.byteowls.vaadin.chartjs.config.PieChartConfig;
 import com.byteowls.vaadin.chartjs.data.BarDataset;
 import com.byteowls.vaadin.chartjs.data.Dataset;
 import com.byteowls.vaadin.chartjs.data.LineDataset;
 import com.byteowls.vaadin.chartjs.data.PieDataset;
+import com.byteowls.vaadin.chartjs.options.InteractionMode;
 import com.byteowls.vaadin.chartjs.options.Position;
+import com.byteowls.vaadin.chartjs.options.scale.Axis;
+import com.byteowls.vaadin.chartjs.options.scale.CategoryScale;
+import com.byteowls.vaadin.chartjs.options.scale.LinearScale;
 import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.dataprice.model.entity.Product;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
@@ -44,6 +52,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SpringView
 public class HomePage extends VerticalLayout implements View {
 
+	
+	
 	@Autowired
 	private ShowAllProductsService showAllProductsService;
 	
@@ -56,9 +66,19 @@ public class HomePage extends VerticalLayout implements View {
 		title.setCaption("Home");
 		title.setValue("Fist componenteee");
 		
-		Label title2 = new Label();
-		title2.setCaption("Home");
-		title2.setValue("Second component");
+		
+		Label title2 = new Label(
+			    "Total de Productos: \n" +
+			    "<center><b><font size=\"7\">1909</font></b></center>",
+			    ContentMode.HTML);
+		
+        Icon icon = new Icon(VaadinIcons.DOWNLOAD_ALT);
+        icon.setSize(60);
+        
+	    HorizontalLayout vl = new HorizontalLayout(title2,icon);
+	    vl.setComponentAlignment(icon, Alignment.TOP_RIGHT);
+		vl.setMargin(false);
+		vl.setSizeFull();
 		
 		Label title3 = new Label();
 		title3.setCaption("Home");
@@ -171,7 +191,8 @@ public class HomePage extends VerticalLayout implements View {
             List<Double> data = new ArrayList<>();
             List<String> colors = new ArrayList<>();
             for (int i = 0; i < labels2.size(); i++) {
-                data.add((double) (Math.round(Math.random() * 100)));
+              //  data.add((double) (Math.round(Math.random() * 100)));
+            	data.add(50.0); //Same size for all labels
                 colors.add(ColorUtils.randomColor(0.7));
             }
             lds.backgroundColor(colors.toArray(new String[colors.size()]));
@@ -182,6 +203,69 @@ public class HomePage extends VerticalLayout implements View {
         chart2.setJsLoggingEnabled(true);
         chart2.setWidth("100%");
    
+        
+        //////////////////////////////////////////////////////////////
+        
+        LineChartConfig lineConfig = new LineChartConfig();
+        lineConfig.data()
+            .labels("January", "February", "March", "April", "May", "June", "July")
+            .addDataset(new LineDataset().label("My First dataset").fill(false))
+            .addDataset(new LineDataset().label("My Second dataset").fill(false))
+            .addDataset(new LineDataset().label("Hidden dataset").hidden(true))
+            .and()
+        .options()
+            .responsive(true)
+            .title()
+            .display(true)
+            .text("Chart.js Line Chart")
+            .and()
+        .tooltips()
+            .mode(InteractionMode.INDEX)
+            .intersect(false)
+            .and()
+        .hover()
+            .mode(InteractionMode.NEAREST)
+            .intersect(true)
+            .and()
+        .scales()
+        .add(Axis.X, new CategoryScale()
+                .display(true)
+                .scaleLabel()
+                    .display(true)
+                    .labelString("Month")
+                    .and()
+                .position(Position.TOP))
+        .add(Axis.Y, new LinearScale()
+                .display(true)
+                .scaleLabel()
+                    .display(true)
+                    .labelString("Value")
+                    .and()
+                .ticks()
+                    .suggestedMin(-10)
+                    .suggestedMax(250)
+                    .and()
+                .position(Position.RIGHT))
+        .and()
+        .done();
+
+        // add random data for demo
+        List<String> labels3 = lineConfig.data().getLabels();
+        for (Dataset<?, ?> ds : lineConfig.data().getDatasets()) {
+            LineDataset lds = (LineDataset) ds;
+            List<Double> data = new ArrayList<>();
+            for (int i = 0; i < labels3.size(); i++) {
+                data.add((double) Math.round(Math.random() * 100));
+            }
+            lds.dataAsList(data);
+            lds.borderColor(ColorUtils.randomColor(0.3));
+            lds.backgroundColor(ColorUtils.randomColor(0.5));
+        }
+
+        ChartJs chart3 = new ChartJs(lineConfig);
+        chart3.setJsLoggingEnabled(true);
+        chart3.setWidth("100%");
+        
         
         //////////////////////////////////////////////////////////////
         
@@ -202,7 +286,7 @@ public class HomePage extends VerticalLayout implements View {
         
         VerticalSplitPanel v2 = new VerticalSplitPanel(); 
         v2.setFirstComponent(h1);
-        v2.setSecondComponent(title8);
+        v2.setSecondComponent(chart3);
         v2.setSplitPosition(50);
         v2.setSizeFull();
        
@@ -218,7 +302,7 @@ public class HomePage extends VerticalLayout implements View {
         
  
         
-        HorizontalLayout hl = new HorizontalLayout(title2,title3,title4,title5,title6,title7);
+        HorizontalLayout hl = new HorizontalLayout(vl,title3,title4,title5,title6,title7);
         hl.setHeight("150px");
         hl.setWidth("100%");
         addComponent(hl);

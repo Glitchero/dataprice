@@ -20,7 +20,12 @@ public class AddProductServiceImpl implements AddProductService {
 		String productkey = productDAO.getProductKey();
 		if (productRepository.exists(productkey)) {
 			Product retrievedProduct = productRepository.findOne(productkey);
-			//retrievedProduct.setPrecio(0.0);
+			retrievedProduct.setPrecio(productDAO.getPrecio());
+			retrievedProduct.setName(productDAO.getName());
+			retrievedProduct.setImageUrl(productDAO.getImageUrl());
+			retrievedProduct.setProductUrl(productDAO.getProductUrl());
+			retrievedProduct.setTask(productDAO.getTask());
+			
 			productRepository.save(retrievedProduct);
 		}else {
 			

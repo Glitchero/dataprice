@@ -81,4 +81,13 @@ public class Regex {
 	public final static String SUPERAMA_IMAGEURL = "<img id=\"zoomSuperamaImage\" src=\"(.*?)\" alt";
 	
 	
+	public final static String LIVERPOOL_ID = "<span id=\"sku\">Código de Producto.: (.*?)</span>";
+	public final static String LIVERPOOL_NAME = "<h1>(.*?)</h1>";
+	public final static String LIVERPOOL_DESCRIPTION = "";
+	public final static String LIVERPOOL_BRAND ="";
+	public final static String LIVERPOOL_OLDPRICE = "";
+	public final static String LIVERPOOL_PRICE = "<span itemprop=\"price\".*?>(.*?)</span>";
+	public final static String LIVERPOOL_PROMOTION = "";  
+	public final static String LIVERPOOL_IMAGEURL = "<meta property=\"og:image\" content=\"(.*?)\" />";
+	
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
+import com.dataprice.service.productstatistics.ProductStatisticsService;
 import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
@@ -55,6 +56,10 @@ public class ShowAllProductsLayoutFactory {
 	
 	private Label statusCounter;
 	
+	private Integer numberOfProducts;
+	
+	private Integer numberOfProductsWithoutProfile;
+	
 	private ProgressBar progressBar;
 	
 	private class ShowAllProductsLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener {
@@ -84,7 +89,7 @@ public class ShowAllProductsLayoutFactory {
 			searchButton.addClickListener(this);		
 			searchButton.setWidth("30%");
 			
-			statusCounter = new Label("5/100");
+			statusCounter = new Label(numberOfProductsWithoutProfile + "/" + numberOfProducts);
 			statusCounter.setWidth("30%");
 			
 			retailFilter = new ComboBox("Retails");
@@ -132,7 +137,9 @@ public class ShowAllProductsLayoutFactory {
 		
 		public ShowAllProductsLayout load() {
 			//loadDataInNewThread();
-			products = showAllProductsService.getAllProducts();   			
+			products = showAllProductsService.getAllProducts(); 
+			numberOfProducts = productStatisticsService.getNumOfProducts(); 
+			numberOfProductsWithoutProfile = productStatisticsService.getNumOfProductsWithoutPid();
 			return this;
 		}
 		
@@ -201,6 +208,9 @@ public class ShowAllProductsLayoutFactory {
 		}
 	
 	}
+	
+	@Autowired
+	private ProductStatisticsService productStatisticsService;
 	
 	@Autowired
 	private VaadinHybridMenuUI vaadinHybridMenuUI;

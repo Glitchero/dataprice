@@ -31,4 +31,11 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	
 	@Query("select p from Product p where p.retail=:retailName")
 	List<Product> getProductsFromRetailName(@Param("retailName") String retailName);
+	
+	@Query("select count(p.productKey) from Product p")
+	Integer getNumOfProducts();
+	
+	@Query("select count(p.productKey) from Product p where p.pid is null")
+	Integer getNumOfProductsWithoutPid();
+	
 }

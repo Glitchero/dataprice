@@ -1,0 +1,137 @@
+package com.dataprice.model.crawlers;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
+import com.dataprice.model.crawlers.utils.Configuration;
+import com.dataprice.model.crawlers.utils.ContentParser;
+import com.dataprice.model.crawlers.utils.FetchResults;
+import com.dataprice.model.crawlers.utils.PageFetcher;
+import com.dataprice.model.crawlers.utils.PhantomFactory;
+import com.dataprice.model.crawlers.utils.Regex;
+import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.Task;
+
+@Component
+public class Liverpool extends AbstractCrawler{
+
+	@Override
+	public List<String> getUrlsFromTask(Task taskDAO) {
+		
+       WebDriver driver = null;
+		
+		try {
+		
+			//Initialization Phase
+			driver = PhantomFactory.getInstance().getDriver();
+			driver.get(taskDAO.getSeed());
+			System.out.println("Inicializando Phantom");
+			LinkedList<String> linksList = new LinkedList<String>();
+			Thread.sleep(1000);
+			
+			//Navigation
+
+			for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {
+				linksList.add(we.getAttribute("href"));
+		        }
+			
+			boolean isFirstIteration = true;
+			
+			//There is always at least one of this elements, but dosent belong to the pagination, really weird!!
+			while (driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).size()>1){
+				   if (driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).size()==3) {
+					   if (isFirstIteration) {
+						   isFirstIteration = false;
+						   driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).get(0).click();
+					   }else {
+						   break; 
+					   }
+				   }else {
+					   driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).get(1).click();
+				   }
+				  
+				   System.out.println("tamaño: " + driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).size());
+				   Thread.sleep(Configuration.DRIVERDELAY);
+			      
+				   for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {	   
+					   linksList.add(we.getAttribute("href"));
+			        }
+			}
+			
+			//Destroy
+			PhantomFactory.getInstance().removeDriver();		
+			Thread.sleep(1000);
+			return linksList;
+		}  catch (Exception e) {
+			//System.out.println("Error en phantom" + e);
+			try {
+				   if (driver!=null) { //Check if driver exists, research another option for checking this.
+					   PhantomFactory.getInstance().removeDriver();
+				   }
+				} catch (Exception e2) {
+					return null;
+				}
+			return null;
+		}
+	}
+
+	@Override
+	public Product parseProductFromURL(String url, Task taskDAO) {
+		try {
+		    
+			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
+	    	
+			FetchResults urlResponse = pageFetcher.getURLContent(url);
+			
+			if (urlResponse == null){  //Task fatal error.		
+				return null;
+	    	}
+			
+			if (urlResponse.getContent().equals("")){   
+				return new Product();
+	    	}
+		
+			String urlContent = urlResponse.getContent(); 
+			
+			String id = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_ID);
+			if (id==null)
+				return new Product();
+			
+			String name = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_NAME);
+			if (name==null)
+				return new Product();
+			name = name.trim();
+			
+	 		 
+			String price = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_PRICE); 			
+			if (price == null) {  
+				return new Product();
+			}
+
+			price = price.replace(",", "");
+			price = price.replace("$", "");
+			price = price.trim();
+			
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_IMAGEURL);		
+			if (imageUrl == null) {  
+				return new Product();
+			}
+
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,Double.valueOf(price),imageUrl,url);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Override
+	public String getCrawlingStrategy() {
+		// TODO Auto-generated method stub
+		return "Liverpool";
+	}
+
+}
