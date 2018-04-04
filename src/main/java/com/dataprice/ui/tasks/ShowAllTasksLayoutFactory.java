@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.crawlers.utils.Configuration;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 import com.dataprice.service.addproductservice.AddProductService;
@@ -261,6 +262,7 @@ public class ShowAllTasksLayoutFactory{
 			    	 }
 			    	 refreshTable();
 			    	 tasksTable.deselectAll();
+			    	 Notification.show("REMOVE","Tasks have been removed", Type.WARNING_MESSAGE);
 			     }else {
 			    	 Notification.show("CUIDADO","Seleccione al menos un task para borrar", Type.ERROR_MESSAGE);
 			     }
@@ -437,11 +439,11 @@ public class ShowAllTasksLayoutFactory{
 				try {
 				 long startTime = System.currentTimeMillis();
              	
-                 List<String> productsUrl = crawling(task);
+                 List<CrawlInfo> productsInfo = crawling(task);
                  	                    
-                 if (productsUrl.size()!=0) {
+                 if (productsInfo.size()!=0) {
                  
-                 	int downloadedProducts = scraping(task,productsUrl);
+                 	int downloadedProducts = scraping(task,productsInfo);
                  	
                  	if (downloadedProducts!=0) {
                  		
@@ -472,36 +474,36 @@ public class ShowAllTasksLayoutFactory{
 
 			
 
-			public List<String> crawling(Task task) throws InterruptedException {
+			public List<CrawlInfo> crawling(Task task) throws InterruptedException {
 			    
 			    setTaskStatus(task,"Escaneando");
 			    //System.out.println("Task nombreeee " + task.toString());
-        	    List<String> productsUrl = CrawlTaskServiceImpl.getService(task.getRetail()).getUrlsFromTask(task);
+        	    List<CrawlInfo> productsInfo = CrawlTaskServiceImpl.getService(task.getRetail()).getUrlsFromTask(task);
         	    //System.out.println("Tamaño del array " + productsUrl.size());
-        	    if (productsUrl==null)
+        	    if (productsInfo==null)
         	    	Thread.currentThread().interrupt();
         	    
         	    if (Thread.currentThread().isInterrupted()) {
                     System.out.println("....run()::Extraction::Crawling::isInterrupted():" + Thread.currentThread().isInterrupted());
-                    return new LinkedList<String>();
+                    return new LinkedList<CrawlInfo>();
                 } 
               
-				return productsUrl;    
+				return productsInfo;    
         }
 		
 		
-		public int scraping(Task task, List<String> productsUrl) throws InterruptedException {
+		public int scraping(Task task, List<CrawlInfo> productsInfo) throws InterruptedException {
 			 
 			int downloadedProducts = 0;
     		int errorProducts = 0;
 
     		setTaskStatus(task,"Descargando");
     		
-    		for (int i = 0; i<productsUrl.size(); i++) {
+    		for (int i = 0; i<productsInfo.size(); i++) {
     			
-    		   String url = productsUrl.get(i);
+    		   CrawlInfo crawlInfo = productsInfo.get(i);
     		 
-    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(url, task);
+    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(crawlInfo, task);
     		
     		   if (p==null)
     			   Thread.currentThread().interrupt();  
@@ -515,11 +517,11 @@ public class ShowAllTasksLayoutFactory{
     		   if (!p.getProductKey().equals("")) {
     			   downloadedProducts++;
     			   addProductService.saveProduct(p);
-    			   if ((i+1) % 5 == 0 || i+1 == productsUrl.size())  //Update evert 5 downloads or in the last iteration, in the future we can also include the saveProduct.
-    			         setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
+    			   if ((i+1) % 5 == 0 || i+1 == productsInfo.size())  //Update evert 5 downloads or in the last iteration, in the future we can also include the saveProduct.
+    			         setTaskProgress(task, (double) (i + 1)/ (double) productsInfo.size());
     		   }else {
     			   errorProducts++;
-    			   setTaskProgress(task, (double) (i + 1)/ (double) productsUrl.size());
+    			   setTaskProgress(task, (double) (i + 1)/ (double) productsInfo.size());
     		   }
     		   
     		   

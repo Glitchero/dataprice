@@ -109,7 +109,7 @@ public class HomePage extends VerticalLayout implements View {
 		List<Product> products = showAllProductsService.getAllProducts();
 		Grid<Product> productsTable = new Grid<>(Product.class);
 		
-		productsTable.setColumnOrder("productId","retail","name", "precio", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
+		productsTable.setColumnOrder("productId","retail","name", "price", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
 		productsTable.removeColumn("task");
 		
 		productsTable.setItems(products);

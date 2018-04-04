@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -44,11 +45,9 @@ public class Product {
 	@Id
 	private String productKey="";
 	 
-	@Field
 	@Column(name = "product_id")
 	private String productId;
 	
-	@Field
 	@Column(name = "retail")
 	private String retail;
 	
@@ -57,9 +56,13 @@ public class Product {
 	@Analyzer(definition = "customanalyzer")
 	private String name;
 	
-	@Column(name = "precio")
-	private Double precio;
+	@Lob 
+	@Column(name = "description",length = 512)
+	private String description;
 	
+	@Column(name = "price")
+	private Double price;
+
 	@Column(name = "image_url")
 	private String imageUrl;
 	
@@ -103,12 +106,13 @@ public class Product {
 	}
 	
 	
-	public Product(String productKey, String productId,String retail,Task task,String name, Double precio, String imageUrl, String productUrl) {
+	public Product(String productKey, String productId,String retail,Task task,String name,String description, Double price, String imageUrl, String productUrl) {
 		this.productKey = productKey;
 		this.productId = productId;
 		this.retail = retail;
 		this.name = name;
-		this.precio = precio;
+		this.description = description;
+		this.price = price;
 		this.imageUrl = imageUrl;
 		this.productUrl = productUrl;
 		this.task = task;
@@ -150,12 +154,21 @@ public class Product {
 		this.name = name;
 	}
 	
-	public Double getPrecio() {
-		return precio;
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
-	public void setPrecio(Double precio) {
-		this.precio = precio;
+	public Double getPrice() {
+		return price;
+	}
+	
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 	
 	public String getImageUrl() {
@@ -227,7 +240,38 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return productKey + "-" + "name" + "-" + precio;	
+		return productKey + "-" + "name" + "-" + price;	
 	}
+	
+	
+	//In case we use a map!! Do we need to override hashcode?
+	 @Override
+	    public int hashCode() {
+	        final int prime = 31;
+	        int result = 1;
+	        result = prime * result
+	                + ((productKey == null) ? 0 : productKey.hashCode());
+	        return result;
+	    }
+	 
+	 //Needed for removing object from list!.
+	 
+	 @Override
+	    public boolean equals(final Object obj) {
+	        if (this == obj)
+	            return true;
+	        if (obj == null)
+	            return false;
+	        if (getClass() != obj.getClass())
+	            return false;
+	        final Product other = (Product) obj;
+	        if (productKey == null) {
+	            if (other.productKey != null)
+	                return false;
+	        } else if (!productKey.equals(other.productKey))
+	            return false;
+	        return true;
+	    }
+	
 	
 }

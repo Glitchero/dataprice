@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.ContentParser;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
@@ -27,6 +28,19 @@ public class SuplementosFitness extends AbstractCrawler{
 		return "SuplementosFitness";
 	}
 
+	@Override
+	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
 	@Override
 	public List<String> getUrlsFromTask(Task taskDAO) {
 		
@@ -118,13 +132,13 @@ public class SuplementosFitness extends AbstractCrawler{
 				return new Product();
 			}
 
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,"",Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {			
 			return null;
 		}
 	}
 
-	
+	*/
 
 
 }

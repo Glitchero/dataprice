@@ -360,6 +360,16 @@ public class VaadinHybridMenuUI extends UI {
 		hybridMenu.addLeftMenuButton(productsButton);
 		*/
 		
+		
+		MenuButton productsButton = LeftMenuButtonBuilder.get()
+		.withCaption("Products")
+		.withIcon(VaadinIcons.COGS)
+		.withNavigateTo(ProductLayoutFactory.class)
+		.build();
+
+       hybridMenu.addLeftMenuButton(productsButton);
+
+       /**
 		MenuSubMenu productList = LeftMenuSubMenuBuilder.get()
 				.setCaption("Products")
 				.setIcon(VaadinIcons.USERS)
@@ -396,7 +406,8 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.USERS)
 				.withNavigateTo(BrandMainLayout.class)
 				.build());
-		
+		*/
+       
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")
 				.withIcon(VaadinIcons.COGS)

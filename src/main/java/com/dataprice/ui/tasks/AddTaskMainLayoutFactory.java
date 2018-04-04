@@ -79,7 +79,7 @@ public class AddTaskMainLayoutFactory {
 			clearButton.addClickListener(this);
 
 			//gender.setEmptySelectionAllowed(false);
-			retail.setItems("Walmart","Chedraui","SuplementosFitness","NutritionDepot","Liverpool");
+			retail.setItems("Walmart","Chedraui","SuplementosFitness","NutritionDepot","Liverpool","Coppel");
 
 			return this;
 		    

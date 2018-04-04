@@ -166,7 +166,7 @@ public class ProductDAO {
 			  statement.setString(1,prod.getProductId());
 			  statement.setString(2,prod.getRetail());
 			  statement.setString(3,prod.getName());
-			  statement.setDouble(4, prod.getPrecio());
+			  statement.setDouble(4, prod.getPrice());
 			  statement.setString(5,prod.getImageUrl());
 			  statement.setString(6,prod.getProductUrl());
 			  statement.addBatch();

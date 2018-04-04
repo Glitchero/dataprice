@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.ContentParser;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
@@ -20,8 +21,9 @@ import com.dataprice.model.entity.Task;
 @Component
 public class Liverpool extends AbstractCrawler{
 
+	
 	@Override
-	public List<String> getUrlsFromTask(Task taskDAO) {
+	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
 		
        WebDriver driver = null;
 		
@@ -31,13 +33,13 @@ public class Liverpool extends AbstractCrawler{
 			driver = PhantomFactory.getInstance().getDriver();
 			driver.get(taskDAO.getSeed());
 			System.out.println("Inicializando Phantom");
-			LinkedList<String> linksList = new LinkedList<String>();
+			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
 			Thread.sleep(1000);
 			
 			//Navigation
 
 			for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {
-				linksList.add(we.getAttribute("href"));
+				linksList.add(new CrawlInfo(we.getAttribute("href")));
 		        }
 			
 			boolean isFirstIteration = true;
@@ -59,7 +61,7 @@ public class Liverpool extends AbstractCrawler{
 				   Thread.sleep(Configuration.DRIVERDELAY);
 			      
 				   for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {	   
-					   linksList.add(we.getAttribute("href"));
+					   linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
 			}
 			
@@ -81,12 +83,12 @@ public class Liverpool extends AbstractCrawler{
 	}
 
 	@Override
-	public Product parseProductFromURL(String url, Task taskDAO) {
+	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(url);
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
 			
 			if (urlResponse == null){  //Task fatal error.		
 				return null;
@@ -107,7 +109,11 @@ public class Liverpool extends AbstractCrawler{
 				return new Product();
 			name = name.trim();
 			
-	 		 
+			String description = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_DESCRIPTION);
+			if (description==null)
+				description = "";  //Unlike name, sometimes we don't have a description.
+			description = description.trim();
+			
 			String price = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_PRICE); 			
 			if (price == null) {  
 				return new Product();
@@ -117,21 +123,37 @@ public class Liverpool extends AbstractCrawler{
 			price = price.replace("$", "");
 			price = price.trim();
 			
+			String oldPrice = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_OLDPRICE); 			
+			if (oldPrice == null) {  
+				return new Product();
+			}
+
+			oldPrice = oldPrice.replace(",", "");
+			oldPrice = oldPrice.replace("$", "");
+			oldPrice = oldPrice.trim();
+			
+			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_IMAGEURL);		
 			if (imageUrl == null) {  
 				return new Product();
 			}
 
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,Double.valueOf(price),imageUrl,url);
+			if (price.equals("0.0")) {
+				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(oldPrice),imageUrl,crawlInfo.getUrl());
+			}else {
+				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(price),imageUrl,crawlInfo.getUrl());
+			}
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
+
 	@Override
 	public String getCrawlingStrategy() {
-		// TODO Auto-generated method stub
 		return "Liverpool";
 	}
+
+	
 
 }

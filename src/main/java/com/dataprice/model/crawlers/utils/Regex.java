@@ -37,7 +37,7 @@ public class Regex {
 	public final static String CHEDRAUI_PROMOTION = "<p class=\"promotion\">(.*?)</p>";    
 	public final static String CHEDRAUI_IMAGEURL = "class=\"item\"> <img class=\"lazyOwl\" data-src=\"(.*?)\" alt";
 	
-	
+	/**
 	public final static String SORIANA_ID = "ajaxRequest.*?cb=(.*?)&";
 	public final static String SORIANA_NAME = "class=\"txtarticulohome\">(.*?)<";
 	public final static String SORIANA_DESCRIPTION = "";
@@ -57,7 +57,7 @@ public class Regex {
 	public final static String WALMART_PRICE = "<span itemprop=\"price\" content=\"(.*?)\">";
 	public final static String WALMART_PROMOTION = "<div class=\"pdp-promotional-text\">(.*?)</div>";    
 	public final static String WALMART_IMAGEURL = "class=\"slider-img u-photo photo\" src=\"(.*?)\" onError";
-	
+	*/
 	
 	
 	public final static String LACOMER_ID = "id=\"artean\" value=\"(.*?)\"/>";
@@ -83,11 +83,46 @@ public class Regex {
 	
 	public final static String LIVERPOOL_ID = "<span id=\"sku\">Código de Producto.: (.*?)</span>";
 	public final static String LIVERPOOL_NAME = "<h1>(.*?)</h1>";
-	public final static String LIVERPOOL_DESCRIPTION = "";
+	public final static String LIVERPOOL_DESCRIPTION = "<div class=\"dynDesc\">(.*?)</div>";
 	public final static String LIVERPOOL_BRAND ="";
-	public final static String LIVERPOOL_OLDPRICE = "";
-	public final static String LIVERPOOL_PRICE = "<span itemprop=\"price\".*?>(.*?)</span>";
+	public final static String LIVERPOOL_OLDPRICE = "salePrice\":\"(.*?)\"}";
+	public final static String LIVERPOOL_PRICE = "promoPrice\":\"(.*?)\",";
 	public final static String LIVERPOOL_PROMOTION = "";  
 	public final static String LIVERPOOL_IMAGEURL = "<meta property=\"og:image\" content=\"(.*?)\" />";
+	
+	
+
+	
+	public final static String SORIANA_ID = "";
+	public final static String SORIANA_NAME = "";
+	public final static String SORIANA_DESCRIPTION = "";
+	public final static String SORIANA_BRAND ="";
+	public final static String SORIANA_OLDPRICE = "";
+	public final static String SORIANA_PRICE = "";
+	public final static String SORIANA_PROMOTION = "";  
+	public final static String SORIANA_IMAGEURL = "";
+	
+	public final static String COPPEL_ID = "<span class=\"sku\">sku: (.*?)</span>";
+	public final static String COPPEL_NAME = "<h1 id=\"main_header_name\" class=\"main_header\">(.*?)</h1>";
+	public final static String COPPEL_DESCRIPTION = "<div id=\"desc\">(.*?)</div>";
+	public final static String COPPEL_BRAND ="";
+	public final static String COPPEL_OLDPRICE = "";
+	public final static String COPPEL_PRICE = "";
+	public final static String COPPEL_PROMOTION = "";  
+	public final static String COPPEL_IMAGEURL = "<a id=\"Zoomer\"  href=\"(.*?)\" title";
+
+	
+
+	
+	public final static String WALMART_ID = "<meta property=\"og:image\" content=\"https://www.walmart.com.mx/images/products/img_medium/(.*?)m.jpg\">";
+	public final static String WALMART_NAME = "";
+	public final static String WALMART_DESCRIPTION = "description\":\"(.*?)\",";
+	public final static String WALMART_BRAND ="";
+	public final static String WALMART_OLDPRICE = "";
+	public final static String WALMART_PRICE = "";
+	public final static String WALMART_PROMOTION = "";    
+	public final static String WALMART_IMAGEURL = "<meta property=\"og:image\" content=\"(.*?)\">";
+
+
 	
 }

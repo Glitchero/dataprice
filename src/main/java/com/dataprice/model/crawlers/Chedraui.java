@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.ContentParser;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
@@ -28,8 +29,9 @@ public class Chedraui extends AbstractCrawler{
 	}
 
 
+
 	@Override
-	public List<String> getUrlsFromTask(Task taskDAO) {
+	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
 		
 		WebDriver driver = null;
 		
@@ -38,13 +40,13 @@ public class Chedraui extends AbstractCrawler{
 			driver = PhantomFactory.getInstance().getDriver();
 			driver.get(taskDAO.getSeed());
 			System.out.println("Inicializando Phantom");
-			LinkedList<String> linksList = new LinkedList<String>();
+			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
 			Thread.sleep(1000);
 			//Navigation
 			
 			
 			for (WebElement we : driver.findElements(By.xpath("//*[@id='plp_display']/li/a"))) {	   
-				linksList.add(we.getAttribute("href"));
+				linksList.add(new CrawlInfo(we.getAttribute("href")));
 	        }
 			
 			while (driver.findElements(By.cssSelector("a.glyphicon.glyphicon-chevron-right")).size()>0){
@@ -53,7 +55,7 @@ public class Chedraui extends AbstractCrawler{
 			    Thread.sleep(Configuration.DRIVERDELAY);
 				
 			    for (WebElement we : driver.findElements(By.xpath("//*[@id='plp_display']/li/a"))) {	   
-			    	linksList.add(we.getAttribute("href"));
+			    	linksList.add(new CrawlInfo(we.getAttribute("href")));
 		        }
 			}
 			
@@ -78,12 +80,12 @@ public class Chedraui extends AbstractCrawler{
 
 
 	@Override
-	public Product parseProductFromURL(String urlStr, Task task) {
+	public Product parseProductFromURL(CrawlInfo crawlInfo, Task task) {
 		try {
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(urlStr);
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
 			
 			if (urlResponse == null){  //Task fatal error.
 				return null;
@@ -104,7 +106,11 @@ public class Chedraui extends AbstractCrawler{
 				return new Product();
 			name = name.trim();
 			
-	 		 
+			String description = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_DESCRIPTION);
+			if (description==null)
+				description = "";  //Unlike name, sometimes we don't have a description.
+			description = description.trim();
+			 		 
 			String price = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_PRICE); 
 			if (price == null) {  
 				return new Product();
@@ -123,12 +129,12 @@ public class Chedraui extends AbstractCrawler{
 			imageUrl = "https://www.chedraui.com.mx" + imageUrl;
 			
 				
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,description,Double.valueOf(price),imageUrl,crawlInfo.getUrl());
 		} catch (Exception e) {
 			return null;
 		}
 	}
-
+  
 	
 
 

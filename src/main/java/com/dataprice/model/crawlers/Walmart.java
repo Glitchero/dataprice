@@ -5,14 +5,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.internal.Locatable;
 import org.springframework.stereotype.Component;
 
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.ContentParser;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
@@ -29,7 +35,121 @@ public class Walmart extends AbstractCrawler{
 		return "Walmart";
 	}
 
+	@Override
+	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
+		
+		WebDriver driver = null;
+		try {
+			//Initialization Phase
+			driver = PhantomFactory.getInstance().getDriver();
+			driver.get(taskDAO.getSeed());
+			System.out.println("Inicializando Phantom");
+			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
+			Thread.sleep(1000);
+			
+			//Navigation
+			Thread.sleep(Configuration.DRIVERDELAY); 
+			 
+	        while (driver.findElements(By.xpath("//*[contains(text(), 'Ver más artículos')]")).get(0).isDisplayed()){
+	        	   WebElement el = driver.findElements(By.xpath("//*[contains(text(), 'Ver más artículos')]")).get(0);
+				   Actions builder = new Actions(driver); 
+				   builder.moveToElement(el, el.getLocation().x, el.getLocation().y);
+				   Locatable hoverItem = (Locatable) el;
+				   Mouse mouse = ((HasInputDevices) driver).getMouse();
+				   mouse.mouseMove(hoverItem.getCoordinates());
+				   el.click();	
+				
+				   Thread.sleep(Configuration.DRIVERDELAY); 
+			}
 
+	        for (WebElement we : driver.findElements(By.xpath("//*[@id=\"productsContainer\"]/div"))) {	
+	      
+	        	   if (we.getLocation().getX()!=0) {
+
+				 //  System.out.println("Direeccion : " + we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href"));
+				 //  System.out.println("Precio: " + we.findElement(By.cssSelector("div.price")).getText());
+				 //  System.out.println("titulo: " + we.findElement(By.cssSelector("span.test")).getText());
+	        	  String url = we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href");
+	        	  
+	        	  String name = we.findElement(By.cssSelector("span.test")).getText();
+	        	  name = name.trim(); 
+	        	  
+	        	  String price = we.findElement(By.cssSelector("div.price")).getText(); 
+	        	  price = price.replace(",", "");
+	  			  price = price.replace("$", "");
+	  			  price = price.replaceAll("[^\\d.]", "");
+	  			  price = price.trim();
+	  			  price = price.substring(0, price.length()-2);
+	        	  
+				linksList.add(new CrawlInfo(url,name,Double.valueOf(price)));
+	        		   
+	        	   }
+	        }
+
+	      //Destroy
+			PhantomFactory.getInstance().removeDriver();		
+			Thread.sleep(1000);
+			return linksList;
+			
+		} catch (Exception e) {
+			System.out.println("Error en phantom" + e);
+			
+			try {
+			   if (driver!=null) { //Check if driver exists, research another option for checking this.
+				   PhantomFactory.getInstance().removeDriver();
+			   }
+			} catch (Exception e2) {
+				return null;
+			}
+			
+			return null;
+		}
+	}
+
+	@Override
+	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
+         try {
+		    
+			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
+	    	
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			
+			if (urlResponse == null){  //Task fatal error.
+				return null;
+	    	}
+			
+			if (urlResponse.getContent().equals("")){   
+				return new Product();
+	    	}
+	    	
+			String urlContent = urlResponse.getContent(); 
+			
+			String id = ContentParser.parseContent(urlContent, Regex.WALMART_ID);
+			if (id==null)
+				return new Product();
+		
+			
+			String description = ContentParser.parseContent(urlContent, Regex.WALMART_DESCRIPTION);
+			if (description==null)
+				description = "";  //Unlike name, sometimes we don't have a description.
+			description = description.trim();
+			description = Jsoup.parse(description).text();
+			
+			
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.WALMART_IMAGEURL);
+			if (imageUrl == null) {  
+				return new Product();
+			}
+			imageUrl = imageUrl.trim();
+				
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+
+	/**
 	@Override
 	public List<String> getUrlsFromTask(Task taskDAO) {
 		WebDriver driver = null;
@@ -133,12 +253,13 @@ public class Walmart extends AbstractCrawler{
 			imageUrl = imageUrl.trim();
 			imageUrl = "https://super.walmart.com.mx" + imageUrl;
 				
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,Double.valueOf(price),imageUrl,urlStr);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,"",Double.valueOf(price),imageUrl,urlStr);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
+*/
 
 
 }

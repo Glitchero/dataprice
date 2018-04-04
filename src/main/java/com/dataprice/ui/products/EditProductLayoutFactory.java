@@ -1,6 +1,7 @@
 package com.dataprice.ui.products;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,46 +15,97 @@ import com.dataprice.model.entity.Task;
 import com.dataprice.service.addgenderservice.AddGenderService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifyproduct.ModifyProductService;
+import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.showallbrands.ShowAllBrandsService;
 import com.dataprice.service.showallcategories.ShowAllCategoriesService;
 import com.dataprice.service.showallgenders.ShowAllGendersService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.service.showallsubcategories.ShowAllSubcategoriesService;
+import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.ui.classification.BrandLayoutFactory;
+import com.dataprice.ui.classification.CategoryLayoutFactory;
+import com.dataprice.ui.classification.GenderLayoutFactory;
+import com.dataprice.ui.classification.SubcategoryLayoutFactory;
 import com.dataprice.utils.NotificationsMessages;
 import com.dataprice.utils.StudentsStringUtils;
+import com.vaadin.annotations.Push;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
+@Push
+@UIScope
 @org.springframework.stereotype.Component
 public class EditProductLayoutFactory {
 
-   private Product product;
-   private TextField pid;
-   private ComboBox gender;
-   private ComboBox category;
-   private ComboBox subcategory;
-   private ComboBox brand;
+   //Product details
+   private TextField textFieldName;	
+   
+   private TextField textFieldId;
+   private TextField textFieldRetail;
+   private TextField textFieldPrice;
+   private TextField textFieldTaskName;
+   private TextField textFieldAddedDate;
+   
+   private TextField textFieldPid;
+   private ComboBoxWithButton GenderComboBoxWithButton;
+   private ComboBoxWithButton CategoryComboBoxWithButton;
+   private ComboBoxWithButton SubcategoryComboBoxWithButton;
+   private ComboBoxWithButton BrandComboBoxWithButton;
+   
+   private Window subWindow;
+   
+   private TextArea description;
+   private Image productImage;
+   private Link  productLink;
+   
    private Button editButton;
    private Button cancelButton;
+   private Button showRelatedProductsButton;
+   
+   private Product product;
+ 
    private boolean isSaveOperationValidForSubcategory;
    private boolean isSaveOperationValidForBrand;
+   private Grid<Product> topProductsTable;
+   
+   private Category currentCategory = null;
    
    
-   private class EditProductLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
+   private class EditProductLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener, CloseListener{
 
 		 
 		
@@ -65,43 +117,155 @@ public class EditProductLayoutFactory {
 		}
 		
 		public EditProductLayout init() {
+			
+			textFieldName = new TextField("Nombre");
+			textFieldName.setWidth("100%");
+			textFieldName.setEnabled(false);
+			
+			textFieldId = new TextField("Id");
+			textFieldId.setWidth("100%");
+			textFieldId.setEnabled(false);
+			
+			textFieldRetail = new TextField("Retail");
+			textFieldRetail.setWidth("100%");
+			textFieldRetail.setEnabled(false);
+			
+			textFieldPrice = new TextField("Price");
+			textFieldPrice.setWidth("100%");
+			textFieldPrice.setEnabled(false);
+			
+			textFieldTaskName = new TextField("Task Name");
+			textFieldTaskName.setWidth("100%");
+			textFieldTaskName.setEnabled(false);
+			
+			textFieldAddedDate = new TextField("Added date");
+			textFieldAddedDate.setWidth("100%");
+			textFieldAddedDate.setEnabled(false);
+			
+			textFieldPid = new TextField("Pid");
+			textFieldPid.setWidth("100%");
+			
+			GenderComboBoxWithButton = new ComboBoxWithButton("Gender", FontAwesome.USER,
+	                onClick -> openSubWindow("Gender"));
+			GenderComboBoxWithButton.setWidth("90%");
+			
+			CategoryComboBoxWithButton = new ComboBoxWithButton("Category", FontAwesome.USER,
+	                onClick -> openSubWindow("Category"));
+			CategoryComboBoxWithButton.setWidth("90%");
+			CategoryComboBoxWithButton.getComboBox().addValueChangeListener(this);
+			
+			SubcategoryComboBoxWithButton = new ComboBoxWithButton("Subcategory", FontAwesome.USER,
+	                onClick -> openSubWindow("Subcategory"));
+			SubcategoryComboBoxWithButton.setWidth("90%");
+			
+			BrandComboBoxWithButton = new ComboBoxWithButton("Brand", FontAwesome.USER,
+	                onClick -> openSubWindow("Brand"));  //Do not change 
+			BrandComboBoxWithButton.setWidth("90%");
+			
+			showRelatedProductsButton = new Button("Mostrar equivalencias");
+			showRelatedProductsButton.setWidth("100%");
+			showRelatedProductsButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			showRelatedProductsButton.addClickListener(this);
+			
 		   	binder = new Binder<>(Product.class);
 		   	
-		   	pid = new TextField("PID");
-		   	pid.setVisible(false);
-		   	
-			gender = new ComboBox("Genders");
-			gender.setVisible(false);
-			
-			category = new ComboBox("Categories");
-			category.setVisible(false);
-			category.addValueChangeListener(this);
-			
-			subcategory = new ComboBox("Subcategories");
-			subcategory.setVisible(false);
-			
-			brand = new ComboBox("Brand");
-			brand.setVisible(false);
-			
+		
 			editButton = new Button("Editar");
 			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			editButton.addClickListener(this);
-			editButton.setVisible(false);
+			editButton.setWidth("100%");
 			
-			cancelButton = new Button("Cancel");
+			cancelButton = new Button("Limpiar");
 			cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			cancelButton.addClickListener(this);
-			cancelButton.setVisible(false); 
+			cancelButton.setWidth("100%");
+			
+			
+			subWindow = new Window("Product profile manager");
+			subWindow.setModal(true);
+			subWindow.addCloseListener(this);
+			
+			productImage = new Image();
+			productImage.setWidth("100%");
+			productImage.setHeight("100%");
+	   
+			description = new TextArea();
+			description.setWidth("100%");
+			description.setHeight("100%");
+			description.setEnabled(false);
+			
+			productLink =  new Link();
+			productLink.setCaption("Go to website.");
+		
+			topProductsTable = new Grid<>(Product.class);
+			
+			topProductsTable.addColumn(p ->
+		      p.getName()).setCaption("Nombre");
+			
+			topProductsTable.addColumn(p ->
+		      p.getPid()).setCaption("Pid");
+			
+			topProductsTable.addColumn(p ->
+		      p.getPrice()).setCaption("Precio");
+			
+			topProductsTable.addComponentColumn(probe -> {
+			    Image image = new Image("", new ExternalResource(probe.getImageUrl()));
+			    image.setWidth(100,Unit.PIXELS);
+			    image.setHeight(100,Unit.PIXELS);
+
+			    return image;
+			}).setCaption("Imagen");
+				
+			topProductsTable.addColumn(p ->
+		      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>product link</a>",
+		      new HtmlRenderer()).setCaption("Link");
+			
+			topProductsTable.setSelectionMode(SelectionMode.MULTI);
+			
+			topProductsTable.removeColumn("imageUrl");
+			topProductsTable.removeColumn("productUrl");
+			topProductsTable.removeColumn("productKey");
+			topProductsTable.removeColumn("category");
+			topProductsTable.removeColumn("subcategory");
+			topProductsTable.removeColumn("brand");
+			topProductsTable.removeColumn("gender");
+			topProductsTable.removeColumn("task");
+			topProductsTable.removeColumn("name");
+			topProductsTable.removeColumn("pid");
+			topProductsTable.removeColumn("price");
+			topProductsTable.removeColumn("productId");
+			topProductsTable.removeColumn("description");
+			
+			topProductsTable.setBodyRowHeight(100);
+			topProductsTable.setVisible(true);
+			topProductsTable.setWidth("100%");
+
+			
 			return this;
 			
 		}
 
 		 private void clearField() {
-			pid.setValue("");
-		    gender.setValue(null);
-			category.setValue(null);
-			subcategory.setValue(null);
-			brand.setValue(null);
+			textFieldPid.setValue("");
+			GenderComboBoxWithButton.getComboBox().setValue(null);
+			CategoryComboBoxWithButton.getComboBox().setValue(null);
+			SubcategoryComboBoxWithButton.getComboBox().setValue(null);
+			BrandComboBoxWithButton.getComboBox().setValue(null);
+			
+			/**
+			textFieldName.setValue("");
+			textFieldId.setValue("");
+			textFieldPrice.setValue("");
+			textFieldRetail.setValue("");
+			textFieldTaskName.setValue("");
+			textFieldAddedDate.setValue("");
+			productImage.setSource(null);
+			description.setValue("");
+			productLink.setResource(null);
+			productLink.setTargetName("_blank");
+	
+			topProductsTable.setItems(new LinkedList<Product>());  //Remove all items.
+		   */
 		 }
 		 
 		private boolean isSaveOperationValidForCategory() {
@@ -114,60 +278,180 @@ public class EditProductLayoutFactory {
 		
 		public EditProductLayout load() {
 			List<Gender> genderList = showAllGendersService.getAllGenders();
-			gender.setItems(genderList);
+			GenderComboBoxWithButton.getComboBox().setItems(genderList);
 			List<Category> categoryList = showAllCategoriesService.getAllCategories();
-			category.setItems(categoryList);
+			CategoryComboBoxWithButton.getComboBox().setItems(categoryList);
+			
+			product = null;
 			return this;
 		}
 
 
 		public Component layout() {
-			 setMargin(true);
-			 HorizontalLayout h1 = new HorizontalLayout();
-			 h1.addComponent(pid);
-			 h1.addComponent(gender);
-			 h1.addComponent(category);
-			 h1.addComponent(subcategory);
-			 h1.addComponent(brand);
-			 h1.addComponent(editButton);
-			 h1.addComponent(cancelButton);
-			 h1.setComponentAlignment(editButton, Alignment.BOTTOM_CENTER);
-			 h1.setComponentAlignment(cancelButton, Alignment.BOTTOM_CENTER);
-		//	 HorizontalLayout h2 = new HorizontalLayout();
-		//	 h2.addComponent(editButton);
-		//	 h2.addComponent(cancelButton);
-			 
-		//	 VerticalLayout v1 = new VerticalLayout(h1,h2);
-			 return h1;
+				
+
+			
+			FormLayout formLayout2 = new FormLayout(textFieldId,textFieldRetail,textFieldPrice,textFieldTaskName,textFieldAddedDate);
+			formLayout2.setWidth("100%");
+			formLayout2.setMargin(false);
+			
+			VerticalLayout vlform2 = new VerticalLayout(formLayout2);
+			vlform2.setWidth("100%");
+			vlform2.setExpandRatio(formLayout2, 1);
+			vlform2.setMargin(false); //era true
+
+		
+			GenderComboBoxWithButton.getComboBox().setRequiredIndicatorVisible(false);
+			CategoryComboBoxWithButton.getComboBox().setRequiredIndicatorVisible(false);
+			SubcategoryComboBoxWithButton.getComboBox().setRequiredIndicatorVisible(false);
+			BrandComboBoxWithButton.getComboBox().setRequiredIndicatorVisible(false);
+			
+			
+			FormLayout formLayout3 = new FormLayout(textFieldPid,GenderComboBoxWithButton,CategoryComboBoxWithButton,SubcategoryComboBoxWithButton,BrandComboBoxWithButton);	
+			formLayout3.setWidth("100%");
+			formLayout3.setMargin(false);
+			VerticalLayout vlform3 = new VerticalLayout(formLayout3);
+			vlform3.setWidth("100%");
+			vlform3.setExpandRatio(formLayout3, 1);
+			vlform3.setMargin(false); //era true
+			
+			
+			Label descr = new Label("descrip");
+			descr.setValue("Descripción:");
+			descr.setWidth("100%");
+			descr.setHeight("10px");
+			VerticalLayout vlform4 = new VerticalLayout(descr,description);
+			vlform4.setWidth("90%");
+			vlform4.setHeight("100%");
+			vlform4.setMargin(false);
+			vlform4.setExpandRatio(description, 1);
+
+			
+			Label img = new Label("img");
+			img.setValue("Imagen:");
+			img.setWidth("100%");
+			//img.setHeight("10px");
+			HorizontalLayout himg = new HorizontalLayout(img,productLink);
+			himg.setWidth("100%");
+			himg.setHeight("10px");
+			himg.setSpacing(true);
+			himg.setComponentAlignment(img, Alignment.TOP_LEFT);
+			productLink.setWidth("100%");
+			himg.setComponentAlignment(productLink, Alignment.TOP_RIGHT);
+			VerticalLayout vlform5 = new VerticalLayout(himg,productImage);
+			vlform5.setWidth("90%"); //era 90
+			vlform5.setHeight("100%");
+			vlform5.setMargin(false);
+			vlform5.setExpandRatio(productImage, 1);
+			
+			
+			HorizontalLayout hl = new HorizontalLayout(vlform2,vlform3,vlform4,vlform5);
+			hl.setMargin(false);
+			hl.setSpacing(true);
+			hl.setWidth("100%");
+			hl.setComponentAlignment(vlform4, Alignment.TOP_RIGHT);
+			hl.setComponentAlignment(vlform5, Alignment.TOP_RIGHT);
+			
+
+			FormLayout formLayout = new FormLayout(textFieldName);
+			formLayout.setWidth("100%");
+			formLayout.setMargin(false);
+			
+			editButton.setWidth("100%");
+			cancelButton.setWidth("100%");
+			HorizontalLayout h1 = new HorizontalLayout(editButton,cancelButton);
+			h1.setMargin(false);
+			h1.setWidth("60%");
+			
+			VerticalLayout v3 = new VerticalLayout(topProductsTable);
+			v3.setSizeFull();
+			v3.setMargin(new MarginInfo(true, false, false, false));
+		
+			
+			VerticalLayout vl = new VerticalLayout(formLayout,hl,v3,h1);
+			vl.setComponentAlignment(h1, Alignment.TOP_CENTER);
+			vl.setWidth("100%");
+			
+			return vl;
 		}
-		
-		
+			
 		
 		@Override
 		public void buttonClick(ClickEvent event) {
 			 if (event.getSource()==editButton)	{
             	 edit();
              }else {
-            	 cancel();
-             }
-		
-			
+            	 if (event.getSource()==cancelButton) {
+            		 cancel();
+            	 }else {
+            		 if (event.getSource()==showRelatedProductsButton) {
+            			 showRelatedProductsTable();
+            		 }else {
+            		 }
+            		 
+            	 }
+             }	
 		}
 
 
+		private void showRelatedProductsTable() {
+			if (!topProductsTable.isVisible()) {
+				topProductsTable.setVisible(true);	
+				showRelatedProductsButton.setCaption("Cerrar equivalencias");
+			} else {
+				topProductsTable.setVisible(false);	
+				showRelatedProductsButton.setCaption("Mostrar equivalencias");
+			}
+			
+		}
+
+		private void openSubWindow(String profile) {
+			
+			Component component = null;
+			switch(profile) {
+			   case "Gender" :
+				   component = genderLayoutFactory.createComponent();
+			      break; 
+			   
+			   case "Category" :
+				   component = categoryLayoutFactory.createComponent();
+			      break; 
+			      
+			   case "Subcategory" :
+				   component = subcategoryLayoutFactory.createComponent();				   
+				  break; 
+				      
+			   case "Brand" :
+				   component = brandLayoutFactory.createComponent();
+				  break; 
+			   
+			   default : 
+			      System.out.println("Opps profile name dosen't exist, please check class editproductlayout");
+			}
+			
+		
+			VerticalLayout subContent = new VerticalLayout();
+			subWindow.setContent(subContent);
+			subContent.addComponent(component);
+			subWindow.center();
+			vaadinHybridMenuUI.addWindow(subWindow);
+		}
+
 		private void cancel() {
-			gender.setVisible(false);
-			category.setVisible(false);
-			subcategory.setVisible(false);
-			brand.setVisible(false);
-			editButton.setVisible(false);
-			cancelButton.setVisible(false);
-			pid.setVisible(false);
+
 			clearField();
 			
 		}
 
 		private void edit() {
+			
+			
+			if (product==null){
+				Notification.show("ERROR","Please select a product first",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+		//	System.out.println("el producto es: " + product.toString());
 			
 			if(!isSaveOperationValidForGender()) {
 				Notification.show("ERROR","Must have at least one gender",Type.ERROR_MESSAGE);
@@ -209,6 +493,21 @@ public class EditProductLayoutFactory {
 			}
 			
 			modifyProductService.modifyProduct(product);
+			
+			
+			//Propagate the profile
+			if (topProductsTable.getSelectedItems().size()!=0) {
+				for (Product p : topProductsTable.getSelectedItems()) {
+					p.setPid(product.getPid());
+					p.setBrand(product.getBrand());
+					p.setCategory(product.getCategory());
+					p.setSubcategory(product.getSubcategory());
+					p.setGender(product.getGender());
+					
+					modifyProductService.modifyProduct(p);
+				}
+			}
+			
 			productSaveListener.productSaved();
 			cancel();
 			Notification.show("EDIT","Product profile editted",Type.WARNING_MESSAGE);
@@ -217,23 +516,25 @@ public class EditProductLayoutFactory {
 
 
 		public EditProductLayout bind() {
-			binder.forField(pid)
+			binder.forField(textFieldPid)
 			  .asRequired("pid must be set")
 			  .bind("pid");
 			
-			binder.forField(gender)
-			  .asRequired("genders must be set")
-			  .bind("gender");
 			
-			binder.forField(category)
+			binder.forField(GenderComboBoxWithButton.getComboBox())
+				  .asRequired("genders must be set")
+				  .bind("gender");
+			
+			
+			binder.forField(CategoryComboBoxWithButton.getComboBox())
 			  .asRequired("category must be set")
 			  .bind("category");
 			
-			binder.forField(subcategory)
+			binder.forField(SubcategoryComboBoxWithButton.getComboBox())
 			  .asRequired("subcategory must be set")
 			  .bind("subcategory");
-					
-			binder.forField(brand)
+			
+			binder.forField(BrandComboBoxWithButton.getComboBox())
 			  .asRequired("brand must be set")
 			  .bind("brand");
 			
@@ -244,11 +545,10 @@ public class EditProductLayoutFactory {
 		
 		private boolean isEditOperationValid() {
 			
-			List<Product> productList = showAllProductsService.getAllProductsFromPid(pid.getValue());
+			List<Product> productList = showAllProductsService.getAllProductsFromPid(textFieldPid.getValue());
 			boolean validation = true;
 			boolean isSameProduct = false;
 			if (productList.size()==1) {
-			  //	if (productList.get(0).getProductId().equals(product.getProductId()) && productList.get(0).getRetail().equals(product.getRetail())){
 				if (productList.get(0).getProductKey().equals(product.getProductKey())){
 					isSameProduct = true;
 				}else {
@@ -257,11 +557,10 @@ public class EditProductLayoutFactory {
 			}
 			
 			if (!isSameProduct) {
-				//System.out.println("entre : " + product.getProductId() + " - " + product.getRetail());
-		    	Gender genderValue = (Gender) gender.getValue();
-			    Category categoryValue = (Category) category.getValue();
-			    Subcategory subcategoryValue = (Subcategory) subcategory.getValue();
-			    Brand brandValue = (Brand) brand.getValue();
+		    	Gender genderValue = (Gender) GenderComboBoxWithButton.getComboBox().getValue();
+			    Category categoryValue = (Category) CategoryComboBoxWithButton.getComboBox().getValue();
+			    Subcategory subcategoryValue = (Subcategory) SubcategoryComboBoxWithButton.getComboBox().getValue();
+			    Brand brandValue = (Brand) BrandComboBoxWithButton.getComboBox().getValue();
 			
 			    for(Product product : productList) {
 				
@@ -296,10 +595,17 @@ public class EditProductLayoutFactory {
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			
-			subcategory.setValue(null);
-			brand.setValue(null);
+
+		
+			SubcategoryComboBoxWithButton.getComboBox().setValue(null);
+			BrandComboBoxWithButton.getComboBox().setValue(null);
 			
-			Category categoryValue = (Category) category.getValue();
+		
+			Category categoryValue = (Category) CategoryComboBoxWithButton.getComboBox().getValue();
+			
+			currentCategory = categoryValue;
+			
+			//System.out.println("Guardado : " + currentCategory);
 			if (categoryValue!=null) {
 				List<Subcategory> subcategoryList = showAllSubcategoriesService.getAllSubcategoriesForCategory(categoryValue.getCategoryId());
 				if (subcategoryList.size() !=0) {
@@ -307,7 +613,7 @@ public class EditProductLayoutFactory {
 				}else {
 					isSaveOperationValidForSubcategory = false;
 				}
-				subcategory.setItems(subcategoryList);
+				SubcategoryComboBoxWithButton.getComboBox().setItems(subcategoryList);
 				
 				
 				List<Brand> brandList = showAllBrandsService.getAllBrandsForCategory(categoryValue.getCategoryId());
@@ -316,15 +622,52 @@ public class EditProductLayoutFactory {
 				}else {
 					isSaveOperationValidForBrand = false;
 				}
-				brand.setItems(brandList);
+				BrandComboBoxWithButton.getComboBox().setItems(brandList);
 				
 			}
 				
+		}
+
+		@Override
+		public void windowClose(CloseEvent e) {
+			List<Gender> genderList = showAllGendersService.getAllGenders();
+			GenderComboBoxWithButton.getComboBox().setItems(genderList);
+			List<Category> categoryList = showAllCategoriesService.getAllCategories();
+			CategoryComboBoxWithButton.getComboBox().setItems(categoryList);
+			
+			//We need to repeat the same as when we change a value in the category combobox.
+			
+			//System.out.println("Categorry value " + currentCategory);
+			
+			if (currentCategory!=null) {
+				List<Subcategory> subcategoryList = showAllSubcategoriesService.getAllSubcategoriesForCategory(currentCategory.getCategoryId());
+				if (subcategoryList.size() !=0) {
+					isSaveOperationValidForSubcategory = true;
+				}else {
+					isSaveOperationValidForSubcategory = false;
+				}
+				SubcategoryComboBoxWithButton.getComboBox().setItems(subcategoryList);
+				
+				
+				List<Brand> brandList = showAllBrandsService.getAllBrandsForCategory(currentCategory.getCategoryId());
+				if (brandList.size() !=0) {
+					isSaveOperationValidForBrand = true;
+				}else {
+					isSaveOperationValidForBrand = false;
+				}
+				BrandComboBoxWithButton.getComboBox().setItems(brandList);
+				
+			}
+			
+			
 		}
 		
 		
 		
 	}
+   
+   @Autowired
+   private VaadinHybridMenuUI vaadinHybridMenuUI;
 
    @Autowired
    private ShowAllProductsService showAllProductsService;
@@ -344,53 +687,102 @@ public class EditProductLayoutFactory {
    @Autowired
    private ShowAllBrandsService showAllBrandsService;
    
+	@Autowired
+	private SearchProductService searchProductService;
+	
+	@Autowired
+	private GenderLayoutFactory genderLayoutFactory;
+	
+	@Autowired
+	private CategoryLayoutFactory categoryLayoutFactory;
+	
+	@Autowired
+	private SubcategoryLayoutFactory subcategoryLayoutFactory;
+	
+	@Autowired
+	private BrandLayoutFactory brandLayoutFactory;
+	
+   
    public Component createComponent(ProductSaveListener productSaveListener) {
     		return new EditProductLayout(productSaveListener).init().load().bind().layout();
     }
     	
     	
 	public void editData(Object item) {
-		this.product = (Product) item;
+		product = (Product) item;
 		
 		//Set Pid
 		if (product.getPid()!=null) {
-			pid.setValue(product.getPid());
+			textFieldPid.setValue(product.getPid());
 		}else {
-			pid.setValue("");
+			textFieldPid.setValue("");
 		}
 		//Set Gender
 		if (product.getGender()!=null) {
-			gender.setValue(product.getGender());
+			GenderComboBoxWithButton.getComboBox().setValue(product.getGender());
 		}else {
-			gender.setValue(null);
+			GenderComboBoxWithButton.getComboBox().setValue(null);
 		}
 		//Set Category
 		if (product.getCategory()!=null) {
-			category.setValue(product.getCategory());
+			CategoryComboBoxWithButton.getComboBox().setValue(product.getCategory());
 		}else {
-			category.setValue(null);
+			CategoryComboBoxWithButton.getComboBox().setValue(null);
 		}
 		//Set Subcategory
 		if (product.getSubcategory()!=null) {
-			subcategory.setValue(product.getSubcategory());
+			SubcategoryComboBoxWithButton.getComboBox().setValue(product.getSubcategory());
 		}else {
-			subcategory.setValue(null);
+			SubcategoryComboBoxWithButton.getComboBox().setValue(null);
 		}
 		
 		//Set Brand
 		if (product.getBrand()!=null) {
-			brand.setValue(product.getBrand());
+			BrandComboBoxWithButton.getComboBox().setValue(product.getBrand());
 		}else {
-			brand.setValue(null);
+			BrandComboBoxWithButton.getComboBox().setValue(null);
 		}
+		//Set topProductsTable
+		List<Product> retrieveList = searchProductService.search(product.getName());
+		
+		if (retrieveList.size()!=0) {
+		boolean remove = retrieveList.remove(product);
+		topProductsTable.setItems(retrieveList);
+		}   
+		   
+		//Set product name
+		textFieldName.setValue(product.getName());
+		
+		//Set product pid
+		textFieldId.setValue(product.getProductId());
+		
+		//Set product precio
+		textFieldPrice.setValue(product.getPrice().toString());
 				
-		pid.setVisible(true);
-		gender.setVisible(true);
-		category.setVisible(true);
-		subcategory.setVisible(true);
-		brand.setVisible(true);
-		editButton.setVisible(true);
-		cancelButton.setVisible(true);
+		//Set product precio
+		textFieldRetail.setValue(product.getRetail());
+		
+		//Set product taskname
+		textFieldTaskName.setValue(product.getTask().getTaskName());
+		
+		//Set product date
+		textFieldAddedDate.setValue(product.getTask().getRunDateTime().toString());
+				
+		//Set product image
+		ExternalResource externalResource = new ExternalResource(product.getImageUrl());
+		productImage.setSource(externalResource);
+		
+		//Set description
+		
+		description.setValue(product.getDescription());
+		
+		//Set product link
+		
+		ExternalResource externalResourceLink = new ExternalResource(product.getProductUrl());
+		productLink.setResource(externalResourceLink);
+		productLink.setTargetName("_blank");
+		
+
 	}
 	
 	
