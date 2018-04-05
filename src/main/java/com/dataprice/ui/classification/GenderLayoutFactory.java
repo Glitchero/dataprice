@@ -15,6 +15,8 @@ import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -23,6 +25,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -75,49 +78,36 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 
 		    	binder = new Binder<>(Gender.class);
 
-		    	gender = new Gender();
-		    	
+		    	gender = new Gender();   	
 		    	genderName = new TextField("GenderName");
-		    
 		    	genderName.setVisible(false);
 		    	
 				saveButton = new Button("Save");
-
-				saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-				
+				saveButton.setIcon(VaadinIcons.EDIT);
 				saveButton.addClickListener(this);
-				
 				saveButton.setVisible(false);
-				
 				saveButton.setWidth("100%");
 				
 				addNewButton = new Button("Add New Gender");
-
-				addNewButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-				
-				addNewButton.addClickListener(this);
-				
-				addNewButton.setWidth("100%");
+				//addNewButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+				addNewButton.addClickListener(this);	
+				addNewButton.setWidth("50%");
+				addNewButton.setIcon(VaadinIcons.PLUS_CIRCLE);
 				
 				editButton = new Button("Edit");
-
-				editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-				
-				editButton.addClickListener(this);
-				
+			//	editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);	
+				editButton.setIcon(VaadinIcons.EDIT);
+				editButton.addClickListener(this);		
 				editButton.setVisible(false);
-				
 				editButton.setWidth("100%");
 				
 				cancelButton = new Button("Cancel");
-				
-				cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);
-				
-				cancelButton.addClickListener(this);
-				
+				cancelButton.setIcon(VaadinIcons.CLOSE);
+				cancelButton.addClickListener(this);		
 				cancelButton.setVisible(false);
-				
 				cancelButton.setWidth("100%");
+				
+				
 				gendersTable = new Grid<>(Gender.class);
 				gendersTable.setItems(genders);
 				
@@ -160,7 +150,8 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 			}	
 		 
 		 
-		 public Component layout() {		
+		 public Component layout() {	
+			 /**
 		    	setMargin(true);
              
 		    
@@ -185,8 +176,28 @@ public class GenderLayoutFactory implements UIComponentBuilder {
 				gridLayout.addComponent(gendersTable,0,1,0,3);
 				gridLayout.setHeight("100%");
 				return gridLayout;
-        
+            */
 		   
+			    HorizontalLayout h = new HorizontalLayout(saveButton,editButton);
+			    h.setWidth("100%");
+				h.setMargin(false);
+				
+			    VerticalLayout vl = new VerticalLayout(addNewButton,gendersTable);
+			    vl.setWidth("100%");
+			    vl.setMargin(new MarginInfo(false, false, false, false));
+			    
+			    VerticalLayout v2 = new VerticalLayout(genderName,h,cancelButton);
+			    v2.setWidth("100%");
+			    v2.setMargin(new MarginInfo(false, false, false, true));
+			    
+			    HorizontalSplitPanel h1 = new HorizontalSplitPanel();   
+		        h1.setFirstComponent(vl);
+		        h1.setSecondComponent(v2);
+		        h1.setSplitPosition(70);
+		        h1.setSizeFull();
+		        
+		        return h1;
+			 
 		    }
 
 		 

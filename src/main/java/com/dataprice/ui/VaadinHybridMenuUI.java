@@ -214,7 +214,7 @@ public class VaadinHybridMenuUI extends UI {
 			UI.getCurrent().getNavigator().navigateTo(HomePage.class.getSimpleName());
 		});
 
-		
+		/**
 		TopMenuButton notiButtonLow = TopMenuButtonBuilder.get()
 				.setCaption("Add Low notification")
 				.setIcon(VaadinIcons.BELL_O)
@@ -260,7 +260,7 @@ public class VaadinHybridMenuUI extends UI {
 		});
 
        
-		/**
+		
 		TopMenuButtonBuilder.get()
 				.setCaption("Home")
 				.setIcon(VaadinIcons.HOME)
@@ -272,7 +272,7 @@ public class VaadinHybridMenuUI extends UI {
 	private void buildLeftMenu(HybridMenu hybridMenu) {
 		
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
-				.withCaption("Home")
+				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.HOME)
 				.withNavigateTo(HomePage.class)
 				.build();
@@ -406,7 +406,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.USERS)
 				.withNavigateTo(BrandMainLayout.class)
 				.build());
-		*/
+		
        
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")
@@ -424,7 +424,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(reportsButton);
-
+        */
 	}
 
 	public HybridMenu getHybridMenu() {

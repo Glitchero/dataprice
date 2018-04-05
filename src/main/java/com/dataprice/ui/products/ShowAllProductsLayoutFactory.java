@@ -17,6 +17,7 @@ import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.event.selection.SelectionListener;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
@@ -68,6 +69,8 @@ public class ShowAllProductsLayoutFactory {
 	
 	private ProgressBar progressBar;
 	
+	private Product currentSelection;
+	
 	private class ShowAllProductsLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener, SelectionListener<Product> {
 
 		ProductEditListener productEditListener;
@@ -90,13 +93,13 @@ public class ShowAllProductsLayoutFactory {
 			search = new TextField();			
 			search.setWidth("100%");
 		   	
-			searchButton = new Button(FontAwesome.USER);
+			searchButton = new Button(VaadinIcons.SEARCH);
 			searchButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
 		//	searchButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			searchButton.addClickListener(this);		
 		//	searchButton.setWidth("30%");
 			
-			refreshButton = new Button(FontAwesome.USER);
+			refreshButton = new Button(VaadinIcons.REFRESH);
 			refreshButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
 		//	refreshButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			refreshButton.addClickListener(this);		
@@ -107,7 +110,7 @@ public class ShowAllProductsLayoutFactory {
 			
 			retailFilter = new ComboBox("Retails");
 			retailFilter.setVisible(true);
-			retailFilter.setItems("Walmart","Chedraui","SuplementosFitness");
+			retailFilter.setItems("Walmart","Chedraui","Liverpool","Coppel");
 			retailFilter.addValueChangeListener(this);
 			
 			
@@ -227,6 +230,9 @@ public class ShowAllProductsLayoutFactory {
 	    }
 
 
+		/**
+		 * This method filters by retails using a combobox!.
+		 */
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			if (retailFilter.getValue()!=null) {
@@ -245,11 +251,23 @@ public class ShowAllProductsLayoutFactory {
 
 		@Override
 		public void selectionChange(SelectionEvent<Product> event) {
+			
 			 SingleSelectionModel<Product> singleSelect = (SingleSelectionModel<Product>) productsTable.getSelectionModel();
-			 if (singleSelect.getSelectedItem().isPresent())
-			     productEditListener.productEdited(singleSelect.getSelectedItem().get()); 
+			 if (singleSelect.getSelectedItem().isPresent()) {
+				 if (currentSelection!=null) {
+					 if (!currentSelection.equals(singleSelect.getSelectedItem().get())) {
+				          currentSelection = singleSelect.getSelectedItem().get();
+				          productEditListener.productEdited(currentSelection);
+					 }
+				 }else{
+					 currentSelection = singleSelect.getSelectedItem().get();
+				     productEditListener.productEdited(currentSelection);
+				 }
+			 }
 		}
 	
+		
+		
 	}
 	
 	@Autowired
@@ -273,6 +291,8 @@ public class ShowAllProductsLayoutFactory {
 	public void refresh() {
 		products = showAllProductsService.getAllProducts();
 		productsTable.setItems(products);
+		if (currentSelection!=null)
+		    productsTable.select(currentSelection);
 	}
 
 

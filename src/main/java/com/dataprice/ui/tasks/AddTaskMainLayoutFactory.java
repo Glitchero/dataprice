@@ -4,6 +4,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.converter.StringToIntegerConverter;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -67,19 +68,21 @@ public class AddTaskMainLayoutFactory {
 		//	status = new TextField("Status");
 			
 			saveButton = new Button("save");
-			
+			saveButton.setWidth("100%");
+			saveButton.setIcon(VaadinIcons.EDIT);
 			
 			clearButton = new Button("clear");
+			clearButton.setWidth("100%");
+			clearButton.setIcon(VaadinIcons.ERASER);
 			
-
-			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			clearButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+			//saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			//clearButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			
 			saveButton.addClickListener(this);
 			clearButton.addClickListener(this);
 
 			//gender.setEmptySelectionAllowed(false);
-			retail.setItems("Walmart","Chedraui","SuplementosFitness","NutritionDepot","Liverpool","Coppel");
+			retail.setItems("Walmart","Chedraui","Liverpool","Coppel");
 
 			return this;
 		    
@@ -108,43 +111,30 @@ public class AddTaskMainLayoutFactory {
 		}	
 		
 	    public Component layout() {		
-	    	setMargin(true);
-
-	    	/**
-			GridLayout gridLayout = new GridLayout(2, 3);
-			gridLayout.setSizeUndefined();
-			gridLayout.setSpacing(true);
-
-			gridLayout.addComponent(taskName, 0, 0);
-			gridLayout.addComponent(retail, 1, 0);
-
-			gridLayout.addComponent(seed, 0, 1);
-		//	gridLayout.addComponent(status, 1, 1);
-
-
-			gridLayout.addComponent(new HorizontalLayout(saveButton, clearButton), 0, 2);
-
-			return gridLayout;
-            */
-	    	
-	    
-	    	
-	    	
+ 	
 	    	HorizontalLayout h2 = new HorizontalLayout(taskName,retail);
 	    	h2.setWidth("100%");
+	    	h2.setMargin(false);
 	    	
 	    	HorizontalLayout h3 = new HorizontalLayout(seed);
 	    	h3.setWidth("100%");
+	    	h3.setMargin(false);
 	    	
 	    	HorizontalLayout h1 = new HorizontalLayout(h2,h3);
 	    	
 	    	h1.setWidth("100%");
-	    	
+	    	h1.setMargin(false);
 	    	
 	    	HorizontalLayout h4 = new HorizontalLayout(saveButton,clearButton);
-
-            VerticalLayout v1 = new VerticalLayout(h1,h4);
+	    	h4.setWidth("25%");
+	    	h4.setMargin(false);
 	    	
+	    	
+            VerticalLayout v1 = new VerticalLayout(h1,h4);
+            v1.setComponentAlignment(h4, Alignment.MIDDLE_LEFT);
+            v1.setWidth("100%");
+            v1.setMargin(false);
+            
 	    	return v1;
 	    }
 

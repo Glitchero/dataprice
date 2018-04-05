@@ -15,12 +15,15 @@ import com.dataprice.service.showallcategories.ShowAllCategoriesService;
 import com.dataprice.ui.UIComponentBuilder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -69,24 +72,24 @@ public class BrandLayoutFactory implements UIComponentBuilder{
 		    	brandName.setVisible(false);
 		    	
 				saveButton = new Button("Save");
-				saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
+				saveButton.setIcon(VaadinIcons.EDIT);			
 				saveButton.addClickListener(this);				
 				saveButton.setVisible(false);				
 				saveButton.setWidth("100%");
 				
 				addNewButton = new Button("Add New Brand");
-				addNewButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
+				addNewButton.setIcon(VaadinIcons.PLUS_CIRCLE);				
 				addNewButton.addClickListener(this);				
-				addNewButton.setWidth("100%");
+				addNewButton.setWidth("50%");
 				
 				editButton = new Button("Edit");
-				editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);				
+				editButton.setIcon(VaadinIcons.EDIT);				
 				editButton.addClickListener(this);			
 				editButton.setVisible(false);			
 				editButton.setWidth("100%");
 				
 				cancelButton = new Button("Cancel");				
-				cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);				
+				cancelButton.setIcon(VaadinIcons.CLOSE);			
 				cancelButton.addClickListener(this);				
 				cancelButton.setVisible(false);
 				
@@ -136,7 +139,8 @@ public class BrandLayoutFactory implements UIComponentBuilder{
 			}	
 		 
 		 
-		 public Component layout() {		
+		 public Component layout() {	
+			 /**
 		    	setMargin(true);
                 
 		    		    	
@@ -162,7 +166,28 @@ public class BrandLayoutFactory implements UIComponentBuilder{
 				gridLayout.addComponent(brandsTable,0,1,0,3);
 				
 				return gridLayout;
-
+               */
+			 
+			 HorizontalLayout h = new HorizontalLayout(saveButton,editButton);
+			    h.setWidth("100%");
+				h.setMargin(false);
+				
+			    VerticalLayout vl = new VerticalLayout(addNewButton,brandsTable);
+			    vl.setWidth("100%");
+			    vl.setMargin(new MarginInfo(false, false, false, false));
+			    
+			    VerticalLayout v2 = new VerticalLayout(brandName,category,h,cancelButton);
+			    v2.setWidth("100%");
+			    v2.setMargin(new MarginInfo(false, false, false, true));
+			    
+			    HorizontalSplitPanel h1 = new HorizontalSplitPanel();   
+		        h1.setFirstComponent(vl);
+		        h1.setSecondComponent(v2);
+		        h1.setSplitPosition(70);
+		        h1.setSizeFull();
+		        
+		        return h1;
+		        
 		    }
 
 		 

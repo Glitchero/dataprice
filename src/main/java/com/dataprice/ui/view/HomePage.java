@@ -27,6 +27,7 @@ import com.byteowls.vaadin.chartjs.options.scale.CategoryScale;
 import com.byteowls.vaadin.chartjs.options.scale.LinearScale;
 import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.dataprice.model.entity.Product;
+import com.dataprice.service.productstatistics.ProductStatisticsService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -57,8 +58,16 @@ public class HomePage extends VerticalLayout implements View {
 	@Autowired
 	private ShowAllProductsService showAllProductsService;
 	
+	@Autowired
+	private ProductStatisticsService productStatisticsService;
+	
 	@PostConstruct
 	void init() {
+		//Statistics
+		Integer	numberOfProducts = productStatisticsService.getNumOfProducts(); 
+		Integer numberOfProductsWithoutProfile = productStatisticsService.getNumOfProductsWithoutPid();
+		
+		
 		setSizeFull();
 		setMargin(false);
 		
@@ -69,20 +78,21 @@ public class HomePage extends VerticalLayout implements View {
 		
 		Label title2 = new Label(
 			    "Total de Productos: \n" +
-			    "<center><b><font size=\"7\">1909</font></b></center>",
+			    "<center><b><font size=\"7\">" + numberOfProducts + "</font></b></center>",
 			    ContentMode.HTML);
 		
-        Icon icon = new Icon(VaadinIcons.DOWNLOAD_ALT);
-        icon.setSize(60);
+      //  Icon icon = new Icon(VaadinIcons.DOWNLOAD_ALT);
+      //  icon.setSize(60);
         
-	    HorizontalLayout vl = new HorizontalLayout(title2,icon);
-	    vl.setComponentAlignment(icon, Alignment.TOP_RIGHT);
+	    HorizontalLayout vl = new HorizontalLayout(title2);
+	  //  vl.setComponentAlignment(icon, Alignment.TOP_RIGHT);
 		vl.setMargin(false);
 		vl.setSizeFull();
 		
-		Label title3 = new Label();
-		title3.setCaption("Home");
-		title3.setValue("Third component");
+		Label title3 = new Label(
+			    "Por perfilar: \n" +
+			    "<center><b><font size=\"7\">" + numberOfProductsWithoutProfile + "</font></b></center>",
+			    ContentMode.HTML);
 		
 		Label title4 = new Label();
 		title4.setCaption("Home");
@@ -269,7 +279,7 @@ public class HomePage extends VerticalLayout implements View {
         
         //////////////////////////////////////////////////////////////
         
-        setMargin(true);
+        setMargin(false);
        /** 
         VerticalSplitPanel v1 = new VerticalSplitPanel(); 
         v1.setFirstComponent(chart);
@@ -299,12 +309,11 @@ public class HomePage extends VerticalLayout implements View {
         splitContentCode.setSplitPosition(50);
         splitContentCode.setWidth("100%");
         splitContentCode.setHeight("650px");
-        
- 
-        
+     
         HorizontalLayout hl = new HorizontalLayout(vl,title3,title4,title5,title6,title7);
         hl.setHeight("150px");
         hl.setWidth("100%");
+        hl.setMargin(false);
         addComponent(hl);
         addComponent(splitContentCode);
         

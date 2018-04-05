@@ -33,6 +33,7 @@ public class ProductLayoutFactory extends VerticalLayout implements View,Product
 		Component showProducts = showProductsLayoutFactory.createComponent(this);
 		Component editProducts = editProductLayoutFactory.createComponent(this);
 		showProducts.setSizeFull();
+		editProducts.setSizeFull();
 		
 		addComponent(showProducts);
 		addComponent(editProducts);

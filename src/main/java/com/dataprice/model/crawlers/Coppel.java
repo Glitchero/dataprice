@@ -55,8 +55,8 @@ public class Coppel extends AbstractCrawler{
 	  			price = price.replaceAll("[^\\d.]", "");
 	  			price = price.trim();				
 				String url = we.findElement(By.tagName("a")).getAttribute("href");	
-				System.out.println("Url: " + url);
-				System.out.println("Price: " + price);
+			//	System.out.println("Url: " + url);
+			//	System.out.println("Price: " + price);
 				linksList.add(new CrawlInfo(url,Double.valueOf(price)));
 	        }
 		
@@ -82,8 +82,8 @@ public class Coppel extends AbstractCrawler{
 			  			price = price.replaceAll("[^\\d.]", "");
 			  			price = price.trim();				
 						String url = we.findElement(By.tagName("a")).getAttribute("href");		
-						System.out.println("Url: " + url);
-						System.out.println("Price: " + price);
+					//	System.out.println("Url: " + url);
+					//	System.out.println("Price: " + price);
 						linksList.add(new CrawlInfo(url,Double.valueOf(price)));
 			        }
 				  
@@ -132,25 +132,23 @@ public class Coppel extends AbstractCrawler{
 			String urlContent = urlResponse.getContent(); 
 			
 			String id = ContentParser.parseContent(urlContent, Regex.COPPEL_ID);
-			System.out.println("Id: " + id);
+			
 			if (id==null)
 				return new Product();
 			
-			String name = ContentParser.parseContent(urlContent, Regex.COPPEL_NAME);
-			System.out.println("Name: " + name);	
+			String name = ContentParser.parseContent(urlContent, Regex.COPPEL_NAME);	
 			if (name==null)
 				return new Product();
 			name = name.trim();
+			name = Jsoup.parse(name).text();
 			
 			String description = ContentParser.parseContent(urlContent, Regex.COPPEL_DESCRIPTION);
-			System.out.println("description: " + description);
 			if (description==null)
 				description = "";  //Unlike name, sometimes we don't have a description.
 			description = description.trim();
 			description = Jsoup.parse(description).text(); 		 
 				
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.COPPEL_IMAGEURL);
-			System.out.println("imageUrl: " + imageUrl);
 			if (imageUrl == null) {  
 				return new Product();
 			}

@@ -34,7 +34,9 @@ import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.utils.NotificationsMessages;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -96,7 +98,7 @@ public class ShowAllTasksLayoutFactory{
 
 
 		public ShowAllTasksLayout init() {
-			setMargin(true); 
+			
 			
 			progressBar = new ProgressBar();
 			progressBar.setCaption("Cancelling...");
@@ -105,27 +107,31 @@ public class ShowAllTasksLayoutFactory{
 	        
 	        
 			removeTasksButton = new Button("Remove");
+			removeTasksButton.addClickListener(this);
+			removeTasksButton.setIcon(VaadinIcons.FILE_REMOVE);
+			//removeTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			
 			runTasksButton = new Button("Run");
 			runTasksButton.setWidth("100%");
 			runTasksButton.addClickListener(this);
-			runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			runTasksButton.setIcon(VaadinIcons.PLAY_CIRCLE);
+			//runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			
 			
 			retailFilter = new ComboBox("Retails");
 			retailFilter.setVisible(true);
-			retailFilter.setItems("Walmart","Chedraui","SuplementosFitness","NutritionDepot");
+			retailFilter.setItems("Walmart","Chedraui","Liverpool","Coppel");
 			retailFilter.addValueChangeListener(this);
 			
 			
-			runSelectedTasks= new CheckBox("Run only selected Tasks");
+			runSelectedTasks= new CheckBox("Run selected");
 			runSelectedTasks.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			//runSelectedTasks.setWidth("100%");
 			
 			stopTasksButton =  new Button("Stop");
 			stopTasksButton.setWidth("100%");
-			
-			stopTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
-			
+			stopTasksButton.setIcon(VaadinIcons.STOP);
+			//stopTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			stopTasksButton.addClickListener(this);
 			
 			tasksTable = new Grid<>(Task.class);
@@ -163,8 +169,7 @@ public class ShowAllTasksLayoutFactory{
 			tasksTable.setSelectionMode(SelectionMode.MULTI);
 			tasksTable.setSizeFull();
 			
-			removeTasksButton.addClickListener(this);
-			removeTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
+
 			
 			return this;
 		}
@@ -201,6 +206,8 @@ public class ShowAllTasksLayoutFactory{
 			//footerRow.getCell("Estatus").setHtml("<b>Total:</b>");
 			
 			addComponent(h3);
+			
+			setMargin(new MarginInfo(true, false, false, false)); 
 			
 			return this;
 		}

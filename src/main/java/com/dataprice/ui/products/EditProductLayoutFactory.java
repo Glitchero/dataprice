@@ -40,6 +40,7 @@ import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.data.ValidationException;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -100,10 +101,12 @@ public class EditProductLayoutFactory {
  
    private boolean isSaveOperationValidForSubcategory;
    private boolean isSaveOperationValidForBrand;
-   private Grid<Product> topProductsTable;
+   private Grid<Product> topProductsTable;  ///IMPORTANT!!!! I also have to update this table when edit is cliked!.
    
+   private Subcategory currentSubcategory = null;
    private Category currentCategory = null;
-   
+   private Gender currentGender = null;
+   private Brand currentBrand = null;
    
    private class EditProductLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener, CloseListener{
 
@@ -145,22 +148,29 @@ public class EditProductLayoutFactory {
 			textFieldPid = new TextField("Pid");
 			textFieldPid.setWidth("100%");
 			
-			GenderComboBoxWithButton = new ComboBoxWithButton("Gender", FontAwesome.USER,
+			
+			GenderComboBoxWithButton = new ComboBoxWithButton("Gender", VaadinIcons.PLUS_CIRCLE,
 	                onClick -> openSubWindow("Gender"));
 			GenderComboBoxWithButton.setWidth("90%");
+			GenderComboBoxWithButton.getComboBox().addValueChangeListener(this);
 			
-			CategoryComboBoxWithButton = new ComboBoxWithButton("Category", FontAwesome.USER,
+			
+			CategoryComboBoxWithButton = new ComboBoxWithButton("Category", VaadinIcons.PLUS_CIRCLE,
 	                onClick -> openSubWindow("Category"));
 			CategoryComboBoxWithButton.setWidth("90%");
 			CategoryComboBoxWithButton.getComboBox().addValueChangeListener(this);
 			
-			SubcategoryComboBoxWithButton = new ComboBoxWithButton("Subcategory", FontAwesome.USER,
+			
+			SubcategoryComboBoxWithButton = new ComboBoxWithButton("Subcategory", VaadinIcons.PLUS_CIRCLE,
 	                onClick -> openSubWindow("Subcategory"));
 			SubcategoryComboBoxWithButton.setWidth("90%");
+			SubcategoryComboBoxWithButton.getComboBox().addValueChangeListener(this);
 			
-			BrandComboBoxWithButton = new ComboBoxWithButton("Brand", FontAwesome.USER,
+			
+			BrandComboBoxWithButton = new ComboBoxWithButton("Brand", VaadinIcons.PLUS_CIRCLE,
 	                onClick -> openSubWindow("Brand"));  //Do not change 
 			BrandComboBoxWithButton.setWidth("90%");
+			BrandComboBoxWithButton.getComboBox().addValueChangeListener(this);
 			
 			showRelatedProductsButton = new Button("Mostrar equivalencias");
 			showRelatedProductsButton.setWidth("100%");
@@ -171,17 +181,21 @@ public class EditProductLayoutFactory {
 		   	
 		
 			editButton = new Button("Editar");
-			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			editButton.setIcon(VaadinIcons.EDIT);
+			//editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			editButton.addClickListener(this);
 			editButton.setWidth("100%");
 			
 			cancelButton = new Button("Limpiar");
-			cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			//cancelButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			cancelButton.setIcon(VaadinIcons.ERASER);
 			cancelButton.addClickListener(this);
 			cancelButton.setWidth("100%");
 			
 			
 			subWindow = new Window("Product profile manager");
+			subWindow.setHeight("550px");
+			subWindow.setWidth("800px");
 			subWindow.setModal(true);
 			subWindow.addCloseListener(this);
 			
@@ -306,7 +320,7 @@ public class EditProductLayoutFactory {
 			SubcategoryComboBoxWithButton.getComboBox().setRequiredIndicatorVisible(false);
 			BrandComboBoxWithButton.getComboBox().setRequiredIndicatorVisible(false);
 			
-			
+			/**
 			FormLayout formLayout3 = new FormLayout(textFieldPid,GenderComboBoxWithButton,CategoryComboBoxWithButton,SubcategoryComboBoxWithButton,BrandComboBoxWithButton);	
 			formLayout3.setWidth("100%");
 			formLayout3.setMargin(false);
@@ -314,7 +328,7 @@ public class EditProductLayoutFactory {
 			vlform3.setWidth("100%");
 			vlform3.setExpandRatio(formLayout3, 1);
 			vlform3.setMargin(false); //era true
-			
+			*/
 			
 			Label descr = new Label("descrip");
 			descr.setValue("Descripción:");
@@ -345,7 +359,7 @@ public class EditProductLayoutFactory {
 			vlform5.setExpandRatio(productImage, 1);
 			
 			
-			HorizontalLayout hl = new HorizontalLayout(vlform2,vlform3,vlform4,vlform5);
+			HorizontalLayout hl = new HorizontalLayout(vlform2,vlform4,vlform5);
 			hl.setMargin(false);
 			hl.setSpacing(true);
 			hl.setWidth("100%");
@@ -361,17 +375,21 @@ public class EditProductLayoutFactory {
 			cancelButton.setWidth("100%");
 			HorizontalLayout h1 = new HorizontalLayout(editButton,cancelButton);
 			h1.setMargin(false);
-			h1.setWidth("60%");
+			h1.setWidth("25%");
 			
 			VerticalLayout v3 = new VerticalLayout(topProductsTable);
 			v3.setSizeFull();
 			v3.setMargin(new MarginInfo(true, false, false, false));
 		
+			HorizontalLayout hProfile = new HorizontalLayout(textFieldPid,GenderComboBoxWithButton,CategoryComboBoxWithButton,SubcategoryComboBoxWithButton,BrandComboBoxWithButton);	
+			hProfile.setWidth("100%");
+			hProfile.setMargin(new MarginInfo(true, false, false, false));
 			
-			VerticalLayout vl = new VerticalLayout(formLayout,hl,v3,h1);
-			vl.setComponentAlignment(h1, Alignment.TOP_CENTER);
+			
+			VerticalLayout vl = new VerticalLayout(formLayout,hl,hProfile,v3,h1);
+			vl.setComponentAlignment(h1, Alignment.TOP_LEFT);
 			vl.setWidth("100%");
-			
+			vl.setMargin(false);
 			return vl;
 		}
 			
@@ -596,16 +614,31 @@ public class EditProductLayoutFactory {
 		public void valueChange(ValueChangeEvent event) {
 			
 
+			 if (event.getSource()==GenderComboBoxWithButton.getComboBox())	{
+				 currentGender = (Gender) GenderComboBoxWithButton.getComboBox().getValue();
+             }else {
+            	 if (event.getSource()==CategoryComboBoxWithButton.getComboBox()) {
+            		 categoryComboBoxChange();
+            	 }else {
+            		 if (event.getSource()==SubcategoryComboBoxWithButton.getComboBox()) {
+        				 currentSubcategory = (Subcategory) SubcategoryComboBoxWithButton.getComboBox().getValue();	
+            		 }else {
+        				 currentBrand = (Brand) BrandComboBoxWithButton.getComboBox().getValue();	
+            		 }	 
+            	 }
+             }			
+		}
+
 		
+		
+		private void categoryComboBoxChange() {
+			
 			SubcategoryComboBoxWithButton.getComboBox().setValue(null);
 			BrandComboBoxWithButton.getComboBox().setValue(null);
-			
 		
-			Category categoryValue = (Category) CategoryComboBoxWithButton.getComboBox().getValue();
-			
+			Category categoryValue = (Category) CategoryComboBoxWithButton.getComboBox().getValue();	
 			currentCategory = categoryValue;
-			
-			//System.out.println("Guardado : " + currentCategory);
+
 			if (categoryValue!=null) {
 				List<Subcategory> subcategoryList = showAllSubcategoriesService.getAllSubcategoriesForCategory(categoryValue.getCategoryId());
 				if (subcategoryList.size() !=0) {
@@ -622,22 +655,20 @@ public class EditProductLayoutFactory {
 				}else {
 					isSaveOperationValidForBrand = false;
 				}
-				BrandComboBoxWithButton.getComboBox().setItems(brandList);
-				
+				BrandComboBoxWithButton.getComboBox().setItems(brandList);	
 			}
-				
 		}
 
+		
 		@Override
 		public void windowClose(CloseEvent e) {
+			
 			List<Gender> genderList = showAllGendersService.getAllGenders();
 			GenderComboBoxWithButton.getComboBox().setItems(genderList);
 			List<Category> categoryList = showAllCategoriesService.getAllCategories();
 			CategoryComboBoxWithButton.getComboBox().setItems(categoryList);
 			
 			//We need to repeat the same as when we change a value in the category combobox.
-			
-			//System.out.println("Categorry value " + currentCategory);
 			
 			if (currentCategory!=null) {
 				List<Subcategory> subcategoryList = showAllSubcategoriesService.getAllSubcategoriesForCategory(currentCategory.getCategoryId());
@@ -659,33 +690,50 @@ public class EditProductLayoutFactory {
 				
 			}
 			
+			// Set profile
+			if (currentCategory!=null) {
+				CategoryComboBoxWithButton.getComboBox().setValue(currentCategory);
+			}
 			
+			if (currentGender!=null) {
+				GenderComboBoxWithButton.getComboBox().setValue(currentGender);
+			}
+			
+			if (currentSubcategory!=null) {
+				SubcategoryComboBoxWithButton.getComboBox().setValue(currentSubcategory);
+			}
+			
+			if (currentBrand!=null) {
+				BrandComboBoxWithButton.getComboBox().setValue(currentBrand);
+			}
+			
+			productSaveListener.productSaved();// Need to refresh main table!!
 		}
 		
 		
 		
 	}
    
-   @Autowired
-   private VaadinHybridMenuUI vaadinHybridMenuUI;
+    @Autowired
+    private VaadinHybridMenuUI vaadinHybridMenuUI;
 
-   @Autowired
-   private ShowAllProductsService showAllProductsService;
+    @Autowired
+    private ShowAllProductsService showAllProductsService;
    
-   @Autowired
-   private ShowAllGendersService showAllGendersService;
+    @Autowired
+    private ShowAllGendersService showAllGendersService;
    
-   @Autowired
-   private ModifyProductService modifyProductService;
+    @Autowired
+    private ModifyProductService modifyProductService;
    
-   @Autowired
-   private ShowAllCategoriesService showAllCategoriesService;
+    @Autowired
+    private ShowAllCategoriesService showAllCategoriesService;
    
-   @Autowired
-   private ShowAllSubcategoriesService showAllSubcategoriesService;
+    @Autowired
+    private ShowAllSubcategoriesService showAllSubcategoriesService;
    
-   @Autowired
-   private ShowAllBrandsService showAllBrandsService;
+    @Autowired
+    private ShowAllBrandsService showAllBrandsService;
    
 	@Autowired
 	private SearchProductService searchProductService;
@@ -747,7 +795,23 @@ public class EditProductLayoutFactory {
 		
 		if (retrieveList.size()!=0) {
 		boolean remove = retrieveList.remove(product);
-		topProductsTable.setItems(retrieveList);
+		String retailSelected = product.getRetail();
+		//System.out.println("Retail selected: " + retailSelected);
+		List<Product> retrieveFilteredList = new LinkedList<Product>();
+		//System.out.println("Tamaño: " + retrieveFilteredList.size());
+		int con = 0;
+		for (Product p : retrieveList) {
+			if (!p.getRetail().equals(retailSelected)) {
+				//System.out.println("Retail for: " + p.getRetail());
+			    retrieveFilteredList.add(p);
+			}
+			con++;
+			if (con>11) {
+			    break;	
+			}
+		}
+		//topProductsTable.setItems(retrieveList);
+		topProductsTable.setItems(retrieveFilteredList);
 		}   
 		   
 		//Set product name

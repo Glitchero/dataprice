@@ -3,6 +3,7 @@ package com.dataprice.model.crawlers;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -105,11 +106,13 @@ public class Chedraui extends AbstractCrawler{
 			if (name==null)
 				return new Product();
 			name = name.trim();
+			name = Jsoup.parse(name).text();
 			
 			String description = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_DESCRIPTION);
 			if (description==null)
 				description = "";  //Unlike name, sometimes we don't have a description.
 			description = description.trim();
+			description = Jsoup.parse(description).text();
 			 		 
 			String price = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_PRICE); 
 			if (price == null) {  
