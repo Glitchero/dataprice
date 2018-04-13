@@ -7,8 +7,11 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -26,8 +29,9 @@ public class Task {
 	  @Column(name = "task_name")
       private String taskName;
       
-	  @Column(name = "retail")
-      private String retail;
+	  @ManyToOne(fetch=FetchType.LAZY)
+	  @JoinColumn(name = "retail_id")
+	  private Retail retail;
        
 	  @Column(name = "seed")
       private String seed;
@@ -90,13 +94,13 @@ public class Task {
 
 
 
-	public String getRetail() {
+	public Retail getRetail() {
 		return retail;
 	}
 
 
 
-	public void setRetail(String retail) {
+	public void setRetail(Retail retail) {
 		this.retail = retail;
 	}
 

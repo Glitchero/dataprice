@@ -48,8 +48,8 @@ public class Product {
 	@Column(name = "product_id")
 	private String productId;
 	
-	@Column(name = "retail")
-	private String retail;
+	@Column(name = "seller")
+	private String seller;
 	
 	@Field
 	@Column(name = "name")
@@ -106,10 +106,10 @@ public class Product {
 	}
 	
 	
-	public Product(String productKey, String productId,String retail,Task task,String name,String description, Double price, String imageUrl, String productUrl) {
+	public Product(String productKey, String productId,String seller,Task task,String name,String description, Double price, String imageUrl, String productUrl) {
 		this.productKey = productKey;
 		this.productId = productId;
-		this.retail = retail;
+		this.seller = seller;
 		this.name = name;
 		this.description = description;
 		this.price = price;
@@ -138,12 +138,12 @@ public class Product {
 	}
 
 	
-	public String getRetail() {
-		return retail;
+	public String getSeller() {
+		return seller;
 	}
 
-	public void setRetail(String retail) {
-		this.retail = retail;
+	public void setSeller(String seller) {
+		this.seller = seller;
 	}
    
 	public String getName() {

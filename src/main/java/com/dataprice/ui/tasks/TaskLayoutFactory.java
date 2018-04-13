@@ -34,9 +34,8 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 	private TabSheet tabSheet;
 	
 	private void addLayout() {
-		setMargin(true);
-		tabSheet = new TabSheet();
-		tabSheet.setWidth("100%");
+		
+		
 		Component addStudentMainTab = mainLayoutFactory.createComponent(this);
 		Component showStudentsTab = showTasksLayoutFactory.createComponent(this,this);
 	 //	tabSheet.addTab(addStudentMainTab,StudentsStringUtils.MAIN_MENU.getString());
@@ -51,6 +50,8 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 	
 	@PostConstruct
 	void init() {
+		setSizeFull();
+		setMargin(false);
 		removeAllComponents();
 		addLayout();
 	}

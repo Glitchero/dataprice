@@ -19,4 +19,12 @@ public class UserServiceImpl implements UserDetailsService {
 		User user = userRepository.findByUsername(username);
 		return new CustomUserDetails(user.getUsername(), user.getPassword(), true, true, true, true, user.getAuthorities());
 	}
+	
+	
+    public User getUserByUsername(String username) throws UsernameNotFoundException {
+		
+		User user = userRepository.findByUsername(username);
+		return user;
+	}
+
 }

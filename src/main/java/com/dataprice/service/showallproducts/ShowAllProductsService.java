@@ -12,5 +12,11 @@ public interface ShowAllProductsService {
 	
 	public Product getProductFromKey(String productKey);
 	
-	public List<Product> getAllProductsFromRetail(String retail);
+	public List<Product> getAllProductsFromSeller(String seller);
+	
+	public List<Product> getProductsFromSellerNameWithMatches(String seller);
+	
+	public List<Product> getProductsFromSellerNameAndPid(String seller,String pid);
+	
+	public List<String> getSellersList();
 }

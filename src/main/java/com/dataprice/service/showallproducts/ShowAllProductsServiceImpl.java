@@ -34,11 +34,29 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 
 
 	@Override
-	public List<Product> getAllProductsFromRetail(String retail) {
-		return productRepository.getProductsFromRetailName(retail);
+	public List<Product> getAllProductsFromSeller(String seller) {
+		return productRepository.getProductsFromSellerName(seller);
 	}
 	
+	@Override
+	public List<Product> getProductsFromSellerNameWithMatches(String seller) {
+		return productRepository.getProductsFromSellerNameWithMatches(seller);
+	}
 
+
+	@Override
+	public List<Product> getProductsFromSellerNameAndPid(String seller, String pid) {
+		return productRepository.getProductsFromSellerNameAndPid(seller, pid);
+	}
+
+
+	@Override
+	public List<String> getSellersList() {
+		return productRepository.getSellersList();
+	}
+	
+	
+	
 	
 
 }

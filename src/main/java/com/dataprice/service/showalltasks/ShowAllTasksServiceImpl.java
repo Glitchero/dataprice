@@ -27,8 +27,8 @@ public class ShowAllTasksServiceImpl implements ShowAllTasksService{
 	}
 	
 	@Override
-	public List<Task> getAllTasksFromRetail(String retail) {
-		return taskRepository.getAllTasksFromRetail(retail);
+	public List<Task> getAllTasksFromRetailId(Integer retailId) {
+		return taskRepository.getAllTasksFromRetailId(retailId);
 	}
 
 }

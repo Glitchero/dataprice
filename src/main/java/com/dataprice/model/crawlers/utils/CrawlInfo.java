@@ -5,6 +5,16 @@ public class CrawlInfo {
 	private String url;
 	private double price;
 	private String productName;
+	private String seller;
+	
+	
+	public CrawlInfo(String url, String productName, double price, String seller) {
+		this.url = url;
+		this.productName = productName;
+		this.price = price;
+		this.seller = seller;
+	}
+	
 	
 	public CrawlInfo(String url, String productName, double price) {
 		this.url = url;
@@ -40,6 +50,14 @@ public class CrawlInfo {
 	}
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public String getSeller() {
+		return seller;
+	}
+
+	public void setSeller(String seller) {
+		this.seller = seller;
 	}
 	
 	

@@ -24,12 +24,14 @@ public class ProductLayoutFactory extends VerticalLayout implements View,Product
 	
 	@PostConstruct
 	void init() {
+		setSizeFull();
+		setMargin(false);
 		removeAllComponents();
 		addLayout();
 	}
 
 	private void addLayout() {
-		//setMargin(true);
+		
 		Component showProducts = showProductsLayoutFactory.createComponent(this);
 		Component editProducts = editProductLayoutFactory.createComponent(this);
 		showProducts.setSizeFull();

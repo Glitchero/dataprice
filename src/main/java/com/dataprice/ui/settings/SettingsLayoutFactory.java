@@ -15,22 +15,18 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringView
-public class SettingsLayoutFactory extends VerticalLayout implements View,GenderSavedListener{
+public class SettingsLayoutFactory extends VerticalLayout implements View{
 
 	@Autowired
-	private AddGenderMainLayoutFactory addGenderLayoutFactory;
+	private AddSettingsMainLayoutFactory addSettingsLayoutFactory;
 	
-	@Autowired
-	private ShowAllGendersLayoutFactory showGendersLayoutFactory;
 	
 	
 	private TabSheet tabSheet;
 
 	private void addLayout() {
-		setMargin(true);
-		tabSheet = new TabSheet();
-		tabSheet.setWidth("100%");
-		Component addStudentMainTab = addGenderLayoutFactory.createComponent();
+	
+		Component addStudentMainTab = addSettingsLayoutFactory.createComponent();
 	//	Component showStudentsTab = showGendersLayoutFactory.createComponent();
 		
 		addComponent(addStudentMainTab);
@@ -39,6 +35,9 @@ public class SettingsLayoutFactory extends VerticalLayout implements View,Gender
 
 	@PostConstruct
 	void init() {
+
+		setSizeFull();
+		setMargin(false);
 		removeAllComponents();
 		addLayout();
 	
@@ -49,10 +48,5 @@ public class SettingsLayoutFactory extends VerticalLayout implements View,Gender
 		// This view is constructed in the init() method()
 	}
 
-	@Override
-	public void genderSaved() {
-		showGendersLayoutFactory.refreshTable();
-		
-	}
 	
 }

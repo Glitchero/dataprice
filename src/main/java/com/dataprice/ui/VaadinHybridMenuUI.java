@@ -18,6 +18,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.reports.ReportsLayoutFactory;
+import com.dataprice.ui.reports.ReportsMainLayout;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
 
@@ -122,6 +123,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withViewChangeManager(new SpringViewChangeManager())
 				.build();
 
+		this.hybridMenu.setLeftMenuMinimal(!this.hybridMenu.isLeftMenuMinimal());
 		// Define the TopMenu in this method
 		buildTopMenu(this.hybridMenu);
 
@@ -165,7 +167,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build(hybridMenu);
       */
 		TopMenuSubContent userAccountMenu = TopMenuSubContentBuilder.get()
-				.setButtonCaption("Rene Tatua Castillo")
+				.setButtonCaption(SecurityContextHolder.getContext().getAuthentication().getName())
 				.setButtonIcon(new ThemeResource("images/profilDummy.jpg"))
 				.addButtonStyleName(EMenuStyle.ICON_RIGHT)
 				.addButtonStyleName(EMenuStyle.PROFILVIEW)
@@ -344,7 +346,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
 				.withCaption("Tasks")
-				.withIcon(VaadinIcons.COGS)
+				.withIcon(VaadinIcons.BUG)
 				.withNavigateTo(TaskLayoutFactory.class)
 				.build();
 
@@ -363,7 +365,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
 		.withCaption("Products")
-		.withIcon(VaadinIcons.COGS)
+		.withIcon(VaadinIcons.CART)
 		.withNavigateTo(ProductLayoutFactory.class)
 		.build();
 
@@ -407,7 +409,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withNavigateTo(BrandMainLayout.class)
 				.build());
 		
-       
+        */
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")
 				.withIcon(VaadinIcons.COGS)
@@ -419,12 +421,12 @@ public class VaadinHybridMenuUI extends UI {
 		
 		MenuButton reportsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Reports")
-				.withIcon(VaadinIcons.COGS)
-				.withNavigateTo(ReportsLayoutFactory.class)
+				.withIcon(VaadinIcons.CHART_GRID)
+				.withNavigateTo(ReportsMainLayout.class)
 				.build();
 
 		hybridMenu.addLeftMenuButton(reportsButton);
-        */
+       
 	}
 
 	public HybridMenu getHybridMenu() {
@@ -465,6 +467,7 @@ public class VaadinHybridMenuUI extends UI {
 	}
 	
 	public void finishTasksExecution(){
+		/**
 		access(new Runnable() {     
      	   @Override     
      	   public void run() {         
@@ -477,7 +480,8 @@ public class VaadinHybridMenuUI extends UI {
 				.build(); 
      	   }
      	});
-		/**
+     	*/
+		
 				NotificationBuilder.get(this.notificationCenter)
 				.withCaption("Test")
 				.withDescription("Tasks completed")
@@ -485,7 +489,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.INFO)
 				.withCloseButton()
 				.build();	
-	    */
+	   
 	}
 	
 	
@@ -519,6 +523,17 @@ public class VaadinHybridMenuUI extends UI {
 		
 		return false;
 
+    }
+	
+	
+	public void noSellerSelectedNotification(){
+		NotificationBuilder.get(this.notificationCenter)
+		.withCaption("Opps")
+		.withDescription("No seller selected yet, please go to settings.")
+		.withPriority(ENotificationPriority.HIGH)
+		.withIcon(VaadinIcons.INFO)
+		.withCloseButton()
+		.build();	
     }
 
 

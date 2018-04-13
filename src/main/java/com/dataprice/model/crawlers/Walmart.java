@@ -81,7 +81,10 @@ public class Walmart extends AbstractCrawler{
 	  			  price = price.trim();
 	  			  price = price.substring(0, price.length()-2);
 	        	  
-				linksList.add(new CrawlInfo(url,name,Double.valueOf(price)));
+	  			String seller = we.findElement(By.cssSelector("div.productList-sellerName")).getText();
+	  			seller = seller.replace("Vendido por:", "");
+	  			seller = seller.trim();
+				linksList.add(new CrawlInfo(url,name,Double.valueOf(price),seller));
 	        		   
 	        	   }
 	        }
@@ -142,7 +145,7 @@ public class Walmart extends AbstractCrawler{
 			}
 			imageUrl = imageUrl.trim();
 				
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl());
+			return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl());
 		} catch (Exception e) {
 			return null;
 		}

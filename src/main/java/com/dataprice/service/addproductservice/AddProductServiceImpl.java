@@ -33,7 +33,7 @@ public class AddProductServiceImpl implements AddProductService {
 			Product product = new Product();
 			product.setProductKey(productDAO.getProductKey());
 			product.setProductId(productDAO.getProductId());
-			product.setRetail(productDAO.getRetail());
+			product.setSeller(productDAO.getSeller());
 			product.setName(productDAO.getName());
 			product.setDescription(productDAO.getDescription());
 			product.setPrice(productDAO.getPrice());

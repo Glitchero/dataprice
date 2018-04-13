@@ -17,8 +17,8 @@ public class RemoveProductServiceImpl implements RemoveProductService{
 	private ProductRepository productRepository;
 
 	@Override
-	public void removeAllProductsFromRetailName(String retailName) {
-		     List<Product> products = productRepository.getProductsFromRetailName(retailName);
+	public void removeAllProductsFromSellerName(String sellerName) {
+		     List<Product> products = productRepository.getProductsFromSellerName(sellerName);
 		     
 		     for (Product p : products) {
 		    	 productRepository.delete(p);

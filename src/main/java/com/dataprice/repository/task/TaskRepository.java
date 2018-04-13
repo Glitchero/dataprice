@@ -19,7 +19,7 @@ public interface TaskRepository extends JpaRepository<Task,Integer> {
 	@Query("select t from Task t where t.status=:statusKey")
 	List<Task> getAllPendingTasks(@Param("statusKey") String statusKey);
 	
-	@Query("select t from Task t where t.retail=:retailKey")
-	List<Task> getAllTasksFromRetail(@Param("retailKey") String retailKey);
+	@Query("select t from Task t where t.retail.retailId=:retailKey")
+	List<Task> getAllTasksFromRetailId(@Param("retailKey") Integer retailKey);
 	
 }

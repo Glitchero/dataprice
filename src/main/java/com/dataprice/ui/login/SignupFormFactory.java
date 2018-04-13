@@ -3,6 +3,7 @@ package com.dataprice.ui.login;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.service.security.RegisterUserService;
+import com.dataprice.service.security.UserServiceImpl;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Panel;
@@ -17,12 +18,15 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
+import com.dataprice.model.entity.User;
 
 @org.springframework.stereotype.Component
 public class SignupFormFactory {
 
 	@Autowired
 	private RegisterUserService registerUserService;
+	
+
 	
 	private class SignupForm {
 		
@@ -58,6 +62,7 @@ public class SignupFormFactory {
 					}
 					
 					registerUserService.save(username.getValue(), passwordField.getValue());
+					
 					UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/login");
 				}
 			});

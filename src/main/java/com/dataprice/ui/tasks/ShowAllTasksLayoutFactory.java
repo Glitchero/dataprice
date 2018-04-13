@@ -18,13 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.ProductHistory;
+import com.dataprice.model.entity.ProductHistoryKey;
+import com.dataprice.model.entity.Retail;
 import com.dataprice.model.entity.Task;
+import com.dataprice.service.addproducthistservice.AddProductHistService;
 import com.dataprice.service.addproductservice.AddProductService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.crawltask.CrawlTaskServiceImpl;
 import com.dataprice.service.modifytask.ModifyTaskServiceImpl;
 import com.dataprice.service.removeproduct.RemoveProductService;
 import com.dataprice.service.removetask.RemoveTaskService;
+import com.dataprice.service.showallretails.ShowAllRetailsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
@@ -75,14 +80,14 @@ public class ShowAllTasksLayoutFactory{
 	
 	private ComboBox retailFilter;
 	
+	private List<Retail> retailers;
+	
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
 
 		private Button removeTasksButton;
 		private Button runTasksButton;
 		private Button stopTasksButton;
 		//private Thread thread;
-		private CheckBox runSelectedTasks;
-		
 		
 		
 		private ProgressBar progressBar;  //Tell us to wait for cancell!
@@ -108,30 +113,26 @@ public class ShowAllTasksLayoutFactory{
 	        
 			removeTasksButton = new Button("Remove");
 			removeTasksButton.addClickListener(this);
-			removeTasksButton.setIcon(VaadinIcons.FILE_REMOVE);
-			//removeTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			removeTasksButton.setIcon(VaadinIcons.TRASH);
+			removeTasksButton.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
 			
 			runTasksButton = new Button("Run");
 			runTasksButton.setWidth("100%");
 			runTasksButton.addClickListener(this);
 			runTasksButton.setIcon(VaadinIcons.PLAY_CIRCLE);
-			//runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			
 			
 			retailFilter = new ComboBox("Retails");
 			retailFilter.setVisible(true);
-			retailFilter.setItems("Walmart","Chedraui","Liverpool","Coppel");
+			retailFilter.setItems(retailers);
 			retailFilter.addValueChangeListener(this);
 			
-			
-			runSelectedTasks= new CheckBox("Run selected");
-			runSelectedTasks.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			//runSelectedTasks.setWidth("100%");
 			
 			stopTasksButton =  new Button("Stop");
 			stopTasksButton.setWidth("100%");
 			stopTasksButton.setIcon(VaadinIcons.STOP);
-			//stopTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			stopTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			stopTasksButton.addClickListener(this);
 			
 			tasksTable = new Grid<>(Task.class);
@@ -177,15 +178,16 @@ public class ShowAllTasksLayoutFactory{
 
 
 		public ShowAllTasksLayout load() {
-			tasks = showAllTasksService.getAllTasks();     			
+			tasks = showAllTasksService.getAllTasks();    
+			retailers = showAllRetailsService.getAllRetailers();
 			return this;
 		}
 		
 		
 		
 		public ShowAllTasksLayout layout() {
-			HorizontalLayout h1 = new HorizontalLayout(runSelectedTasks,runTasksButton,stopTasksButton,progressBar);
-			h1.setComponentAlignment(runSelectedTasks, Alignment.BOTTOM_CENTER);
+			HorizontalLayout h1 = new HorizontalLayout(runTasksButton,stopTasksButton,progressBar);
+			
 			h1.setWidth("100%");
 			
 			HorizontalLayout h2 = new HorizontalLayout(removeTasksButton);
@@ -207,7 +209,7 @@ public class ShowAllTasksLayoutFactory{
 			
 			addComponent(h3);
 			
-			setMargin(new MarginInfo(true, false, false, false)); 
+			setMargin(new MarginInfo(false, false, false, false)); 
 			
 			return this;
 		}
@@ -284,34 +286,22 @@ public class ShowAllTasksLayoutFactory{
 		
 		
         private void runTasks() {
-			
-        	/**
-        	 * It would be nice to have an addMultiSelectionListener(MultiSelectionListener). So when we select a
-        	 * row, the checkbox is automatically selected and viceversa.!!
-        	 * It is possible to make the code cleaner in general of this method. Should we add what happen when 
-        	 * we select a row but checkbox is off. Should the program remind the user to click the checkbox in order to 
-        	 * run only the selected rows and not all the rows. This could be future work.
-        	 */
+
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
                 //vaadinHybridMenuUI.startTasksExecution(new TasksExecutor());
 				
-				if (runSelectedTasks.getValue() && tasksTable.getSelectedItems().size()!=0) { //Checkbox on and is at least one selected
+				if (tasksTable.getSelectedItems().size()!=0) { //at least one selected
 					System.out.println("Tamaño de la seleccion: " + tasksTable.getSelectedItems().size() );
-					System.out.println("Checkbox on and is at least one selected");
+					System.out.println("at least one selected");
 					List<Task> tasksSelected = new LinkedList<Task>();
 					tasksSelected.addAll(tasksTable.getSelectedItems());
 					TasksExecutor tasksExecutor = new TasksExecutor(tasksSelected);
 					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);
 					
                 } else {
-                	if(runSelectedTasks.getValue() && tasksTable.getSelectedItems().size()==0) {  //Checkbox on and no one selected
-    					Notification.show("CUIDADO","Debe elegir al menos un task", Type.ERROR_MESSAGE);
-    					System.out.println("Checkbox on and no one selected");
-                	}else {
                 		System.out.println("Normal execution");
                 		TasksExecutor tasksExecutor = new TasksExecutor();
-    					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);
-                	}    	
+    					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);  	  	
                 }	
 				
 			}else {
@@ -485,7 +475,7 @@ public class ShowAllTasksLayoutFactory{
 			    
 			    setTaskStatus(task,"Escaneando");
 			    //System.out.println("Task nombreeee " + task.toString());
-        	    List<CrawlInfo> productsInfo = CrawlTaskServiceImpl.getService(task.getRetail()).getUrlsFromTask(task);
+        	    List<CrawlInfo> productsInfo = CrawlTaskServiceImpl.getService(task.getRetail().getCrawlerName()).getUrlsFromTask(task);
         	    //System.out.println("Tamaño del array " + productsUrl.size());
         	    if (productsInfo==null)
         	    	Thread.currentThread().interrupt();
@@ -510,7 +500,7 @@ public class ShowAllTasksLayoutFactory{
     			
     		   CrawlInfo crawlInfo = productsInfo.get(i);
     		 
-    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail()).parseProductFromURL(crawlInfo, task);
+    		   Product p = CrawlTaskServiceImpl.getService(task.getRetail().getCrawlerName()).parseProductFromURL(crawlInfo, task);
     		
     		   if (p==null)
     			   Thread.currentThread().interrupt();  
@@ -524,6 +514,7 @@ public class ShowAllTasksLayoutFactory{
     		   if (!p.getProductKey().equals("")) {
     			   downloadedProducts++;
     			   addProductService.saveProduct(p);
+    			   addProductHistService.saveProductHist(new ProductHistory(new ProductHistoryKey(p.getProductKey()),p.getPrice()));
     			   if ((i+1) % 5 == 0 || i+1 == productsInfo.size())  //Update evert 5 downloads or in the last iteration, in the future we can also include the saveProduct.
     			         setTaskProgress(task, (double) (i + 1)/ (double) productsInfo.size());
     		   }else {
@@ -584,8 +575,8 @@ public class ShowAllTasksLayoutFactory{
 		public void valueChange(ValueChangeEvent event) {
 			
 		    if (retailFilter.getValue()!=null) {
-		    	String retailValue = retailFilter.getValue().toString();
-			   tasks = showAllTasksService.getAllTasksFromRetail(retailValue);
+		       Retail selectedRetail = (Retail) retailFilter.getValue();
+			   tasks = showAllTasksService.getAllTasksFromRetailId(selectedRetail.getRetailId());
 		        
                 vaadinHybridMenuUI.access(new Runnable() {     
             	   @Override     
@@ -599,10 +590,16 @@ public class ShowAllTasksLayoutFactory{
 	}
 	
 	@Autowired
+    private ShowAllRetailsService showAllRetailsService;
+	
+	@Autowired
 	private VaadinHybridMenuUI vaadinHybridMenuUI;
 	
 	@Autowired
 	private AddProductService addProductService;
+	
+	@Autowired
+	private AddProductHistService addProductHistService;
 	
 	@Autowired
 	private ModifyTaskServiceImpl modifyTaskService;

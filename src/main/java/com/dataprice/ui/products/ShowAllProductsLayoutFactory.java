@@ -3,11 +3,15 @@ package com.dataprice.ui.products;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
+import com.dataprice.model.entity.User;
 import com.dataprice.service.productstatistics.ProductStatisticsService;
 import com.dataprice.service.searchproduct.SearchProductService;
+import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.UIComponentBuilder;
@@ -51,6 +55,8 @@ public class ShowAllProductsLayoutFactory {
 	
 	private List<Product> products;
 	
+	private Settings settings;
+	
 	private Grid<Product> productsTable;
 	
 	private TextField search;
@@ -71,6 +77,7 @@ public class ShowAllProductsLayoutFactory {
 	
 	private Product currentSelection;
 	
+	
 	private class ShowAllProductsLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener, SelectionListener<Product> {
 
 		ProductEditListener productEditListener;
@@ -90,7 +97,8 @@ public class ShowAllProductsLayoutFactory {
 		    //progressBar.setVisible(true);
 		        
 			
-			search = new TextField();			
+			search = new TextField();		
+			search.setPlaceholder("Busca por nombre, sku, etc.");
 			search.setWidth("100%");
 		   	
 			searchButton = new Button(VaadinIcons.SEARCH);
@@ -116,7 +124,7 @@ public class ShowAllProductsLayoutFactory {
 			
 			productsTable = new Grid<>(Product.class);
 			
-			productsTable.setColumnOrder("productId","retail","name", "price", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
+			productsTable.setColumnOrder("productId","name", "price", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
 			
 			productsTable.setVisible(true);
 			productsTable.setItems(products);
@@ -147,6 +155,7 @@ public class ShowAllProductsLayoutFactory {
 		    productsTable.removeColumn("productKey");
 		    productsTable.removeColumn("task");
 		    productsTable.removeColumn("description");
+		    productsTable.removeColumn("seller");
 		    
 		    productsTable.addSelectionListener(this);
 		   // Render a button that edit the data row (item)
@@ -157,18 +166,24 @@ public class ShowAllProductsLayoutFactory {
 		  //      }));
 		    
 			
-			//productsTable.setBodyRowHeight(100);
-			productsTable.setWidth("100%");
-			//productsTable.setHeight("580px");
+			productsTable.setSizeFull();
+		
 			return this;
 		}
 		
 		
 		public ShowAllProductsLayout load() {
 			//loadDataInNewThread();
-			products = showAllProductsService.getAllProducts(); 
+			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			settings = user.getSettings();
+			if (settings.getMainSeller()==null) {
+				vaadinHybridMenuUI.noSellerSelectedNotification();
+			}
+				
+			products = showAllProductsService.getAllProductsFromSeller(settings.getMainSeller());
 			numberOfProducts = productStatisticsService.getNumOfProducts(); 
 			numberOfProductsWithoutProfile = productStatisticsService.getNumOfProductsWithoutPid();
+			
 			return this;
 		}
 		
@@ -195,11 +210,11 @@ public class ShowAllProductsLayoutFactory {
 		//	hl.setComponentAlignment(refreshButton, Alignment.BOTTOM_LEFT);
 		//	hl.setComponentAlignment(statusCounter, Alignment.MIDDLE_RIGHT);
 		//	hl.setSpacing(true);
-			hl.setWidth("100%");
+			hl.setWidth("70%");
 			
-			HeaderRow row = productsTable.prependHeaderRow();
-			row.getCell("retail").setComponent(retailFilter);
-			row.getCell("name").setComponent(hl);
+		//	HeaderRow row = productsTable.prependHeaderRow();
+		//	row.getCell("seller").setComponent(retailFilter);
+		//	row.getCell("name").setComponent(hl);
 		//	VerticalLayout vl = new VerticalLayout(hl,productsTable);
 			//vl.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
 		//	vl.setWidth("100%");
@@ -207,7 +222,11 @@ public class ShowAllProductsLayoutFactory {
 		//	vl.setMargin(false);
 		//	return vl;
 			
-			return productsTable;
+			VerticalLayout productsTableLayout = new VerticalLayout(hl,productsTable);
+			productsTableLayout.setMargin(false);
+			productsTableLayout.setSizeFull();
+			
+			return productsTableLayout;
 		}
 
 
@@ -236,8 +255,8 @@ public class ShowAllProductsLayoutFactory {
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			if (retailFilter.getValue()!=null) {
-		    	String retailValue = retailFilter.getValue().toString();
-			    products = showAllProductsService.getAllProductsFromRetail(retailValue);		   
+		    	String sellerValue = retailFilter.getValue().toString();
+			    products = showAllProductsService.getAllProductsFromSeller(sellerValue);		   
                 vaadinHybridMenuUI.access(new Runnable() {     
             	   @Override     
             	   public void run() {         
@@ -270,6 +289,9 @@ public class ShowAllProductsLayoutFactory {
 		
 	}
 	
+	@Autowired 
+	private UserServiceImpl userServiceImpl;
+	
 	@Autowired
 	private ProductStatisticsService productStatisticsService;
 	
@@ -289,7 +311,7 @@ public class ShowAllProductsLayoutFactory {
 
 
 	public void refresh() {
-		products = showAllProductsService.getAllProducts();
+		products = showAllProductsService.getAllProductsFromSeller(settings.getMainSeller());
 		productsTable.setItems(products);
 		if (currentSelection!=null)
 		    productsTable.select(currentSelection);

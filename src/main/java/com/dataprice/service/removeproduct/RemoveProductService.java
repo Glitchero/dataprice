@@ -6,6 +6,6 @@ import com.dataprice.model.entity.Task;
 public interface RemoveProductService {
 
 	//Later change this for task, now i dont have a connection between tasks and products.
-	public void removeAllProductsFromRetailName(String retailName);
+	public void removeAllProductsFromSellerName(String sellerName);
 	
 }

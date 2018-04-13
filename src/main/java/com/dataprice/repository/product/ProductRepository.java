@@ -29,13 +29,22 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	@Query("select p from Product p where p.subcategory.subcategoryId=:subcategoryKey")
 	List<Product> getProductsFromSubcategory(@Param("subcategoryKey") Integer subcategoryKey);
 	
-	@Query("select p from Product p where p.retail=:retailName")
-	List<Product> getProductsFromRetailName(@Param("retailName") String retailName);
+	@Query("select p from Product p where p.seller=:sellerName")
+	List<Product> getProductsFromSellerName(@Param("sellerName") String sellerName);
 	
 	@Query("select count(p.productKey) from Product p")
 	Integer getNumOfProducts();
 	
 	@Query("select count(p.productKey) from Product p where p.pid is null")
 	Integer getNumOfProductsWithoutPid();
+	
+	@Query("select p from Product p where p.seller=:sellerName and p.pid is not null and p.pid in (select p.pid from Product p group by p.pid having count(p.pid)> 1)")
+	List<Product> getProductsFromSellerNameWithMatches(@Param("sellerName") String sellerName);
+	
+	@Query("select p from Product p where p.seller=:sellerName and p.pid=:pidId")
+	List<Product> getProductsFromSellerNameAndPid(@Param("sellerName") String sellerName, @Param("pidId") String pidId);
+	
+	@Query("select p.seller from Product p group by p.seller")
+	List<String> getSellersList();
 	
 }

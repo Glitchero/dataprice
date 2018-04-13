@@ -164,7 +164,7 @@ public class ProductDAO {
 
 		  	  // complete statement with Product fields
 			  statement.setString(1,prod.getProductId());
-			  statement.setString(2,prod.getRetail());
+			  statement.setString(2,prod.getSeller());
 			  statement.setString(3,prod.getName());
 			  statement.setDouble(4, prod.getPrice());
 			  statement.setString(5,prod.getImageUrl());

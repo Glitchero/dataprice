@@ -1,16 +1,69 @@
 package com.dataprice.model.entity;
 
-/**
- * This entity has to be implemented in the future. 
- * This entity has to be connected with products and tasks. (And country entity is the same!).
- * The retailName and countryName have to be shown in the productsTable. The method  getCrawlingStrategy()
- * is only for keys purposes and we don't have to show that to the user.
- * This enable us to create a crawler with any name. FOr example. LiverpoolMx LiverpoolArg.
- * And we eliminate data duplication in products and tasks.
- * I would need maybe another table to do the mapping between taskname and crawlername !! IMportant 
- * @author rene
- *
- */
-public class Retail {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="RETAIL")
+public class Retail {
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "retail_id")
+	private Integer retailId;
+	
+	@Column(name = "retail_name")
+	private String retailName;
+	
+	@Column(name = "crawler_name")
+	private String crawlerName;
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "country_id")
+	private Country country;
+
+	
+	
+	public Integer getRetailId() {
+		return retailId;
+	}
+
+	public void setRetailId(Integer retailId) {
+		this.retailId = retailId;
+	}
+
+	public String getRetailName() {
+		return retailName;
+	}
+
+	public void setRetailName(String retailName) {
+		this.retailName = retailName;
+	}
+
+	public String getCrawlerName() {
+		return crawlerName;
+	}
+
+	public void setCrawlerName(String crawlerName) {
+		this.crawlerName = crawlerName;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	@Override
+	public String toString() {
+		return this.retailName;
+	}
 }
