@@ -12,7 +12,6 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
-import com.dataprice.service.productstatistics.ProductStatisticsService;
 import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
@@ -76,7 +75,7 @@ public class ReportsLayoutFactory {
 			
 			productsTable = new Grid<>(Product.class);
 
-			productsTable.setColumnOrder("name","pid");
+			productsTable.setColumnOrder("name",settings.getKeyType());
 			
 			productsTable.addComponentColumn(p -> {
 				Label label = new Label("<b><font size=\"3\">" + p.getPrice() + "</font></b>",ContentMode.HTML);	
@@ -87,14 +86,16 @@ public class ReportsLayoutFactory {
 			productsTable.removeColumn("productId");
 			productsTable.removeColumn("imageUrl");
 			productsTable.removeColumn("productUrl");
-			productsTable.removeColumn("gender");
-			productsTable.removeColumn("category");
-			productsTable.removeColumn("subcategory");
 			productsTable.removeColumn("brand");
 			productsTable.removeColumn("seller");
 			productsTable.removeColumn("description");
 			productsTable.removeColumn("task");
 			productsTable.removeColumn("productKey");
+			if (settings.getKeyType().equals("sku")) {
+				productsTable.removeColumn("upc");
+			}else {
+				productsTable.removeColumn("sku");
+			}
 			
 			
 			sellersWithNoMatch = new HashSet<String>();
@@ -102,7 +103,12 @@ public class ReportsLayoutFactory {
 			for (String seller : sellers) {
 			  if (!seller.equals(settings.getMainSeller()))	{
 				 productsTable.addComponentColumn(p -> {
-					List<Product> products =showAllProductsService.getProductsFromSellerNameAndPid(seller, p.getPid());
+					 List<Product> products = null;
+					 if (settings.getKeyType().equals("sku")) {
+						 products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
+						}else {
+						 products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
+						}
 				    Label label = new Label();
 			        if (products.size()!=0) {
 			        	label.setContentMode(ContentMode.HTML);
@@ -138,7 +144,11 @@ public class ReportsLayoutFactory {
 			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 			settings = user.getSettings();
 			
-			products = showAllProductsService.getProductsFromSellerNameWithMatches(settings.getMainSeller());
+			if (settings.getKeyType().equals("sku")) {
+				products = showAllProductsService.getProductsFromSellerNameWithMatchesSku(settings.getMainSeller());
+			}else {
+				products = showAllProductsService.getProductsFromSellerNameWithMatchesUpc(settings.getMainSeller());
+			}
 			
 			sellers = showAllProductsService.getSellersList();
 			return this;

@@ -1,8 +1,12 @@
 package com.dataprice.model.crawlers;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
@@ -30,6 +34,7 @@ public class CrawlerTester {
 		*/
 		// 10009090 = 2 h 46 m 49 s
 		// 299643635825
+		/**
 		Calendar today = Calendar.getInstance();
 		long milliseconds = 1140784;
 		int seconds = (int) (milliseconds / 1000) % 60 ;
@@ -45,7 +50,15 @@ public class CrawlerTester {
 		Date date = today.getTime();
 		
 		System.out.println(date);
+		*/
+		String value = "5831";
+		System.out.println(Double.parseDouble(value));
+		Locale currentLocale = Locale.getDefault();
+		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+		otherSymbols.setDecimalSeparator('.'); 
+		NumberFormat df = new DecimalFormat("#.##",otherSymbols);
 		
+		 System.out.print(Double.valueOf(df.format(Double.parseDouble(value))));
 		
 		
 	}

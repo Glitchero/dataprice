@@ -46,18 +46,18 @@ public class Regex {
 	public final static String SORIANA_PRICE = "class=\"precioarticulohome\">(.*?)</span>";
 	public final static String SORIANA_PROMOTION = "";  //Promotion is not rendered. TODO Check this!  
 	public final static String SORIANA_IMAGEURL = "class=\"artDetDi1\">.*?<IMG SRC=\"(.*?)\" alt";
-	
-	
-	
-	public final static String WALMART_ID = "<span itemprop=\"productID\">(.*?)</span>";
-	public final static String WALMART_NAME = "<span itemprop=\"name\">(.*?)</span>";
-	public final static String WALMART_DESCRIPTION = "<meta property=\"og:description\" content=\"(.*?)\" />";
-	public final static String WALMART_BRAND ="";
-	public final static String WALMART_OLDPRICE = "";
-	public final static String WALMART_PRICE = "<span itemprop=\"price\" content=\"(.*?)\">";
-	public final static String WALMART_PROMOTION = "<div class=\"pdp-promotional-text\">(.*?)</div>";    
-	public final static String WALMART_IMAGEURL = "class=\"slider-img u-photo photo\" src=\"(.*?)\" onError";
 	*/
+	
+	
+	public final static String SUPERWALMART_ID = "<span itemprop=\"productID\">(.*?)</span>";
+	public final static String SUPERWALMART_NAME = "<span itemprop=\"name\">(.*?)</span>";
+	public final static String SUPERWALMART_DESCRIPTION = "<meta property=\"og:description\" content=\"(.*?)\" />";
+	public final static String SUPERWALMART_BRAND ="";
+	public final static String SUPERWALMART_OLDPRICE = "";
+	public final static String SUPERWALMART_PRICE = "<span itemprop=\"price\" content=\"(.*?)\">";
+	public final static String SUPERWALMART_PROMOTION = "<div class=\"pdp-promotional-text\">(.*?)</div>";    
+	public final static String SUPERWALMART_IMAGEURL = "class=\"slider-img u-photo photo\" src=\"(.*?)\" onError";
+	
 	
 	
 	public final static String LACOMER_ID = "id=\"artean\" value=\"(.*?)\"/>";
@@ -84,14 +84,13 @@ public class Regex {
 	public final static String LIVERPOOL_ID = "<span id=\"sku\">Código de Producto.: (.*?)</span>";
 	public final static String LIVERPOOL_NAME = "<h1>(.*?)</h1>";
 	public final static String LIVERPOOL_DESCRIPTION = "<div class=\"dynDesc\">(.*?)</div>";
-	public final static String LIVERPOOL_BRAND ="";
+	public final static String LIVERPOOL_BRAND ="Marca</span> <span>(.*?)</span>";
 	public final static String LIVERPOOL_OLDPRICE = "salePrice\":\"(.*?)\"}";
 	public final static String LIVERPOOL_PRICE = "promoPrice\":\"(.*?)\",";
 	public final static String LIVERPOOL_PROMOTION = "";  
 	public final static String LIVERPOOL_IMAGEURL = "<meta property=\"og:image\" content=\"(.*?)\" />";
+	public final static String LIVERPOOL_SKU ="Modelo</span> <span>(.*?)</span>";
 	
-	
-
 	
 	public final static String SORIANA_ID = "";
 	public final static String SORIANA_NAME = "";

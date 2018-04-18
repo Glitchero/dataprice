@@ -24,11 +24,7 @@ import com.dataprice.ui.tasks.TaskLayoutFactory;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.dataprice.ui.classification.BrandMainLayout;
-import com.dataprice.ui.classification.CategoryMainLayout;
-import com.dataprice.ui.classification.ClassificationLayoutFactory;
-import com.dataprice.ui.classification.GenderMainLayout;
-import com.dataprice.ui.classification.SubcategoryMainLayout;
+import com.dataprice.ui.dashboard.DashboardLayoutFactory;
 import com.dataprice.ui.login.LoginUI;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
@@ -210,6 +206,7 @@ public class VaadinHybridMenuUI extends UI {
 		TopMenuLabel label = TopMenuLabelBuilder.get()
 				.setCaption("<b>Data</b> Price")
 				.setIcon(new ThemeResource("images/hybridmenu-Logo.png"))
+			//	.setIcon(new ThemeResource("images/logofinal.png"))
 				.build(hybridMenu);
 
 		label.getComponent().addClickListener(e -> {
@@ -275,8 +272,8 @@ public class VaadinHybridMenuUI extends UI {
 		
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
-				.withIcon(VaadinIcons.HOME)
-				.withNavigateTo(HomePage.class)
+				.withIcon(VaadinIcons.DASHBOARD)
+				.withNavigateTo(DashboardLayoutFactory.class)
 				.build();
 
 		hybridMenu.addLeftMenuButton(homeButton);
@@ -426,7 +423,16 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(reportsButton);
-       
+		
+		/**
+		MenuButton userButton = LeftMenuButtonBuilder.get()
+				.withCaption("Users")
+				.withIcon(VaadinIcons.USER)
+				.withNavigateTo(ReportsMainLayout.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(userButton);
+        */
 	}
 
 	public HybridMenu getHybridMenu() {

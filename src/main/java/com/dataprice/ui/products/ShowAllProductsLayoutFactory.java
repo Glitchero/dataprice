@@ -1,7 +1,10 @@
 package com.dataprice.ui.products;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.lucene.search.Explanation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -9,7 +12,6 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
-import com.dataprice.service.productstatistics.ProductStatisticsService;
 import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
@@ -25,6 +27,8 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -58,27 +62,15 @@ public class ShowAllProductsLayoutFactory {
 	private Settings settings;
 	
 	private Grid<Product> productsTable;
-	
-	private TextField search;
-	
-	private Button searchButton;
-	
-	private Button refreshButton;
-	
-	private ComboBox retailFilter;
-	
-	private Label statusCounter;
-	
-	private Integer numberOfProducts;
-	
-	private Integer numberOfProductsWithoutProfile;
-	
+			
 	private ProgressBar progressBar;
 	
 	private Product currentSelection;
 	
+	private Label currentSeller;
+	private TextFieldWithTwoButtons textFieldWithTwoButtons;
 	
-	private class ShowAllProductsLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener, SelectionListener<Product> {
+	private class ShowAllProductsLayout extends VerticalLayout implements SelectionListener<Product> {
 
 		ProductEditListener productEditListener;
 		
@@ -89,83 +81,45 @@ public class ShowAllProductsLayoutFactory {
 
 		public ShowAllProductsLayout init() {
 			
-			//setMargin(true);
+			textFieldWithTwoButtons = new TextFieldWithTwoButtons(VaadinIcons.SEARCH, VaadinIcons.REFRESH, onClick -> searchProduct(), onClick -> refresh());
+			textFieldWithTwoButtons.setWidth("70%");
+			textFieldWithTwoButtons.getTextfield().setPlaceholder("Busca por nombre, sku, upc, etc.");
 			
-			//progressBar = new ProgressBar();
-			//progressBar.setCaption("Loading Products...");
-		    //progressBar.setIndeterminate(true);
-		    //progressBar.setVisible(true);
-		        
-			
-			search = new TextField();		
-			search.setPlaceholder("Busca por nombre, sku, etc.");
-			search.setWidth("100%");
-		   	
-			searchButton = new Button(VaadinIcons.SEARCH);
-			searchButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-		//	searchButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			searchButton.addClickListener(this);		
-		//	searchButton.setWidth("30%");
-			
-			refreshButton = new Button(VaadinIcons.REFRESH);
-			refreshButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-		//	refreshButton.setStyleName(ValoTheme.BUTTON_DANGER);
-			refreshButton.addClickListener(this);		
-		//	refreshButton.setWidth("30%");
-			
-			statusCounter = new Label(numberOfProductsWithoutProfile + "/" + numberOfProducts);
-			statusCounter.setWidth("30%");
-			
-			retailFilter = new ComboBox("Retails");
-			retailFilter.setVisible(true);
-			retailFilter.setItems("Walmart","Chedraui","Liverpool","Coppel");
-			retailFilter.addValueChangeListener(this);
-			
-			
+			if (settings.getMainSeller()==null) {
+				currentSeller = new Label("<b><font size=\"3\">" + "Para visualizar los productos debe elegir un vendedor en settings." + "</font></b>",ContentMode.HTML);	
+				currentSeller.addStyleName(ValoTheme.LABEL_FAILURE);
+			}else {
+		    	currentSeller = new Label("<b><font size=\"3\">" + "Los productos petenecen al vendedor: " + settings.getMainSeller() + "</font></b>",ContentMode.HTML);	
+		    	currentSeller.addStyleName(ValoTheme.LABEL_SUCCESS);
+		    }
+				
+			currentSeller.setWidth("100%");
+									
 			productsTable = new Grid<>(Product.class);
-			
-			productsTable.setColumnOrder("productId","name", "price", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
-			
-			productsTable.setVisible(true);
-			productsTable.setItems(products);
-			
-			/**
-			if (products.size()!=0) {
-				productsTable.select(products.get(0));				
-				productEditListener.productEdited(products.get(0)); 
-			}
-			  */ 
-			
-			
-			/**
-			productsTable.addComponentColumn(probe -> {
-			    Image image = new Image("", new ExternalResource(probe.getImageUrl()));
-			    image.setWidth(100,Unit.PIXELS);
-			    image.setHeight(100,Unit.PIXELS);
 
-			    return image;
-			}).setCaption("Imagen");
-			*/
-		//	productsTable.addColumn(p ->
-		//      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>product link</a>",
-		//      new HtmlRenderer());
+			productsTable.removeAllColumns();
 			
-			productsTable.removeColumn("imageUrl");
-		    productsTable.removeColumn("productUrl");
-		    productsTable.removeColumn("productKey");
-		    productsTable.removeColumn("task");
-		    productsTable.removeColumn("description");
-		    productsTable.removeColumn("seller");
-		    
-		    productsTable.addSelectionListener(this);
-		   // Render a button that edit the data row (item)
-		  //  productsTable.addColumn(product -> "Edit",
-		  //        new ButtonRenderer(clickEvent -> {
-		  //      	  productEditListener.productEdited(clickEvent.getItem());
-		  //      	  productsTable.select((Product) clickEvent.getItem());
-		  //      }));
-		    
+			productsTable.addColumn(p -> p.getUpdateDay()).setCaption("Actualizado");
+			productsTable.addColumn(p -> p.getName()).setCaption("Nombre");
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Precio");
+			if (settings.getKeyType().equals("sku")) {
+				productsTable.addColumn(p -> p.getSku()).setCaption("SKU");
+			}else {
+				productsTable.addColumn(p -> p.getUpc()).setCaption("UPC");
+			} 
 			
+			productsTable.addComponentColumn(p -> {
+				Icon icon = null;
+				if (p.isChecked()) {
+				icon = new Icon(VaadinIcons.CHECK_SQUARE);
+				}else {
+				icon = new Icon(VaadinIcons.THIN_SQUARE);
+				}
+				return icon;
+			}).setCaption("").setWidth(50);
+			
+			productsTable.setItems(products);
+		    productsTable.addSelectionListener(this);		    	
 			productsTable.setSizeFull();
 		
 			return this;
@@ -176,13 +130,8 @@ public class ShowAllProductsLayoutFactory {
 			//loadDataInNewThread();
 			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 			settings = user.getSettings();
-			if (settings.getMainSeller()==null) {
-				vaadinHybridMenuUI.noSellerSelectedNotification();
-			}
-				
+					
 			products = showAllProductsService.getAllProductsFromSeller(settings.getMainSeller());
-			numberOfProducts = productStatisticsService.getNumOfProducts(); 
-			numberOfProductsWithoutProfile = productStatisticsService.getNumOfProductsWithoutPid();
 			
 			return this;
 		}
@@ -203,26 +152,7 @@ public class ShowAllProductsLayoutFactory {
 		public Component layout() {
 			
 		
-			//Search section
-			HorizontalLayout hl = new HorizontalLayout(search,searchButton,refreshButton);
-			hl.setExpandRatio(search, 1);
-		//	hl.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
-		//	hl.setComponentAlignment(refreshButton, Alignment.BOTTOM_LEFT);
-		//	hl.setComponentAlignment(statusCounter, Alignment.MIDDLE_RIGHT);
-		//	hl.setSpacing(true);
-			hl.setWidth("70%");
-			
-		//	HeaderRow row = productsTable.prependHeaderRow();
-		//	row.getCell("seller").setComponent(retailFilter);
-		//	row.getCell("name").setComponent(hl);
-		//	VerticalLayout vl = new VerticalLayout(hl,productsTable);
-			//vl.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
-		//	vl.setWidth("100%");
-		//	vl.setHeight("580px");
-		//	vl.setMargin(false);
-		//	return vl;
-			
-			VerticalLayout productsTableLayout = new VerticalLayout(hl,productsTable);
+			VerticalLayout productsTableLayout = new VerticalLayout(currentSeller,textFieldWithTwoButtons,productsTable);
 			productsTableLayout.setMargin(false);
 			productsTableLayout.setSizeFull();
 			
@@ -230,43 +160,22 @@ public class ShowAllProductsLayoutFactory {
 		}
 
 
-		@Override
-		public void buttonClick(ClickEvent event) {
-			
-			 if (event.getSource()==searchButton)	{
-				 searchProduct();
-             }else {
-            	 refresh();
-             }
-			
-		}
-
-
 		private void searchProduct() {		
-		   List<Product> retrieveList =	searchProductService.search(search.getValue());	
-           if(retrieveList!=null) 
-		      productsTable.setItems(retrieveList);
+		  List<Product> retrieveList = searchProductService.search(textFieldWithTwoButtons.getTextfield().getValue());	
+          if(retrieveList.size()!=0 && retrieveList!=null) { //It could be null; 
+        	  
+        	  List<Product> retrieveFilteredList = new LinkedList<Product>();
+        	  
+        		for (Product p : retrieveList) {
+        			if (p.getSeller().equals(settings.getMainSeller())) {
+        			    retrieveFilteredList.add(p);
+        			}
+           		}
+        	  
+		      productsTable.setItems(retrieveFilteredList);
+          }
+          
 	    }
-
-
-		/**
-		 * This method filters by retails using a combobox!.
-		 */
-		@Override
-		public void valueChange(ValueChangeEvent event) {
-			if (retailFilter.getValue()!=null) {
-		    	String sellerValue = retailFilter.getValue().toString();
-			    products = showAllProductsService.getAllProductsFromSeller(sellerValue);		   
-                vaadinHybridMenuUI.access(new Runnable() {     
-            	   @Override     
-            	   public void run() {         
-            		   productsTable.setItems(products); 
-            	   }
-            	});
-		    }
-			
-		}
-
 
 		@Override
 		public void selectionChange(SelectionEvent<Product> event) {
@@ -291,10 +200,7 @@ public class ShowAllProductsLayoutFactory {
 	
 	@Autowired 
 	private UserServiceImpl userServiceImpl;
-	
-	@Autowired
-	private ProductStatisticsService productStatisticsService;
-	
+		
 	@Autowired
 	private VaadinHybridMenuUI vaadinHybridMenuUI;
 	

@@ -17,9 +17,34 @@ public interface TaskRepository extends JpaRepository<Task,Integer> {
 	List<Task> getAllTasks();
 	
 	@Query("select t from Task t where t.status=:statusKey")
-	List<Task> getAllPendingTasks(@Param("statusKey") String statusKey);
+	List<Task> getAllTasksByStatus(@Param("statusKey") String statusKey);
 	
 	@Query("select t from Task t where t.retail.retailId=:retailKey")
 	List<Task> getAllTasksFromRetailId(@Param("retailKey") Integer retailKey);
+	
+	@Query("select count(t.taskId) from Task t")
+	Integer getNumOfTasks();
+	
+	/**
+	@Query("select count(t.taskId) from Task t where t.status:='Escaneando' or t.status:='Descargando'")
+	Integer getNumOfWorkingTasks();
+	
+	@Query("select count(t.taskId) from Task t where t.status:='Cancelado'")
+	Integer getNumOfCanceledTasks();
+	
+	
+	
+	@Query("select count(t.taskId) from Task t where t.status:='Pendiente'")
+	Integer getNumOfPendingTasks();
+	*/
+	
+	@Query("select count(t.taskId) from Task t where t.status=:statusKey")
+	Integer getNumOfTasksByStatus(@Param("statusKey") String statusKey);
+	
+	@Query("select count(t.taskId) from Task t where t.retail.retailName=:retailKey")
+	Integer getNumOfTasksByRetail(@Param("retailKey") String retailKey);
+	
+	@Query("select t.retail.retailName from Task t group by t.retail.retailName")
+	List<String> getRetailersUsed();
 	
 }

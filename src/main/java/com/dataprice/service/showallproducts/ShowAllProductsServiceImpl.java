@@ -22,8 +22,8 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 
 
 	@Override
-	public List<Product> getAllProductsFromPid(String pid) {
-		return productRepository.getAllPrductsFromPid(pid);
+	public List<Product> getAllProductsFromSku(String sku) {
+		return productRepository.getAllPrductsFromSku(sku);
 	}
 
 
@@ -39,16 +39,27 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 	}
 	
 	@Override
-	public List<Product> getProductsFromSellerNameWithMatches(String seller) {
-		return productRepository.getProductsFromSellerNameWithMatches(seller);
+	public List<Product> getProductsFromSellerNameWithMatchesSku(String seller) {
+		return productRepository.getProductsFromSellerNameWithMatchesSku(seller);
+	}
+	
+	@Override
+	public List<Product> getProductsFromSellerNameWithMatchesUpc(String seller) {
+		return productRepository.getProductsFromSellerNameWithMatchesUpc(seller);
 	}
 
 
 	@Override
-	public List<Product> getProductsFromSellerNameAndPid(String seller, String pid) {
-		return productRepository.getProductsFromSellerNameAndPid(seller, pid);
+	public List<Product> getProductsFromSellerNameAndSku(String seller, String sku) {
+		return productRepository.getProductsFromSellerNameAndSku(seller, sku);
 	}
 
+	
+	@Override
+	public List<Product> getProductsFromSellerNameAndUpc(String seller, String upc) {
+		return productRepository.getProductsFromSellerNameAndUpc(seller, upc);
+	}
+	
 
 	@Override
 	public List<String> getSellersList() {

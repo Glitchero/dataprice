@@ -145,7 +145,16 @@ public class Walmart extends AbstractCrawler{
 			}
 			imageUrl = imageUrl.trim();
 				
-			return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl());
+			String sku = "";
+			String upc = "";
+			//Consider other cases!!
+			if (id.length() == 14) {
+				upc = id.substring(2);
+			}
+			
+			String brand = "";
+			
+			return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
 		} catch (Exception e) {
 			return null;
 		}

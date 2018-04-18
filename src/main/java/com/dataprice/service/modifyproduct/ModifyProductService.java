@@ -6,5 +6,4 @@ public interface ModifyProductService {
 
 	public void modifyProduct(Product productDAO);
 	
-	public void updateCategoryFromSubcategory(Integer categoryKey, Integer subcategoryKey);
 }

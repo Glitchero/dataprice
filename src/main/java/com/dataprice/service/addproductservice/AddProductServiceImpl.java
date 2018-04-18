@@ -19,6 +19,7 @@ public class AddProductServiceImpl implements AddProductService {
 		
 		String productkey = productDAO.getProductKey();
 		if (productRepository.exists(productkey)) {
+			//Not update Sku and Upc
 			Product retrievedProduct = productRepository.findOne(productkey);
 			retrievedProduct.setPrice(productDAO.getPrice());
 			retrievedProduct.setName(productDAO.getName());
@@ -26,10 +27,10 @@ public class AddProductServiceImpl implements AddProductService {
 			retrievedProduct.setImageUrl(productDAO.getImageUrl());
 			retrievedProduct.setProductUrl(productDAO.getProductUrl());
 			retrievedProduct.setTask(productDAO.getTask());
-			
+			retrievedProduct.setBrand(productDAO.getBrand());
+			retrievedProduct.setUpdateDay(productDAO.getUpdateDay());
 			productRepository.save(retrievedProduct);
 		}else {
-			
 			Product product = new Product();
 			product.setProductKey(productDAO.getProductKey());
 			product.setProductId(productDAO.getProductId());
@@ -40,6 +41,10 @@ public class AddProductServiceImpl implements AddProductService {
 			product.setProductUrl(productDAO.getProductUrl());
 			product.setImageUrl(productDAO.getImageUrl());
 			product.setTask(productDAO.getTask());
+			product.setSku(productDAO.getSku());
+			product.setUpc(productDAO.getUpc());
+			product.setBrand(productDAO.getBrand());
+			product.setUpdateDay(productDAO.getUpdateDay());
 			productRepository.save(product);	
 			
 		}	

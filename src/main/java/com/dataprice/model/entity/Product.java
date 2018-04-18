@@ -1,5 +1,7 @@
 package com.dataprice.model.entity;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -11,24 +13,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.FullTextFilterDef;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.Store;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.snowball.*;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.hibernate.search.bridge.builtin.ByteBridge;
 
+//@FullTextFilterDef(name = "sellers", impl = SellersFilterFactory.class)
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
 tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
@@ -48,10 +57,11 @@ public class Product {
 	@Column(name = "product_id")
 	private String productId;
 	
+	//@Field(analyze = Analyze.NO)
 	@Column(name = "seller")
 	private String seller;
 	
-	@Field
+	@Field(index=Index.YES, analyze=Analyze.YES)
 	@Column(name = "name")
 	@Analyzer(definition = "customanalyzer")
 	private String name;
@@ -69,44 +79,34 @@ public class Product {
 	@Column(name = "product_url")
 	private String productUrl;
 	
-	//private String brandHelper;
+	@Field(index=Index.YES, analyze=Analyze.NO)
+	@Column(name = "sku")
+	private String sku;
 	
-	//private String skuHelper;
+	@Field(index=Index.YES, analyze=Analyze.NO)
+	@Column(name = "upc")
+	private String upc;
 	
-	//private String status;
-	
-	@Column(name = "pid")
-	private String pid;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "gender_id")
-	private Gender gender;
-		
-
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "category_id")
-	private Category category;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "subcategory_id")
-	private Subcategory subcategory;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "brand_id")
-	private Brand brand;
+	@Field(index=Index.YES, analyze=Analyze.NO)
+	@Column(name = "brand")
+	private String brand;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "task_id")
 	private Task task;
-	
 
+	@Column(name = "checked")
+	private boolean checked;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "update_day", nullable = false)
+	private Date updateDay;
 
 	public Product() {
-		
+		//Default Constructor
 	}
-	
-	
-	public Product(String productKey, String productId,String seller,Task task,String name,String description, Double price, String imageUrl, String productUrl) {
+		
+	public Product(String productKey, String productId,String seller,Task task,String name,String description, Double price, String imageUrl, String productUrl,String sku, String upc, String brand) {
 		this.productKey = productKey;
 		this.productId = productId;
 		this.seller = seller;
@@ -116,13 +116,32 @@ public class Product {
 		this.imageUrl = imageUrl;
 		this.productUrl = productUrl;
 		this.task = task;
+		this.sku = sku;
+		this.upc = upc;
+		this.brand = brand;
+		this.updateDay = new Date();
 	}
 
 	
+	public Date getUpdateDay() {
+		return updateDay;
+	}
+
+	public void setUpdateDay(Date updateDay) {
+		this.updateDay = updateDay;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
 	public String getProductKey() {
 		return productKey;
 	}
-
 
 	public void setProductKey(String productKey) {
 		this.productKey = productKey;
@@ -158,7 +177,6 @@ public class Product {
 		return description;
 	}
 
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -187,52 +205,33 @@ public class Product {
 		this.productUrl = productUrl;
 	}
 	
-	public String getPid() {
-		return pid;
+	public String getSku() {
+		return sku;
 	}
 	
-	public void setPid(String pid) {
-		this.pid = pid;
-	}
-	
-	
-	public Gender getGender() {
-		return gender;
+	public void setSku(String sku) {
+		this.sku = sku;
 	}
 
-	public void setGender(Gender gender) {
-		this.gender = gender;
-	}
-	
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-	
-	public Subcategory getSubcategory() {
-		return subcategory;
-	}
-
-	public void setSubcategory(Subcategory subcategory) {
-		this.subcategory = subcategory;
-	}
-	
-	public Brand getBrand() {
+	public String getBrand() {
 		return brand;
 	}
 
-	public void setBrand(Brand brand) {
+	public void setBrand(String brand) {
 		this.brand = brand;
 	}
-	
-	
+
+	public String getUpc() {
+		return upc;
+	}
+
+	public void setUpc(String upc) {
+		this.upc = upc;
+	}
+
 	public Task getTask() {
 		return task;
 	}
-
 
 	public void setTask(Task task) {
 		this.task = task;
@@ -240,7 +239,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return productKey + "-" + "name" + "-" + price;	
+		return productKey + "-" + name + "-" + price;	
 	}
 	
 	

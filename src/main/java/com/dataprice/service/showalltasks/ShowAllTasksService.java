@@ -8,7 +8,7 @@ public interface ShowAllTasksService {
 
 	public List<Task> getAllTasks();
 
-	public List<Task> getAllPendingTasks(String status);
+	public List<Task> getAllTasksByStatus(String status);
 	
 	public List<Task> getAllTasksFromRetailId(Integer retailId);
 }

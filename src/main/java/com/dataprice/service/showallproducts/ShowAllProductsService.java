@@ -8,15 +8,20 @@ public interface ShowAllProductsService {
 
 	public List<Product> getAllProducts();
 	
-	public List<Product> getAllProductsFromPid(String pid);
+	public List<Product> getAllProductsFromSku(String sku);
 	
 	public Product getProductFromKey(String productKey);
 	
 	public List<Product> getAllProductsFromSeller(String seller);
 	
-	public List<Product> getProductsFromSellerNameWithMatches(String seller);
+	//Reports
+	public List<Product> getProductsFromSellerNameWithMatchesSku(String seller);
 	
-	public List<Product> getProductsFromSellerNameAndPid(String seller,String pid);
+	public List<Product> getProductsFromSellerNameWithMatchesUpc(String seller);
+	
+	public List<Product> getProductsFromSellerNameAndSku(String seller,String sku);
+	
+	public List<Product> getProductsFromSellerNameAndUpc(String seller,String upc);
 	
 	public List<String> getSellersList();
 }

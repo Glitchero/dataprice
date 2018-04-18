@@ -1,7 +1,11 @@
 package com.dataprice.model.crawlers;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
@@ -113,7 +117,7 @@ public class Liverpool extends AbstractCrawler{
 			
 			String description = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_DESCRIPTION);
 			if (description==null)
-				description = "";  //Unlike name, sometimes we don't have a description.
+				description = "No disponible";  //Unlike name, sometimes we don't have a description.
 			description = description.trim();
 			description = Jsoup.parse(description).text();
 			
@@ -133,19 +137,36 @@ public class Liverpool extends AbstractCrawler{
 
 			oldPrice = oldPrice.replace(",", "");
 			oldPrice = oldPrice.replace("$", "");
-			oldPrice = oldPrice.trim();
-			
+			oldPrice = oldPrice.trim();		
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_IMAGEURL);		
 			if (imageUrl == null) {  
 				return new Product();
 			}
-
-			if (price.equals("0.0")) {
-				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(oldPrice),imageUrl,crawlInfo.getUrl());
-			}else {
-				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(price),imageUrl,crawlInfo.getUrl());
+			
+			String sku = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_SKU);		
+			if (sku == null) {  
+				sku = ""; //Unlike name, sometimes we don't have a sku.
 			}
+			
+			String brand = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_BRAND);		
+			if (brand == null) {  
+				brand = ""; //Unlike name, sometimes we don't have a brand.
+			}
+			
+			String upc = "";
+			
+			Locale currentLocale = Locale.getDefault();
+			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+			otherSymbols.setDecimalSeparator('.'); 
+			NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+					
+			if (price.equals("0.0")) {
+				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(df.format(Double.parseDouble(oldPrice))),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+			}else {
+				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(df.format(Double.parseDouble(price))),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+			}
+			
 		} catch (Exception e) {
 			return null;
 		}

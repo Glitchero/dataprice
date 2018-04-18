@@ -43,7 +43,7 @@ public class Settings {
 	private Double numRetrieved = 10.0;
 	 
 	@Column(name = "key_type")
-	private String keyType ="Modelo/sku";   //sku or upc
+	private String keyType ="sku";   //sku or upc
 	
     public Settings() {
     	

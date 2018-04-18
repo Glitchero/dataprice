@@ -32,6 +32,7 @@ import com.dataprice.service.removetask.RemoveTaskService;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.ui.products.Icon;
 import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
 import com.dataprice.ui.tasks.TaskExecuteOrder.OriginalIterator;
 import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
@@ -42,6 +43,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.colorpicker.Color;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -144,19 +146,49 @@ public class ShowAllTasksLayoutFactory{
 		      t.getProgress(),
 		      new ProgressBarRenderer()).setCaption("Progreso");
 			
-			tasksTable.addColumn(t ->
-		       t.getStatus()).setCaption("Estatus");
+		//	tasksTable.addColumn(t ->
+		//      t.getStatus()).setCaption("Estatus");
+			
+			
+			tasksTable.addComponentColumn(t -> {
+				Icon icon = null;
+	
+				 switch (t.getStatus()) {
+		         case "Pendiente":
+		        	 icon = new Icon(VaadinIcons.CLOCK);
+		             break;
+		         case "Escaneando":
+		        	 icon = new Icon(VaadinIcons.FILE_SEARCH);
+		             break;
+		         case "Descargando":
+		        	 icon = new Icon(VaadinIcons.DOWNLOAD);
+		             break;
+		         case "Cancelado":
+		        	 icon = new Icon(VaadinIcons.CLOSE_CIRCLE);
+		        	 icon.setRedColor();
+		             break;
+		         case "Finalizado":
+		        	 icon = new Icon(VaadinIcons.CHECK_CIRCLE);
+		             break;
+		         }
+				HorizontalLayout h = new HorizontalLayout(icon);
+				h.setComponentAlignment(icon, Alignment.MIDDLE_CENTER);
+				h.setMargin(false);
+				h.setWidth("100%");
+				return h;
+			}).setCaption("Estatus").setWidth(90);
+			
 			
 			tasksTable.addColumn(t ->
-		       t.getDownloadedProducts()).setCaption("#");
+		       t.getDownloadedProducts()).setCaption("Num. de Productos").setWidth(162);
 			
 			tasksTable.addColumn(t ->
 		      t.getRunDateTime(),
 		      new DateRenderer()).setCaption("Tiempo");
 
 			tasksTable.addColumn(t ->
-		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>seed link</a>",
-		      new HtmlRenderer()).setCaption("Seed Links");
+		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>Semilla</a>",
+		      new HtmlRenderer()).setCaption("Semillas");
 			
 
 			tasksTable.removeColumn("taskId");

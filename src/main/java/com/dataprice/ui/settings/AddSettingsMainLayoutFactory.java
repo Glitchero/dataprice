@@ -3,18 +3,15 @@ package com.dataprice.ui.settings;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.percepta.mgrankvi.TimeSelector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.dataprice.model.entity.Gender;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.User;
-import com.dataprice.service.addgenderservice.AddGenderService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifysettings.ModifySettingsService;
-import com.dataprice.service.removegender.RemoveGenderService;
 import com.dataprice.service.security.UserServiceImpl;
-import com.dataprice.service.showallgenders.ShowAllGendersService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.products.ComboBoxWithButton;
@@ -65,11 +62,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		private Label vertvalue;	
 		private TextField postalCode;
 		private Button saveButton;
-		private Button defaultSetingsButton; 
+		//private Button defaultSetingsButton; 
 		private Label separator1;
 		private Binder<Settings> binder;
-	 
 		
+	
 		 public AddSettingsMainLayout init() {
 
 		
@@ -90,7 +87,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		
  
 			keyGroup = new RadioButtonGroup<>("Seleccione el tipo de clave: ");
-			keyGroup.setItems("Modelo/sku", "Código de barras");
+			keyGroup.setItems("sku", "upc");
 			keyGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 			
      
@@ -101,17 +98,25 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			// Shows the value of the vertical slider
 			vertvalue = new Label();
 
-
+		
 			slider.addValueChangeListener(event -> {
-			    float value = event.getValue().floatValue();
-			    vertvalue.setValue(String.valueOf(value));
+			 // float value = event.getValue().floatValue();
+				double value = event.getValue();
+				vertvalue.setValue(String.valueOf(value));
+				/**
+			    if (value==slider.getMax()) {
+			    	Notification.show("Warning","Show all available related products",Type.WARNING_MESSAGE);
+			    }else {
+			    	vertvalue.setValue(String.valueOf(value));
+			    }
+			    */
 			});
 			
 			
 			
 
 			postalCode = new TextField("Código postal: ");
-			postalCode.setWidth("50%");
+			postalCode.setWidth("20%");
 			
 	
 			
@@ -120,10 +125,10 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			saveButton.addClickListener(this);
 			saveButton.setWidth("100%");
 			
-			defaultSetingsButton = new Button("Restore default values");
-			defaultSetingsButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
-			defaultSetingsButton.addClickListener(this);
-			defaultSetingsButton.setWidth("100%");
+		//	defaultSetingsButton = new Button("Restore default values");
+		//	defaultSetingsButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+		//	defaultSetingsButton.addClickListener(this);
+		//	defaultSetingsButton.setWidth("100%");
 			
 			binder = new Binder<>(Settings.class);
 			return this;
@@ -156,14 +161,22 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		 
 		 public Component layout() {		
 		    	setMargin(true);
-				
-
 		    	
-		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,defaultSetingsButton);
-		    	hbuttons.setWidth("40%");
-		  
+		    	final TimeSelector selector = new TimeSelector();
+		    	selector.setCaption("Correr los bots diariamente a las:");
+		    	selector.setWidth("10%");
 		    	
-		    	FormLayout form = new FormLayout(sellersComboBoxWithUpload,keyGroup,slider,postalCode);
+		    	selector.addSelectionChangeListener(new TimeSelector.SelectionChangeListener() {
+		    	  @Override
+		    	  public void selectionChanged(TimeSelector.SelectionChangeEvent event) {
+		    	    System.out.println(event.getHours() + ":" + event.getMinutes());
+		    	  }
+		    	});
+		    	
+		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton);
+		    	hbuttons.setWidth("25%");
+		    	
+		    	FormLayout form = new FormLayout(sellersComboBoxWithUpload,keyGroup,slider,postalCode,selector);
 		    	form.setWidth("100%");
 		    	
 		    	VerticalLayout vl = new VerticalLayout(mainTittle,separator1,form,hbuttons);

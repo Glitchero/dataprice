@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dataprice.model.entity.Category;
 import com.dataprice.model.entity.Product;
 import com.dataprice.repository.product.ProductRepository;
 
@@ -21,13 +20,5 @@ public class ModifyProductServiceImpl implements ModifyProductService {
 		
 	}
 
-	@Override
-	public void updateCategoryFromSubcategory(Integer categoryKey, Integer subcategoryKey) {
-	List<Product> products = productRepository.getProductsFromSubcategory(subcategoryKey);
-	for (Product p : products) {
-		p.getCategory().setCategoryId(categoryKey);
-		productRepository.save(p);
-	}	
-	}
-
+	
 }

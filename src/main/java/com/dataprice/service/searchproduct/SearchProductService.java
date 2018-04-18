@@ -5,4 +5,5 @@ import java.util.List;
 public interface SearchProductService {
 
 	public List search(String q);
+	
 }

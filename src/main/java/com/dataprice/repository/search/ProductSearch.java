@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
@@ -36,14 +38,20 @@ public class ProductSearch {
 		    org.apache.lucene.search.Query query =
 		        queryBuilder
 		          .keyword()
-		          .onFields("name")
+		          .onFields("name","sku","upc","brand")
 		          .matching(text)
 		          .createQuery();
 
 		    // wrap Lucene query in an Hibernate Query object
 		    org.hibernate.search.jpa.FullTextQuery jpaQuery =
 		        fullTextEntityManager.createFullTextQuery(query, Product.class);
-		  
+		    
+		    //Add filter
+		  //  jpaQuery.enableFullTextFilter("sellers").setParameter("seller", "Walmart");
+		    
+		  //Add projection to return score, as well as the product itself.
+		  //jpaQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+		    
 		    // execute search and return results (sorted by relevance as default)
 		    @SuppressWarnings("unchecked")
 		    List results = jpaQuery.getResultList();

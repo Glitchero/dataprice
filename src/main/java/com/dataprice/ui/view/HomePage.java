@@ -27,7 +27,6 @@ import com.byteowls.vaadin.chartjs.options.scale.CategoryScale;
 import com.byteowls.vaadin.chartjs.options.scale.LinearScale;
 import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 import com.dataprice.model.entity.Product;
-import com.dataprice.service.productstatistics.ProductStatisticsService;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -58,15 +57,12 @@ public class HomePage extends VerticalLayout implements View {
 	@Autowired
 	private ShowAllProductsService showAllProductsService;
 	
-	@Autowired
-	private ProductStatisticsService productStatisticsService;
 	
 	@PostConstruct
 	void init() {
 		//Statistics
-		Integer	numberOfProducts = productStatisticsService.getNumOfProducts(); 
-		Integer numberOfProductsWithoutProfile = productStatisticsService.getNumOfProductsWithoutPid();
-		
+	//	Integer	numberOfProducts = productStatisticsService.getNumOfProducts(); 
+
 		
 		setSizeFull();
 		setMargin(false);
@@ -76,22 +72,22 @@ public class HomePage extends VerticalLayout implements View {
 		title.setValue("Fist componenteee");
 		
 		
-		Label title2 = new Label(
-			    "Total de Productos: \n" +
-			    "<center><b><font size=\"7\">" + numberOfProducts + "</font></b></center>",
-			    ContentMode.HTML);
+	//	Label title2 = new Label(
+	//		    "Total de Productos: \n" +
+	//		    "<center><b><font size=\"7\">" + numberOfProducts + "</font></b></center>",
+	//		    ContentMode.HTML);
 		
       //  Icon icon = new Icon(VaadinIcons.DOWNLOAD_ALT);
       //  icon.setSize(60);
         
-	    HorizontalLayout vl = new HorizontalLayout(title2);
+	//    HorizontalLayout vl = new HorizontalLayout(title2);
 	  //  vl.setComponentAlignment(icon, Alignment.TOP_RIGHT);
-		vl.setMargin(false);
-		vl.setSizeFull();
+	//	vl.setMargin(false);
+	//	vl.setSizeFull();
 		
 		Label title3 = new Label(
 			    "Por perfilar: \n" +
-			    "<center><b><font size=\"7\">" + numberOfProductsWithoutProfile + "</font></b></center>",
+			    "<center><b><font size=\"7\">" + "hola" + "</font></b></center>",
 			    ContentMode.HTML);
 		
 		Label title4 = new Label();
@@ -119,7 +115,7 @@ public class HomePage extends VerticalLayout implements View {
 		List<Product> products = showAllProductsService.getAllProducts();
 		Grid<Product> productsTable = new Grid<>(Product.class);
 		
-		productsTable.setColumnOrder("productId","seller","name", "price", "imageUrl","productUrl","pid","gender","category","subcategory","brand");
+		productsTable.setColumnOrder("productId","seller","name", "price", "imageUrl","productUrl","sku");
 		productsTable.removeColumn("task");
 		
 		productsTable.setItems(products);
@@ -278,16 +274,7 @@ public class HomePage extends VerticalLayout implements View {
         
         
         //////////////////////////////////////////////////////////////
-        
-      //  setMargin(false);
-       /** 
-        VerticalSplitPanel v1 = new VerticalSplitPanel(); 
-        v1.setFirstComponent(chart);
-        v1.setSecondComponent(chart2);
-        v1.setSplitPosition(50);
-        v1.setSizeFull();
-      */
-        
+        /**
         HorizontalSplitPanel h1 = new HorizontalSplitPanel();   
         h1.setFirstComponent(chart);
         h1.setSecondComponent(chart2);
@@ -299,18 +286,16 @@ public class HomePage extends VerticalLayout implements View {
         v2.setSecondComponent(chart3);
         v2.setSplitPosition(50);
         v2.setSizeFull();
-       
-        
-       
+       */
         
         HorizontalSplitPanel splitContentCode = new HorizontalSplitPanel();        
-        splitContentCode.setFirstComponent(v2);
-        splitContentCode.setSecondComponent(productsTable);
+        splitContentCode.setFirstComponent(chart);
+        splitContentCode.setSecondComponent(chart2);
         splitContentCode.setSplitPosition(50);
         splitContentCode.setWidth("100%");
         splitContentCode.setHeight("650px");
      
-        HorizontalLayout hl = new HorizontalLayout(vl,title3,title4,title5,title6,title7);
+        HorizontalLayout hl = new HorizontalLayout(title3,title4,title5,title6,title7);
         hl.setHeight("150px");
         hl.setWidth("100%");
         hl.setMargin(false);
