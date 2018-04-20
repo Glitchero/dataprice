@@ -17188,3 +17188,7 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .hybridMenu.design_dark .topMenu .menuSubMenu .menuSubMenuContent .menuSubMenuHr, .mytheme .hybridMenu.design_dark .topMenu .menuSubMenu .menuSubMenuContent .menuSubMenuButton:hover {
 	background: #535353;
 }
+
+.mytheme .v-inline-datefield-calendarpanel-header,.v-inline-datefield-calendarpanel-body{
+  display: none;
+  }

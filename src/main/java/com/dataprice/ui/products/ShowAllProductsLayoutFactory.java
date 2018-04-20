@@ -85,7 +85,7 @@ public class ShowAllProductsLayoutFactory {
 			textFieldWithTwoButtons.setWidth("70%");
 			textFieldWithTwoButtons.getTextfield().setPlaceholder("Busca por nombre, sku, upc, etc.");
 			
-			if (settings.getMainSeller()==null) {
+			if (settings.getMainSeller()==null || products.size()==0) {
 				currentSeller = new Label("<b><font size=\"3\">" + "Para visualizar los productos debe elegir un vendedor en settings." + "</font></b>",ContentMode.HTML);	
 				currentSeller.addStyleName(ValoTheme.LABEL_FAILURE);
 			}else {
@@ -162,20 +162,22 @@ public class ShowAllProductsLayoutFactory {
 
 		private void searchProduct() {		
 		  List<Product> retrieveList = searchProductService.search(textFieldWithTwoButtons.getTextfield().getValue());	
-          if(retrieveList.size()!=0 && retrieveList!=null) { //It could be null; 
+        
+		  if(retrieveList!=null) { 
+		      if(retrieveList.size()!=0) { 
         	  
-        	  List<Product> retrieveFilteredList = new LinkedList<Product>();
+        	    List<Product> retrieveFilteredList = new LinkedList<Product>();
         	  
-        		for (Product p : retrieveList) {
-        			if (p.getSeller().equals(settings.getMainSeller())) {
+        		  for (Product p : retrieveList) {
+        			  if (p.getSeller().equals(settings.getMainSeller())) {
         			    retrieveFilteredList.add(p);
-        			}
-           		}
+        			  }
+           		  }
         	  
-		      productsTable.setItems(retrieveFilteredList);
-          }
-          
-	    }
+		        productsTable.setItems(retrieveFilteredList);
+             }
+		}
+	   }
 
 		@Override
 		public void selectionChange(SelectionEvent<Product> event) {

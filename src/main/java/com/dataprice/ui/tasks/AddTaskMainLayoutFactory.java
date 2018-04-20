@@ -42,7 +42,7 @@ public class AddTaskMainLayoutFactory {
 	    private TextField taskName;
 	    private ComboBox retail;
 	    private TextField seed;
-	   // private TextField status;
+	    //private TextField status;
 	    private Button saveButton;
 	    private Button clearButton;
         private List<Retail> retailers;
@@ -63,7 +63,7 @@ public class AddTaskMainLayoutFactory {
 	    	
 	    	task = new Task();
 	    	
-	    	taskName = new TextField("TaskName");
+	    	taskName = new TextField("Categoría");
 	    	taskName.setWidth("100%");
 	    	
 	    	retail = new ComboBox("Retail");

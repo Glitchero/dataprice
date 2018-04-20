@@ -1,9 +1,11 @@
 package com.dataprice.ui.settings;
 
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
-import org.percepta.mgrankvi.TimeSelector;
+import org.hibernate.search.annotations.Resolution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -21,6 +23,8 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.datefield.DateResolution;
+import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
@@ -30,6 +34,8 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.InlineDateField;
+import com.vaadin.ui.InlineDateTimeField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
@@ -72,19 +78,15 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		
 			separator1 = new Label("<hr />",ContentMode.HTML);	
 			separator1.setWidth("100%");
-			
-		   
+
 			mainTittle = new Label("<b><font size=\"5\">List of settings: </font></b>",ContentMode.HTML);	
-			
-          
+
 			dataTittle = new Label("<b>Elija la fuente de datos: </b>",ContentMode.HTML);
 		
 			sellersComboBoxWithUpload = new ComboBoxWithButton("Vendedores disponibles: ", VaadinIcons.CLOUD_UPLOAD,
 	                onClick -> openSubWindow("Upload"));
 			sellersComboBoxWithUpload.setWidth("50%");
 			sellersComboBoxWithUpload.getComboBox().setItems(sellers);
-		
-		
  
 			keyGroup = new RadioButtonGroup<>("Seleccione el tipo de clave: ");
 			keyGroup.setItems("sku", "upc");
@@ -112,14 +114,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			    */
 			});
 			
-			
-			
-
 			postalCode = new TextField("Código postal: ");
 			postalCode.setWidth("20%");
-			
-	
-			
+				
 			saveButton = new Button("Save Settings");
 			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			saveButton.addClickListener(this);
@@ -158,25 +155,20 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				return this;
 			}	
 		 
-		 
+		
 		 public Component layout() {		
 		    	setMargin(true);
 		    	
-		    	final TimeSelector selector = new TimeSelector();
-		    	selector.setCaption("Correr los bots diariamente a las:");
-		    	selector.setWidth("10%");
-		    	
-		    	selector.addSelectionChangeListener(new TimeSelector.SelectionChangeListener() {
-		    	  @Override
-		    	  public void selectionChanged(TimeSelector.SelectionChangeEvent event) {
-		    	    System.out.println(event.getHours() + ":" + event.getMinutes());
-		    	  }
-		    	});
-		    	
+		    	InlineDateTimeField date=new InlineDateTimeField("Correr los bots diariamente a las:");
+		    	date.setValue(LocalDateTime.now());
+		    	date.setLocale(Locale.US);
+		    	date.setResolution(DateTimeResolution.MINUTE);
+		    	date.setStyleName("mytheme");
+		   		    	
 		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton);
 		    	hbuttons.setWidth("25%");
 		    	
-		    	FormLayout form = new FormLayout(sellersComboBoxWithUpload,keyGroup,slider,postalCode,selector);
+		    	FormLayout form = new FormLayout(sellersComboBoxWithUpload,keyGroup,slider,postalCode,date);//,f);//,selector);
 		    	form.setWidth("100%");
 		    	
 		    	VerticalLayout vl = new VerticalLayout(mainTittle,separator1,form,hbuttons);
@@ -216,6 +208,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			settings = user.getSettings();
 			
 			sellers = showAllProductsService.getSellersList();
+			if (sellers.size()==0) {
+				settings.setMainSeller(null); //In there are no sellers set to null!!
+			}
 			
 			return this;
 		}

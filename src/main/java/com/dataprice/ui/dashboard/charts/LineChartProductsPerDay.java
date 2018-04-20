@@ -24,8 +24,9 @@ public class LineChartProductsPerDay implements UIComponentBuilder{
 	        LineChartConfig config = new LineChartConfig();
 	        config.data()
 	       //     .labels("January", "February", "March", "April", "May", "June", "July")
-	        .labels("01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17","01/01/17","01/01/17")
-	            .addDataset(new LineDataset().label("Dataset")
+	      //  .labels("01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17", "01/01/17","01/01/17","01/01/17")
+	        .labels("January", "February", "March", "April", "May", "June", "July")    
+	        .addDataset(new LineDataset().label("Dataset")
 	                .borderColor(DemoUtils.RGB_RED)
 	                .backgroundColor(DemoUtils.RGB_RED)
 	                .data(10d, 30d, 46d, 2d, 8d, 50d, 0d)

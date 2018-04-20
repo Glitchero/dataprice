@@ -348,6 +348,7 @@ public class EditProductLayoutFactory {
 			}
 			
 			productSaveListener.productSaved();
+		//	editData(product); //In order to refreh the topProductsTable
 			clearField();
 			Notification.show("EDIT","Product profile editted",Type.WARNING_MESSAGE);
 			

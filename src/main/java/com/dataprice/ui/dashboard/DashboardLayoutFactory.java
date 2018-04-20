@@ -12,6 +12,7 @@ import com.dataprice.ui.settings.AddSettingsMainLayoutFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.VerticalLayout;
@@ -67,14 +68,15 @@ public class DashboardLayoutFactory extends VerticalLayout implements View{
 	        splitContentCode.setSplitPosition(50);
 	        splitContentCode.setWidth("100%");
 
-	        VerticalLayout v2 = new VerticalLayout(splitContentCode,lineChart); 
-	        v2.setSizeFull();
-	        v2.setMargin(false);
+	     //   VerticalLayout v2 = new VerticalLayout(lineChart); 
+	      //  v2.setComponentAlignment(lineChart, Alignment.BOTTOM_CENTER);
+	       // v2.setSizeFull();
+	        //v2.setMargin(false);
 	        
 	        HorizontalSplitPanel splitContentCode2 = new HorizontalSplitPanel();        
-	        splitContentCode2.setFirstComponent(v2);
-	        splitContentCode2.setSecondComponent(donutChart);
-	        splitContentCode2.setSplitPosition(60);
+	        splitContentCode2.setFirstComponent(splitContentCode);
+	        splitContentCode2.setSecondComponent(lineChart);
+	        splitContentCode2.setSplitPosition(50);
 	        splitContentCode2.setWidth("100%");
 	        
 	     
