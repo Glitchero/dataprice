@@ -1,5 +1,7 @@
 package com.dataprice.service.addproductservice;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class AddProductServiceImpl implements AddProductService {
 			retrievedProduct.setProductUrl(productDAO.getProductUrl());
 			retrievedProduct.setTask(productDAO.getTask());
 			retrievedProduct.setBrand(productDAO.getBrand());
-			retrievedProduct.setUpdateDay(productDAO.getUpdateDay());
+			retrievedProduct.setUpdateDay(new Date());
 			productRepository.save(retrievedProduct);
 		}else {
 			Product product = new Product();

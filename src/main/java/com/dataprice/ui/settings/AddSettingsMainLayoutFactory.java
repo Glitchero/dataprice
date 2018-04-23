@@ -2,6 +2,7 @@ package com.dataprice.ui.settings;
 
 import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -158,7 +159,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		
 		 public Component layout() {		
 		    	setMargin(true);
-		    	
+		    
 		    	InlineDateTimeField date=new InlineDateTimeField("Correr los bots diariamente a las:");
 		    	date.setValue(LocalDateTime.now());
 		    	date.setLocale(Locale.US);

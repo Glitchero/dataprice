@@ -30,10 +30,18 @@ public class ReportsServiceImpl implements ReportsService{
 	}
 
 	@Override
-	public List<Product> getProductsFromSellMatchSkuCatRange(String mySeller, Set<String> categories, Date stDate,
-			Date edDate) {
-		return productRepository.getProductsFromSellMatchSkuCatRange(mySeller, categories, stDate, edDate);
+	public List<Product> getProductsForPriceMatrixByUpc(String mySeller, Set<String> categories, Date stDate,
+			Date edDate, Set<String> competition) {
+		return productRepository.getProductsForPriceMatrixByUpc(mySeller, categories, stDate, edDate, competition);
 	}
+
+	@Override
+	public List<Product> getProductsForPriceMatrixBySku(String mySeller, Set<String> categories, Date stDate,
+			Date edDate, Set<String> competition) {
+		return productRepository.getProductsForPriceMatrixBySku(mySeller, categories, stDate, edDate, competition);
+
+	}
+
 
 	
 	

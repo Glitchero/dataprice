@@ -18,6 +18,11 @@ public class ShowAllRetailsServiceImpl implements ShowAllRetailsService{
 	public List<Retail> getAllRetailers() {
 		return retailersRepository.getAllRetailers();
 	}
+
+	@Override
+	public Retail getRetailFromId(Integer id) {
+		return retailersRepository.getRetailFromId(id);
+	}
 	
 	
 }

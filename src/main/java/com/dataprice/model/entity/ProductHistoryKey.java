@@ -1,6 +1,10 @@
 package com.dataprice.model.entity;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -16,7 +20,7 @@ public class ProductHistoryKey implements Serializable{
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "Day", nullable = false)
-	private Date day;
+	private java.util.Calendar day;
 
 	public ProductHistoryKey() {
 		
@@ -24,7 +28,9 @@ public class ProductHistoryKey implements Serializable{
 	
 	public ProductHistoryKey(String productKey) {
 		this.productKey = productKey;
-		day = new Date();
+		java.util.Calendar today = java.util.Calendar.getInstance();
+		today.set(java.util.Calendar.HOUR_OF_DAY, 0);
+		day = today;
 	}
 	
 
@@ -37,11 +43,11 @@ public class ProductHistoryKey implements Serializable{
 		this.productKey = productKey;
 	}
 
-	public Date getDay() {
+	public java.util.Calendar getDay() {
 		return day;
 	}
 
-	public void setDay(Date day) {
+	public void setDay(java.util.Calendar day) {
 		this.day = day;
 	}
 		

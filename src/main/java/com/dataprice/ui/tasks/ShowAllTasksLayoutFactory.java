@@ -65,6 +65,7 @@ import com.vaadin.ui.renderers.LocalDateTimeRenderer;
 import com.vaadin.ui.renderers.ProgressBarRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
@@ -87,6 +88,7 @@ public class ShowAllTasksLayoutFactory{
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
 
 		private Button removeTasksButton;
+		private Button reportButton;
 		private Button runTasksButton;
 		private Button stopTasksButton;
 		//private Thread thread;
@@ -117,6 +119,11 @@ public class ShowAllTasksLayoutFactory{
 			removeTasksButton.addClickListener(this);
 			removeTasksButton.setIcon(VaadinIcons.TRASH);
 			removeTasksButton.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
+			
+			
+			reportButton = new Button("Reportar");
+			reportButton.setIcon(VaadinIcons.TOOLS);
+			reportButton.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
 			
 			runTasksButton = new Button("Run");
 			runTasksButton.setWidth("100%");
@@ -189,7 +196,7 @@ public class ShowAllTasksLayoutFactory{
 			tasksTable.addColumn(t ->
 		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>Semilla</a>",
 		      new HtmlRenderer()).setCaption("Semillas");
-			
+					
 
 			tasksTable.removeColumn("taskId");
 			tasksTable.removeColumn("seed");
@@ -218,20 +225,21 @@ public class ShowAllTasksLayoutFactory{
 		
 		
 		public ShowAllTasksLayout layout() {
-			HorizontalLayout h1 = new HorizontalLayout(runTasksButton,stopTasksButton,progressBar);
-			
+			HorizontalLayout h1 = new HorizontalLayout(progressBar,runTasksButton,stopTasksButton);
 			h1.setWidth("100%");
+			h1.setMargin(false);
 			
-			HorizontalLayout h2 = new HorizontalLayout(removeTasksButton);
+			CssLayout h2 = new CssLayout(removeTasksButton,reportButton);
 			h2.setWidth("100%");
-		
+			//h2.setMargin(false);
+			
 			HorizontalLayout h3 = new HorizontalLayout(h2,h1);
 			h3.setWidth("100%");
 			
 			
-			//h1.setComponentAlignment(runTasksButton, Alignment.BOTTOM_RIGHT);
-			//h1.setComponentAlignment(stopTasksButton, Alignment.BOTTOM_RIGHT);
-	
+			h3.setComponentAlignment(h1, Alignment.BOTTOM_LEFT);
+			h3.setComponentAlignment(h2, Alignment.BOTTOM_RIGHT);
+			
 			addComponent(tasksTable); //Add component to the verticalLayout, That's why we extend the class.
 			HeaderRow HeaderRow = tasksTable.prependHeaderRow();
 			HeaderRow.getCell("retail").setComponent(retailFilter);

@@ -7,4 +7,6 @@ import com.dataprice.model.entity.Retail;
 public interface ShowAllRetailsService {
 
 	public List<Retail> getAllRetailers();
+	
+	public Retail getRetailFromId(Integer id);
 }

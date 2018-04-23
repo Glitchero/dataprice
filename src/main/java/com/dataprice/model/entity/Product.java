@@ -98,7 +98,8 @@ public class Product {
 	@Column(name = "checked")
 	private boolean checked;
 	
-	@Temporal(TemporalType.DATE)
+	//@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_day", nullable = false)
 	private Date updateDay;
 

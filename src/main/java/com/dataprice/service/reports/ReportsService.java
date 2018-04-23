@@ -13,5 +13,8 @@ public interface ReportsService {
 	
 	List<String> getCategoryListForSeller(String mySeller);
 	
-	List<Product> getProductsFromSellMatchSkuCatRange(String mySeller,Set<String> categories,Date stDate,Date edDate);
+	List<Product> getProductsForPriceMatrixByUpc(String mySeller,Set<String> categories,Date stDate,Date edDate,Set<String> competition);
+
+	List<Product> getProductsForPriceMatrixBySku(String mySeller,Set<String> categories,Date stDate,Date edDate,Set<String> competition);
+
 }

@@ -47,8 +47,8 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	}
 
 	@Override
-	public void generateReport(String reportType, ReportSettings reportSettings) {
-		if (reportType.equals("Matriz de Precios")) {
+	public void generateReport(ReportSettings reportSettings) {
+		if (reportSettings.getTypeOfReport().equals("Matriz de Precios")) {
 			Component priceMatrixReport = matrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(priceMatrixReport);
 		}else {

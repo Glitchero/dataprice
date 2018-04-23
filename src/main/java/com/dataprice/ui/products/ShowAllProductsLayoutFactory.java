@@ -132,7 +132,7 @@ public class ShowAllProductsLayoutFactory {
 			settings = user.getSettings();
 					
 			products = showAllProductsService.getAllProductsFromSeller(settings.getMainSeller());
-			
+			//System.out.println("La fecha del primer producto es: " + products.get(0).getUpdateDay());
 			return this;
 		}
 		

@@ -18,9 +18,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.products.ProductLayoutFactory;
-import com.dataprice.ui.reports.ReportsLayoutFactory;
 import com.dataprice.ui.reports.ReportsMainLayout;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
+import com.dataprice.ui.tasks.TaskExportImportLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -342,13 +342,32 @@ public class VaadinHybridMenuUI extends UI {
 		*/
 
 		
-		MenuButton tasksButton = LeftMenuButtonBuilder.get()
-				.withCaption("Tasks")
-				.withIcon(VaadinIcons.BUG)
-				.withNavigateTo(TaskLayoutFactory.class)
-				.build();
+//		MenuButton tasksButton = LeftMenuButtonBuilder.get()
+//				.withCaption("Tasks")
+//				.withIcon(VaadinIcons.BUG)
+//				.withNavigateTo(TaskLayoutFactory.class)
+//				.build();
 
-		hybridMenu.addLeftMenuButton(tasksButton);
+//		hybridMenu.addLeftMenuButton(tasksButton);
+		
+		
+		MenuSubMenu tasksButton = LeftMenuSubMenuBuilder.get()
+				.setCaption("Bots")
+				.setIcon(VaadinIcons.BUG)
+				.setConfig(hybridMenu.getConfig())
+				.build(hybridMenu);
+
+		tasksButton.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Administrador")
+				.withIcon(VaadinIcons.TASKS)
+				.withNavigateTo(TaskLayoutFactory.class)
+				.build());
+
+		tasksButton.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Export/Import")
+				.withIcon(VaadinIcons.REFRESH)
+				.withNavigateTo(TaskExportImportLayoutFactory.class)
+				.build());
 		
 		/**
 		MenuButton productsButton = LeftMenuButtonBuilder.get()

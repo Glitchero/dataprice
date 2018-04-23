@@ -11,19 +11,34 @@ public class ReportSettings {
 	
 	private Set<String> competitors; //List of my competitors
 	
-	private Set<String> fields; //List of extra fields to add to reports, such as brand, url, imageLink, etc.
-
-	private LocalDate startDate; 
+	private LocalDate startDate = LocalDate.now(); 
 	
-	private LocalDate endDate; 
+	private LocalDate endDate = LocalDate.now(); 
 
-	public ReportSettings(Set<String> categories, Set<String> competitors, Set<String> fields, LocalDate startDate, LocalDate endDate) {
+	private String typeOfReport="Matriz de Precios";
+	
+	public ReportSettings() {
+
+	}
+	
+	public ReportSettings(Set<String> categories, Set<String> competitors, String typeOfReport, LocalDate startDate, LocalDate endDate) {
 		this.categories = categories;
 		this.competitors = competitors;
-		this.fields = fields;
+		this.typeOfReport = typeOfReport;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
+
+	
+	public String getTypeOfReport() {
+		return typeOfReport;
+	}
+
+
+	public void setTypeOfReport(String typeOfReport) {
+		this.typeOfReport = typeOfReport;
+	}
+
 
 	public Set<String> getCategories() {
 		return categories;
@@ -41,14 +56,7 @@ public class ReportSettings {
 		this.competitors = competitors;
 	}
 
-	public Set<String> getFields() {
-		return fields;
-	}
-
-	public void setFields(Set<String> fields) {
-		this.fields = fields;
-	}
-
+	
 	public LocalDate getStartDate() {
 		return startDate;
 	}
