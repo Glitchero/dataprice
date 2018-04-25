@@ -14,13 +14,16 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringView
-public class ReportsMainLayout extends VerticalLayout implements View,GenerateReportListener{
+public class ReportsMainLayout extends VerticalLayout implements View,GenerateReportListener,ExportToExcelListener{
 	
 	@Autowired
 	private ReportSettingsLayoutFactory reportSettingsLayoutFactory;
 	
 	@Autowired
 	private MatrixReportLayoutFactory matrixReportLayoutFactory;
+	
+	@Autowired
+	private ExcelMatrixReportLayoutFactory excelMatrixReportLayoutFactory;
 	
 	@PostConstruct
 	void init() {
@@ -36,7 +39,7 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	}
 
 	private void addLayout() {
-		Component reportTab = reportSettingsLayoutFactory.createComponent(this);
+		Component reportTab = reportSettingsLayoutFactory.createComponent(this,this);
 		addComponent(reportTab);
 		setComponentAlignment(reportTab, Alignment.MIDDLE_CENTER);
 	}
@@ -48,9 +51,21 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 
 	@Override
 	public void generateReport(ReportSettings reportSettings) {
-		if (reportSettings.getTypeOfReport().equals("Matriz de Precios")) {
+		if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Unidades")) {
 			Component priceMatrixReport = matrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(priceMatrixReport);
+		}else {
+			//Do nothing for the moment
+		}
+		
+	}
+
+	@Override
+	public void exportToExcel(ReportSettings reportSettings) {
+		if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Unidades")) {
+			Component excelPriceMatrixReport = excelMatrixReportLayoutFactory.createComponent(reportSettings);
+			addComponent(excelPriceMatrixReport);
+			
 		}else {
 			//Do nothing for the moment
 		}

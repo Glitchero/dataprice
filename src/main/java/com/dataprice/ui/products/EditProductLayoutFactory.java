@@ -357,7 +357,7 @@ public class EditProductLayoutFactory {
 
 		public EditProductLayout bind() {
 			binder.forField(textFieldKey)
-			  .asRequired("Key must be set")
+			//  .asRequired("Key must be set")
 			  .bind(settings.getKeyType()); //sku or upc from product
 
 			binder.forField(productChecked)

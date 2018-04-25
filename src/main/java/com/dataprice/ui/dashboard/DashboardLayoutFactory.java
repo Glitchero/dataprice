@@ -32,8 +32,15 @@ public class DashboardLayoutFactory extends VerticalLayout implements View{
 	 * 7.- Canceled bots
 	 * 8.- Finalized bots
 	 * 9.- Pending bots
+	 * 10.-Total products matched
+	 * 11.-Competence following.
 	 * 
 	 * It would be nice to add a ranking board for me and my competence, fist place sell the lower and so on !!.
+	 * 
+	 * I need two more pie-charts:
+	 * 
+	 * 1.- (Depends on sku or upc) How i am positionated against my competition. equal, higher than, less than , could be average or counting competition.
+	 * 2.- Number of matched products by seller in Sku or Upc. This also show my competence.
 	 */
 	
 	@Autowired

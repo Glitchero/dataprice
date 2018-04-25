@@ -11,22 +11,23 @@ public class ReportSettings {
 	
 	private Set<String> competitors; //List of my competitors
 	
-	private LocalDate startDate = LocalDate.now(); 
+//	private LocalDate startDate = LocalDate.now(); 
 	
-	private LocalDate endDate = LocalDate.now(); 
+//	private LocalDate endDate = LocalDate.now(); 
 
-	private String typeOfReport="Matriz de Precios";
+	private LocalDate lastUpdate = LocalDate.now(); 
+	
+	private String typeOfReport="Matriz de Precios en Unidades";
 	
 	public ReportSettings() {
 
 	}
 	
-	public ReportSettings(Set<String> categories, Set<String> competitors, String typeOfReport, LocalDate startDate, LocalDate endDate) {
+	public ReportSettings(Set<String> categories, Set<String> competitors, String typeOfReport, LocalDate lastUpdate) {
 		this.categories = categories;
 		this.competitors = competitors;
 		this.typeOfReport = typeOfReport;
-		this.startDate = startDate;
-		this.endDate = endDate;
+		this.lastUpdate = lastUpdate;
 	}
 
 	
@@ -56,21 +57,14 @@ public class ReportSettings {
 		this.competitors = competitors;
 	}
 
+	public LocalDate getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(LocalDate lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+
 	
-	public LocalDate getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
 	
 }

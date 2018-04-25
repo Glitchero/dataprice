@@ -85,12 +85,12 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	 * @return
 	 */
 	
-	@Query("select p from Product p where p.seller=:sellerName and p.task.taskName IN :categories and DATE(p.updateDay) >= :stDate AND DATE(p.updateDay) <= :edDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1)")
-	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("categories") Set<String> categories , @Param("stDate") Date stDate, @Param("edDate") Date edDate, @Param("competition") Set<String> competition );
+	@Query("select p from Product p where p.seller=:sellerName and p.task.taskName IN :categories and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1)")
+	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("categories") Set<String> categories , @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
 	
-	@Query("select p from Product p where p.seller=:sellerName and p.task.taskName IN :categories and p.updateDay >= :stDate AND p.updateDay <= :edDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1)")
-	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("categories") Set<String> categories , @Param("stDate") Date stDate, @Param("edDate") Date edDate, @Param("competition") Set<String> competition );
+	@Query("select p from Product p where p.seller=:sellerName and p.task.taskName IN :categories and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1)")
+	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("categories") Set<String> categories , @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 	
 	
 }

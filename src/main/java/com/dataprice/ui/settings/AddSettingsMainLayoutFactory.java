@@ -63,11 +63,12 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		
 		private Label mainTittle;	
 		private Label dataTittle;	
-		private ComboBoxWithButton sellersComboBoxWithUpload;
+	//	private ComboBoxWithButton sellersComboBoxWithUpload;
+		private ComboBox sellersComboBox;
 		private RadioButtonGroup<String> keyGroup;	
 		private Slider slider;
 		private Label vertvalue;	
-		private TextField postalCode;
+	//	private TextField postalCode;
 		private Button saveButton;
 		//private Button defaultSetingsButton; 
 		private Label separator1;
@@ -84,10 +85,12 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 
 			dataTittle = new Label("<b>Elija la fuente de datos: </b>",ContentMode.HTML);
 		
-			sellersComboBoxWithUpload = new ComboBoxWithButton("Vendedores disponibles: ", VaadinIcons.CLOUD_UPLOAD,
-	                onClick -> openSubWindow("Upload"));
-			sellersComboBoxWithUpload.setWidth("50%");
-			sellersComboBoxWithUpload.getComboBox().setItems(sellers);
+		//	sellersComboBoxWithUpload = new ComboBoxWithButton("Vendedores disponibles: ", VaadinIcons.CLOUD_UPLOAD,
+	    //            onClick -> openSubWindow("Upload"));
+			
+			sellersComboBox = new ComboBox("Vendedores disponibles:");
+			sellersComboBox.setWidth("50%");
+			sellersComboBox.setItems(sellers);
  
 			keyGroup = new RadioButtonGroup<>("Seleccione el tipo de clave: ");
 			keyGroup.setItems("sku", "upc");
@@ -115,8 +118,8 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			    */
 			});
 			
-			postalCode = new TextField("Código postal: ");
-			postalCode.setWidth("20%");
+	//		postalCode = new TextField("Código postal: ");
+	//		postalCode.setWidth("20%");
 				
 			saveButton = new Button("Save Settings");
 			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
@@ -142,7 +145,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 
 		public AddSettingsMainLayout bind() {
 			 
-				binder.forField(sellersComboBoxWithUpload.getComboBox())
+				binder.forField(sellersComboBox)
 				  .bind("mainSeller");
 				
 				binder.forField(slider)
@@ -169,7 +172,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton);
 		    	hbuttons.setWidth("25%");
 		    	
-		    	FormLayout form = new FormLayout(sellersComboBoxWithUpload,keyGroup,slider,postalCode,date);//,f);//,selector);
+		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,date);//,f);//,selector);
 		    	form.setWidth("100%");
 		    	
 		    	VerticalLayout vl = new VerticalLayout(mainTittle,separator1,form,hbuttons);

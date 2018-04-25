@@ -56,10 +56,8 @@ public class ReportSettingsLayoutFactory {
 	
 	private TwinColSelect<String> fieldsSelect;
 	
-	private DateField startDate;
-	
-	private DateField endDate;
-	
+	private DateField lastDate;
+		
 	private ComboBox typeOfReport;
 	
 	private Button generateReport;
@@ -73,11 +71,12 @@ public class ReportSettingsLayoutFactory {
 	private class ReportSettingsLayout extends VerticalLayout implements Button.ClickListener {
 
 		private GenerateReportListener generateReportListener;
-
+		private ExportToExcelListener exportToExcelListener;
 		private Binder<ReportSettings> binder;
 		
-		public ReportSettingsLayout(GenerateReportListener generateReportListener) {
+		public ReportSettingsLayout(GenerateReportListener generateReportListener, ExportToExcelListener exportToExcelListener) {
 			this.generateReportListener = generateReportListener;
+			this.exportToExcelListener =  exportToExcelListener;
 		}
 
 
@@ -110,20 +109,17 @@ public class ReportSettingsLayoutFactory {
 			fieldsSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
 			fieldsSelect.setHeight("170px");
 			
-			startDate = new DateField("Apartir de:");
+			lastDate = new DateField("Seleccione la fecha de última actualización:");
 			//startDate.setValue(LocalDate.now());
-			startDate.setWidth("100%");
+			lastDate.setWidth("100%");
 			
-			endDate = new DateField("Hasta:");
-			//endDate.setValue(LocalDate.now());
-			endDate.setWidth("100%");
-			
+					
 			//System.out.println("Tiempo: " + LocalDate.now());
 			//reportSettings.setStartDate(LocalDate.now());
 			//reportSettings.setEndDate(LocalDate.now());
 			
 			typeOfReport = new ComboBox("Seleccione el tipo de reporte:");
-			typeOfReport.setItems("Matriz de Precios","Matriz de Descuentos");
+			typeOfReport.setItems("Matriz de Precios en Unidades","Matriz de Precios en Porcentajes");
 			typeOfReport.setWidth("100%");
 			
 			generateReport = new Button("Generar Reporte");
@@ -133,7 +129,7 @@ public class ReportSettingsLayoutFactory {
 			
 			exportReport = new Button("Exportar a Excel");
 			exportReport.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-		//	exportReport.addClickListener(this);
+			exportReport.addClickListener(this);
 			exportReport.setWidth("100%");
 			
 			
@@ -154,8 +150,8 @@ public class ReportSettingsLayoutFactory {
 
 		
 		public Component layout() {
-			HorizontalLayout h3 = new HorizontalLayout(startDate,endDate);
-			h3.setWidth("100%");
+			HorizontalLayout h3 = new HorizontalLayout(lastDate);
+			h3.setWidth("50%");
 			h3.setMargin(false);
 			
 			HorizontalLayout h4 = new HorizontalLayout(generateReport,exportReport);
@@ -192,13 +188,9 @@ public class ReportSettingsLayoutFactory {
 			  .asRequired("competitors are required")
 			  .bind("competitors");
 			
-			binder.forField(startDate)
-			  .asRequired("start date is required")
-			  .bind("startDate");
-			
-			binder.forField(endDate)
-			  .asRequired("endDate is required")
-			  .bind("endDate");
+			binder.forField(lastDate)
+			  .asRequired("last date is required")
+			  .bind("lastUpdate");
 
 			binder.forField(typeOfReport)
 			  .asRequired("Type of report is required")
@@ -212,14 +204,37 @@ public class ReportSettingsLayoutFactory {
 		@Override
 		public void buttonClick(ClickEvent event) {
 			
+			if (event.getSource()==generateReport) {
+				generateReport();
+				
+			}else {
+				exportToExcel();
+			}
+			
+			
+		}
+
+
+
+		private void exportToExcel() {
 			try {
 				binder.writeBean(reportSettings);
 			} catch (ValidationException e) {
 				Notification.show("ERROR","Error in reports Settings",Type.ERROR_MESSAGE);
 				return;
-			}
+			}			
+			exportToExcelListener.exportToExcel(reportSettings);
 			
-		//	ReportSettings reportSettings = new ReportSettings(categoriesSelect.getValue(), competitorsSelect.getValue(), fieldsSelect.getValue(), startDate.getValue(),endDate.getValue());
+		}
+
+
+		private void generateReport() {
+			try {
+				binder.writeBean(reportSettings);
+			} catch (ValidationException e) {
+				Notification.show("ERROR","Error in reports Settings",Type.ERROR_MESSAGE);
+				return;
+			}			
 			generateReportListener.generateReport(reportSettings);
 		}
 
@@ -236,8 +251,8 @@ public class ReportSettingsLayoutFactory {
 	private ShowAllProductsService showAllProductsService;
 	
 	
-	public Component createComponent(GenerateReportListener generateReportListener) {
-		return new ReportSettingsLayout(generateReportListener).load().init().bind().layout();
+	public Component createComponent(GenerateReportListener generateReportListener,ExportToExcelListener exportToExcelListener) {
+		return new ReportSettingsLayout(generateReportListener,exportToExcelListener).load().init().bind().layout();
 	}
 
 

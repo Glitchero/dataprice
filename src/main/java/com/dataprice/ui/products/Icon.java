@@ -49,8 +49,18 @@ public class Icon extends Label {
         this.color = Color.RED;
         updateIcon();
     }
+    
+    public void setYellowColor() {
+        this.color = Color.YELLOW;
+        updateIcon();
+    }
+    
+    public void setBlueColor() {
+        this.color = Color.BLUE;
+        updateIcon();
+    }
 
     public enum Color {
-        BLACK, GREEN , GRAY, RED
+        BLACK, GREEN , GRAY, RED, YELLOW, BLUE
     }
 }

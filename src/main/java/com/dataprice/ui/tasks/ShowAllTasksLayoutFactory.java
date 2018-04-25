@@ -83,6 +83,8 @@ public class ShowAllTasksLayoutFactory{
 	
 	private ComboBox retailFilter;
 	
+	private ComboBox taskNameFilter;
+	
 	private List<Retail> retailers;
 	
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
@@ -132,10 +134,16 @@ public class ShowAllTasksLayoutFactory{
 			runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			
 			
-			retailFilter = new ComboBox("Retails");
-			retailFilter.setVisible(true);
+			retailFilter = new ComboBox();
+			retailFilter.setStyleName(ValoTheme.COMBOBOX_SMALL);
 			retailFilter.setItems(retailers);
 			retailFilter.addValueChangeListener(this);
+			
+			
+			taskNameFilter = new ComboBox();
+			taskNameFilter.setStyleName(ValoTheme.COMBOBOX_SMALL);
+		//	taskNameFilter.setItems(taskNames); //Create query!!.
+		//	taskNameFilter.addValueChangeListener(this);
 			
 			
 			stopTasksButton =  new Button("Stop");
@@ -243,6 +251,7 @@ public class ShowAllTasksLayoutFactory{
 			addComponent(tasksTable); //Add component to the verticalLayout, That's why we extend the class.
 			HeaderRow HeaderRow = tasksTable.prependHeaderRow();
 			HeaderRow.getCell("retail").setComponent(retailFilter);
+			HeaderRow.getCell("taskName").setComponent(taskNameFilter);
 			
 			//FooterRow footerRow = tasksTable.prependFooterRow();
 			//footerRow.getCell("Estatus").setHtml("<b>Total:</b>");
@@ -554,7 +563,7 @@ public class ShowAllTasksLayoutFactory{
     		   if (!p.getProductKey().equals("")) {
     			   downloadedProducts++;
     			   addProductService.saveProduct(p);
-    			   addProductHistService.saveProductHist(new ProductHistory(new ProductHistoryKey(p.getProductKey()),p.getPrice()));
+    			   //addProductHistService.saveProductHist(new ProductHistory(new ProductHistoryKey(p.getProductKey()),p.getPrice()));
     			   if ((i+1) % 5 == 0 || i+1 == productsInfo.size())  //Update evert 5 downloads or in the last iteration, in the future we can also include the saveProduct.
     			         setTaskProgress(task, (double) (i + 1)/ (double) productsInfo.size());
     		   }else {

@@ -444,15 +444,16 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(reportsButton);
 		
-		/**
+	/**	
 		MenuButton userButton = LeftMenuButtonBuilder.get()
 				.withCaption("Users")
 				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(ReportsMainLayout.class)
+				.withNavigateTo(MemberPage.class)
 				.build();
 
 		hybridMenu.addLeftMenuButton(userButton);
-        */
+	*/
+        
 	}
 
 	public HybridMenu getHybridMenu() {
