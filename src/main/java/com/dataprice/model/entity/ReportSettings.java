@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ReportSettings {
 
-	private Set<String> categories;
+//	private Set<String> categories;
 	
 	private Set<String> competitors; //List of my competitors
 	
@@ -23,8 +23,7 @@ public class ReportSettings {
 
 	}
 	
-	public ReportSettings(Set<String> categories, Set<String> competitors, String typeOfReport, LocalDate lastUpdate) {
-		this.categories = categories;
+	public ReportSettings(Set<String> competitors, String typeOfReport, LocalDate lastUpdate) {
 		this.competitors = competitors;
 		this.typeOfReport = typeOfReport;
 		this.lastUpdate = lastUpdate;
@@ -40,14 +39,6 @@ public class ReportSettings {
 		this.typeOfReport = typeOfReport;
 	}
 
-
-	public Set<String> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
-	}
 
 	public Set<String> getCompetitors() {
 		return competitors;

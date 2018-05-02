@@ -62,7 +62,6 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 	private class AddSettingsMainLayout extends VerticalLayout implements Button.ClickListener, Upload.Receiver{
 		
 		private Label mainTittle;	
-		private Label dataTittle;	
 	//	private ComboBoxWithButton sellersComboBoxWithUpload;
 		private ComboBox sellersComboBox;
 		private RadioButtonGroup<String> keyGroup;	
@@ -71,20 +70,16 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 	//	private TextField postalCode;
 		private Button saveButton;
 		//private Button defaultSetingsButton; 
-		private Label separator1;
+		private Label subTittle;
 		private Binder<Settings> binder;
 		
 	
 		 public AddSettingsMainLayout init() {
 
-		
-			separator1 = new Label("<hr />",ContentMode.HTML);	
-			separator1.setWidth("100%");
+			mainTittle = new Label("<b><font size=\"5\">Ajustes del Sistema </font></b>",ContentMode.HTML);	
 
-			mainTittle = new Label("<b><font size=\"5\">List of settings: </font></b>",ContentMode.HTML);	
-
-			dataTittle = new Label("<b>Elija la fuente de datos: </b>",ContentMode.HTML);
-		
+			subTittle = new Label("<font size=\"2\">Selecciona los ajustes del sistema deseados. </font>",ContentMode.HTML);	
+			
 		//	sellersComboBoxWithUpload = new ComboBoxWithButton("Vendedores disponibles: ", VaadinIcons.CLOUD_UPLOAD,
 	    //            onClick -> openSubWindow("Upload"));
 			
@@ -160,7 +155,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			}	
 		 
 		
-		 public Component layout() {		
+		 public Component layout() {	
+			 		 
+			 
 		    	setMargin(true);
 		    
 		    	InlineDateTimeField date=new InlineDateTimeField("Correr los bots diariamente a las:");
@@ -175,7 +172,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,date);//,f);//,selector);
 		    	form.setWidth("100%");
 		    	
-		    	VerticalLayout vl = new VerticalLayout(mainTittle,separator1,form,hbuttons);
+		    	VerticalLayout vl = new VerticalLayout(mainTittle,subTittle,form,hbuttons);
 		    	vl.setMargin(false);
 		    	vl.setSizeFull();
 				return vl;

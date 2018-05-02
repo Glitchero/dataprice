@@ -29,7 +29,6 @@ public class AddProductServiceImpl implements AddProductService {
 			retrievedProduct.setImageUrl(productDAO.getImageUrl());
 			retrievedProduct.setProductUrl(productDAO.getProductUrl());
 			retrievedProduct.setTask(productDAO.getTask());
-			retrievedProduct.setBrand(productDAO.getBrand());
 			retrievedProduct.setUpdateDay(new Date());
 			productRepository.save(retrievedProduct);
 		}else {
@@ -46,6 +45,7 @@ public class AddProductServiceImpl implements AddProductService {
 			product.setSku(productDAO.getSku());
 			product.setUpc(productDAO.getUpc());
 			product.setBrand(productDAO.getBrand());
+			product.setCategory(productDAO.getCategory());
 			product.setUpdateDay(productDAO.getUpdateDay());
 			productRepository.save(product);	
 			

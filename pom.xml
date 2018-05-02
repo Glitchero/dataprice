@@ -47,12 +47,8 @@
 			<artifactId>timefield</artifactId>
 			<version>3.0.0-v8comp</version>
 		</dependency>  
-		
-		<dependency>
-          <groupId>org.vaadin.addons</groupId>
-	      <artifactId>vaadin-combobox-multiselect</artifactId>
-	      <version>2.6</version>
-       </dependency>  -->
+		-->
+
         
         <dependency>
 			<groupId>org.apache.poi</groupId>

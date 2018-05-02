@@ -20,6 +20,7 @@ import com.dataprice.ui.manager.SpringViewChangeManager;
 import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.reports.ReportsMainLayout;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
+import com.dataprice.ui.tasks.AddTaskFactory;
 import com.dataprice.ui.tasks.TaskExportImportLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
 
@@ -76,6 +77,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
 
 @PreserveOnRefresh
 @SpringUI(path=VaadinHybridMenuUI.NAME)
@@ -271,6 +273,8 @@ public class VaadinHybridMenuUI extends UI {
 
 	private void buildLeftMenu(HybridMenu hybridMenu) {
 		
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals("admin")) {
+		
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.DASHBOARD)
@@ -280,104 +284,22 @@ public class VaadinHybridMenuUI extends UI {
 		hybridMenu.addLeftMenuButton(homeButton);
 
         
-		/**
-		MenuButton settingsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Settings")
-				.withIcon(VaadinIcons.COGS)
-				.withNavigateTo(SettingsPage.class)
+		MenuButton tasksButton = LeftMenuButtonBuilder.get()
+				.withCaption("Administrar Bots")
+				.withIcon(VaadinIcons.BUG)
+				.withNavigateTo(TaskLayoutFactory.class)
 				.build();
 
-		hybridMenu.addLeftMenuButton(settingsButton);
-
-
-
-		MenuSubMenu memberList = LeftMenuSubMenuBuilder.get()
-				.setCaption("Member")
-				.setIcon(VaadinIcons.USERS)
-				.setConfig(hybridMenu.getConfig())
-				.build(hybridMenu);
-
-		memberList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Member")
-				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(MemberPage.class)
-				.build());
-
-		memberList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Group")
-				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(GroupPage.class)
-				.build());
-      
-		MenuSubMenu demoSettings = LeftMenuSubMenuBuilder.get()
-				.setCaption("Settings")
-				.setIcon(VaadinIcons.COGS)
-				.setConfig(hybridMenu.getConfig())
-				.build(hybridMenu);
-
-		LeftMenuButtonBuilder.get()
-				.withCaption("White Theme")
-				.withIcon(VaadinIcons.PALETE)
-				.withClickListener(e -> hybridMenu.switchTheme(DesignItem.getWhiteDesign()))
-				.build(demoSettings);
-
-		LeftMenuButtonBuilder.get()
-				.withCaption("White Color Theme")
-				.withIcon(VaadinIcons.PALETE)
-				.withClickListener(e -> hybridMenu.switchTheme(DesignItem.getWhiteBlueDesign()))
-				.build(demoSettings);
-
-		LeftMenuButtonBuilder.get()
-				.withCaption("Dark Theme")
-				.withIcon(VaadinIcons.PALETE)
-				.withClickListener(e -> hybridMenu.switchTheme(DesignItem.getDarkDesign()))
-				.build(demoSettings);
-
-		LeftMenuButtonBuilder.get()
-				.withCaption("Toggle MinimalView")
-				.withIcon(VaadinIcons.PALETE)
-				.withClickListener(e -> hybridMenu.setLeftMenuMinimal(!hybridMenu.isLeftMenuMinimal()))
-				.build(demoSettings);
-				
-		*/
-
-		
-//		MenuButton tasksButton = LeftMenuButtonBuilder.get()
-//				.withCaption("Tasks")
-//				.withIcon(VaadinIcons.BUG)
-//				.withNavigateTo(TaskLayoutFactory.class)
-//				.build();
-
-//		hybridMenu.addLeftMenuButton(tasksButton);
+		hybridMenu.addLeftMenuButton(tasksButton);
 		
 		
-		MenuSubMenu tasksButton = LeftMenuSubMenuBuilder.get()
-				.setCaption("Bots")
-				.setIcon(VaadinIcons.BUG)
-				.setConfig(hybridMenu.getConfig())
-				.build(hybridMenu);
-
-		tasksButton.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Administrador")
-				.withIcon(VaadinIcons.TASKS)
-				.withNavigateTo(TaskLayoutFactory.class)
-				.build());
-
-		tasksButton.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Export/Import")
+		MenuButton exportButton = LeftMenuButtonBuilder.get()
+				.withCaption("Exportar/Importar")
 				.withIcon(VaadinIcons.REFRESH)
 				.withNavigateTo(TaskExportImportLayoutFactory.class)
-				.build());
-		
-		/**
-		MenuButton productsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Products")
-				.withIcon(VaadinIcons.COGS)
-				.withNavigateTo(ProductLayoutFactory.class)
 				.build();
 
-		hybridMenu.addLeftMenuButton(productsButton);
-		*/
+		hybridMenu.addLeftMenuButton(exportButton);
 		
 		
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
@@ -388,45 +310,7 @@ public class VaadinHybridMenuUI extends UI {
 
        hybridMenu.addLeftMenuButton(productsButton);
 
-       /**
-		MenuSubMenu productList = LeftMenuSubMenuBuilder.get()
-				.setCaption("Products")
-				.setIcon(VaadinIcons.USERS)
-				.setConfig(hybridMenu.getConfig())
-				.build(hybridMenu);
-
-		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Main")
-				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(ProductLayoutFactory.class)
-				.build());
-
-		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Gender")
-				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(GenderMainLayout.class)
-				.build());
-		
-		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Category")
-				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(CategoryMainLayout.class)
-				.build());
-		
-		
-		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Subcategory")
-				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(SubcategoryMainLayout.class)
-				.build());
-		
-		productList.addLeftMenuButton(LeftMenuButtonBuilder.get()
-				.withCaption("Brands")
-				.withIcon(VaadinIcons.USERS)
-				.withNavigateTo(BrandMainLayout.class)
-				.build());
-		
-        */
+       
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Settings")
 				.withIcon(VaadinIcons.COGS)
@@ -444,15 +328,24 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(reportsButton);
 		
-	/**	
-		MenuButton userButton = LeftMenuButtonBuilder.get()
-				.withCaption("Users")
-				.withIcon(VaadinIcons.USER)
-				.withNavigateTo(MemberPage.class)
-				.build();
+		}else {
+			
+			MenuButton homeButton = LeftMenuButtonBuilder.get()
+					.withCaption("Dashboard")
+					.withIcon(VaadinIcons.DASHBOARD)
+					.withNavigateTo(DashboardLayoutFactory.class)
+					.build();
 
-		hybridMenu.addLeftMenuButton(userButton);
-	*/
+			hybridMenu.addLeftMenuButton(homeButton);
+			
+			MenuButton reportsButton = LeftMenuButtonBuilder.get()
+					.withCaption("Reports")
+					.withIcon(VaadinIcons.CHART_GRID)
+					.withNavigateTo(ReportsMainLayout.class)
+					.build();
+
+			hybridMenu.addLeftMenuButton(reportsButton);
+		}
         
 	}
 

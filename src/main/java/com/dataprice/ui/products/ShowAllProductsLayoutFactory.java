@@ -82,26 +82,26 @@ public class ShowAllProductsLayoutFactory {
 		public ShowAllProductsLayout init() {
 			
 			textFieldWithTwoButtons = new TextFieldWithTwoButtons(VaadinIcons.SEARCH, VaadinIcons.REFRESH, onClick -> searchProduct(), onClick -> refresh());
-			textFieldWithTwoButtons.setWidth("70%");
+			textFieldWithTwoButtons.setWidth("97%");
 			textFieldWithTwoButtons.getTextfield().setPlaceholder("Busca por nombre, sku, upc, etc.");
 			
 			if (settings.getMainSeller()==null || products.size()==0) {
-				currentSeller = new Label("<b><font size=\"3\">" + "Para visualizar los productos debe elegir un vendedor en settings." + "</font></b>",ContentMode.HTML);	
+				currentSeller = new Label("<b><font size=\"3\">" + "Seleccione Vendedor en Ajustes" + "</font></b>",ContentMode.HTML);	
 				currentSeller.addStyleName(ValoTheme.LABEL_FAILURE);
 			}else {
-		    	currentSeller = new Label("<b><font size=\"3\">" + "Los productos petenecen al vendedor: " + settings.getMainSeller() + "</font></b>",ContentMode.HTML);	
+		    	currentSeller = new Label("<b><font size=\"3\">" + "Vendedor Seleccionado: " + settings.getMainSeller() + "</font></b>",ContentMode.HTML);	
 		    	currentSeller.addStyleName(ValoTheme.LABEL_SUCCESS);
 		    }
 				
-			currentSeller.setWidth("100%");
+		//	currentSeller.setWidth("70%");
 									
 			productsTable = new Grid<>(Product.class);
 
 			productsTable.removeAllColumns();
 			
-			productsTable.addColumn(p -> p.getUpdateDay()).setCaption("Actualizado");
 			productsTable.addColumn(p -> p.getName()).setCaption("Nombre");
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Precio");
+			productsTable.addColumn(p -> p.getBrand()).setCaption("Marca");
+			productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría");
 			if (settings.getKeyType().equals("sku")) {
 				productsTable.addColumn(p -> p.getSku()).setCaption("SKU");
 			}else {
@@ -150,11 +150,32 @@ public class ShowAllProductsLayoutFactory {
 
 		
 		public Component layout() {
-			
 		
-			VerticalLayout productsTableLayout = new VerticalLayout(currentSeller,textFieldWithTwoButtons,productsTable);
+			Label mainTittle = new Label("<b><font size=\"5\">Empareja Productos </font></b>",ContentMode.HTML);	
+
+			Label subTittle = new Label("<font size=\"2\">Empareja tus productos con los de la competancia </font>",ContentMode.HTML);	
+			
+			
+			HorizontalLayout hmain = new HorizontalLayout(mainTittle,currentSeller);
+			hmain.setWidth("100%");
+			hmain.setMargin(false);
+			hmain.setComponentAlignment(mainTittle, Alignment.TOP_LEFT);
+			hmain.setComponentAlignment(currentSeller, Alignment.TOP_RIGHT);
+			
+			HorizontalLayout hsub = new HorizontalLayout(subTittle,textFieldWithTwoButtons);
+			hsub.setWidth("100%");
+			hsub.setMargin(false);
+			hsub.setComponentAlignment(subTittle, Alignment.TOP_LEFT);
+			hsub.setComponentAlignment(textFieldWithTwoButtons, Alignment.TOP_LEFT);
+
+			/////////////////////////
+		
+		//	VerticalLayout productsTableLayout = new VerticalLayout(currentSeller,textFieldWithTwoButtons,productsTable);
+	        VerticalLayout productsTableLayout = new VerticalLayout(hmain,hsub,productsTable);
+
 			productsTableLayout.setMargin(false);
 			productsTableLayout.setSizeFull();
+		//	productsTableLayout.setComponentAlignment(textFieldWithTwoButtons, Alignment.MIDDLE_CENTER);
 			
 			return productsTableLayout;
 		}

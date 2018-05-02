@@ -42,6 +42,7 @@ import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.colorpicker.Color;
 import com.vaadin.spring.annotation.UIScope;
@@ -87,6 +88,7 @@ public class ShowAllTasksLayoutFactory{
 	
 	private List<Retail> retailers;
 	
+	
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
 
 		private Button removeTasksButton;
@@ -111,23 +113,25 @@ public class ShowAllTasksLayoutFactory{
 		public ShowAllTasksLayout init() {
 			
 			
+			
 			progressBar = new ProgressBar();
 			progressBar.setCaption("Cancelling...");
 	        progressBar.setIndeterminate(true);
 	        progressBar.setVisible(false);
 	        
 	        
-			removeTasksButton = new Button("Remove");
+			removeTasksButton = new Button("Eliminar");
 			removeTasksButton.addClickListener(this);
 			removeTasksButton.setIcon(VaadinIcons.TRASH);
-			removeTasksButton.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
-			
+			removeTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			removeTasksButton.setWidth("100%");
 			
 			reportButton = new Button("Reportar");
 			reportButton.setIcon(VaadinIcons.TOOLS);
-			reportButton.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
+			reportButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+			reportButton.setWidth("100%");
 			
-			runTasksButton = new Button("Run");
+			runTasksButton = new Button("Correr");
 			runTasksButton.setWidth("100%");
 			runTasksButton.addClickListener(this);
 			runTasksButton.setIcon(VaadinIcons.PLAY_CIRCLE);
@@ -146,7 +150,7 @@ public class ShowAllTasksLayoutFactory{
 		//	taskNameFilter.addValueChangeListener(this);
 			
 			
-			stopTasksButton =  new Button("Stop");
+			stopTasksButton =  new Button("Cancelar");
 			stopTasksButton.setWidth("100%");
 			stopTasksButton.setIcon(VaadinIcons.STOP);
 			stopTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
@@ -233,32 +237,17 @@ public class ShowAllTasksLayoutFactory{
 		
 		
 		public ShowAllTasksLayout layout() {
-			HorizontalLayout h1 = new HorizontalLayout(progressBar,runTasksButton,stopTasksButton);
-			h1.setWidth("100%");
-			h1.setMargin(false);
-			
-			CssLayout h2 = new CssLayout(removeTasksButton,reportButton);
-			h2.setWidth("100%");
-			//h2.setMargin(false);
-			
-			HorizontalLayout h3 = new HorizontalLayout(h2,h1);
-			h3.setWidth("100%");
-			
-			
-			h3.setComponentAlignment(h1, Alignment.BOTTOM_LEFT);
-			h3.setComponentAlignment(h2, Alignment.BOTTOM_RIGHT);
-			
-			addComponent(tasksTable); //Add component to the verticalLayout, That's why we extend the class.
+	
 			HeaderRow HeaderRow = tasksTable.prependHeaderRow();
 			HeaderRow.getCell("retail").setComponent(retailFilter);
 			HeaderRow.getCell("taskName").setComponent(taskNameFilter);
-			
-			//FooterRow footerRow = tasksTable.prependFooterRow();
-			//footerRow.getCell("Estatus").setHtml("<b>Total:</b>");
-			
-			addComponent(h3);
-			
-			setMargin(new MarginInfo(false, false, false, false)); 
+			//Remove all buttons when progress bar is activated.
+			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,removeTasksButton,reportButton,progressBar);
+			hbutton.setMargin(false);
+			hbutton.setWidth("50%");
+
+			addComponent(hbutton);
+			addComponent(tasksTable);
 			
 			return this;
 		}

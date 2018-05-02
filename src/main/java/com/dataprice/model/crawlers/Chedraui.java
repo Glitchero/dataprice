@@ -99,6 +99,7 @@ public class Chedraui extends AbstractCrawler{
 			String urlContent = urlResponse.getContent(); 
 			
 			String id = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_ID);
+			
 			if (id==null)
 				return new Product();
 			
@@ -137,9 +138,10 @@ public class Chedraui extends AbstractCrawler{
 			String brand = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_BRAND);
 			if (brand==null)
 				brand = "";  //Unlike name, sometimes we don't have a description.
-			
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,description,Double.valueOf(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,description,Double.valueOf(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,task.getTaskName());
 		} catch (Exception e) {
+			System.out.println(e);
 			return null;
 		}
 	}

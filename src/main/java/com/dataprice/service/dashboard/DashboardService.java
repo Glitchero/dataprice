@@ -13,4 +13,12 @@ public interface DashboardService {
     public List<String> getRetailersUsed();
     
     public Integer getNumOfTasksByRetail(String retailName);
+    
+    public List<String> getCompetitorsBySku(String mainSeller);
+    
+    public List<String> getCompetitorsByUpc(String mainSeller); 
+    
+    public Integer getTotalOfProductsFromCompetitorByUpc(String mainSeller,String competition);
+    
+    public Integer getTotalOfProductsFromCompetitorBySku(String mainSeller,String competition);
 }

@@ -25,6 +25,9 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	@Autowired
 	private ExcelMatrixReportLayoutFactory excelMatrixReportLayoutFactory;
 	
+	@Autowired
+	private PerMatrixReportLayoutFactory perMatrixReportLayoutFactory;
+	
 	@PostConstruct
 	void init() {
 		
@@ -51,17 +54,20 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 
 	@Override
 	public void generateReport(ReportSettings reportSettings) {
+		removeAllComponents();
 		if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Unidades")) {
 			Component priceMatrixReport = matrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(priceMatrixReport);
 		}else {
-			//Do nothing for the moment
+			Component priceMatrixReport = perMatrixReportLayoutFactory.createComponent(reportSettings);
+			addComponent(priceMatrixReport);
 		}
 		
 	}
 
 	@Override
 	public void exportToExcel(ReportSettings reportSettings) {
+		removeAllComponents();
 		if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Unidades")) {
 			Component excelPriceMatrixReport = excelMatrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(excelPriceMatrixReport);

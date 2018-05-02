@@ -78,7 +78,12 @@ public class ExcelMatrixReportLayoutFactory {
 			}else {
 			   productsTable.addColumn(p -> p.getUpc()).setCaption("UPC").setId("Myupc");
 			}
-			productsTable.addColumn(p -> p.getName()).setCaption("Nombre").setId("Myname");	
+			productsTable.addColumn(p -> p.getName()).setCaption("Nombre").setId("Myname");
+			
+			productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
+			
+			productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
+					
 			productsTable.addColumn(p -> p.getUpdateDay()).setCaption("Actualizado").setId("Update").setRenderer(new DateRenderer(sdf));	
 			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setRenderer(new NumberRenderer(df));
 			
@@ -99,9 +104,9 @@ public class ExcelMatrixReportLayoutFactory {
 				}
 			
 			
-			productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
-
-			productsTable.setSizeFull();
+			
+			productsTable.setWidth("100%");
+			//productsTable.setHeight("500px");
 			
 			return this;
 		}
@@ -204,9 +209,9 @@ public class ExcelMatrixReportLayoutFactory {
 		//	java.util.Date endDate = java.sql.Date.valueOf(reportSettings.getEndDate());
 			
 			if (settings.getKeyType().equals("sku")) {
-				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), reportSettings.getCategories(),lastUpdate,reportSettings.getCompetitors());
+				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,reportSettings.getCompetitors());
 			}else {
-				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), reportSettings.getCategories(),lastUpdate,reportSettings.getCompetitors());
+				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,reportSettings.getCompetitors());
 			}
 			dataProvider = DataProvider.ofCollection(products);
 			System.out.println("TOtal de productos: " + products.size());

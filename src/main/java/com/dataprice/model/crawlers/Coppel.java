@@ -159,7 +159,7 @@ public class Coppel extends AbstractCrawler{
 			String upc = "";
 			String brand = "";
 			
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		} catch (Exception e) {
 			return null;
 		}

@@ -8,14 +8,17 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
@@ -51,6 +54,7 @@ public class AddTaskMainLayoutFactory {
 	
 	    private Task task;
 	
+	    
 	    private TaskSavedListener taskSavedListener;
 	    
 	    public AddTaskMainLayout(TaskSavedListener taskSavedListener) {
@@ -59,27 +63,29 @@ public class AddTaskMainLayoutFactory {
 
 		public AddTaskMainLayout init() {
 			
+		
+			
 	    	binder = new Binder<>(Task.class);
 	    	
 	    	task = new Task();
 	    	
 	    	taskName = new TextField("Categoría");
-	    	taskName.setWidth("100%");
+	    	taskName.setWidth("40%");
 	    	
 	    	retail = new ComboBox("Retail");
-	    	retail.setWidth("100%");
+	    	retail.setWidth("40%");
 	    	
 	    	seed = new TextField("Seed");
-	    	seed.setWidth("100%");
+	    	seed.setWidth("80%");
 	    	
 	    	
 		//	status = new TextField("Status");
 			
-			saveButton = new Button("save");
+			saveButton = new Button("Guardar");
 			saveButton.setWidth("100%");
 			saveButton.setIcon(VaadinIcons.EDIT);
 			
-			clearButton = new Button("clear");
+			clearButton = new Button("Limpiar");
 			clearButton.setWidth("100%");
 			clearButton.setIcon(VaadinIcons.ERASER);
 			
@@ -120,6 +126,7 @@ public class AddTaskMainLayoutFactory {
 		
 	    public Component layout() {		
  	
+	    	/**
 	    	HorizontalLayout h2 = new HorizontalLayout(taskName,retail);
 	    	h2.setWidth("100%");
 	    	h2.setMargin(false);
@@ -133,7 +140,7 @@ public class AddTaskMainLayoutFactory {
 	    	h1.setWidth("100%");
 	    	h1.setMargin(false);
 	    	
-	    	HorizontalLayout h4 = new HorizontalLayout(saveButton,clearButton);
+	    		    	HorizontalLayout h4 = new HorizontalLayout(saveButton,clearButton);
 	    	h4.setWidth("25%");
 	    	h4.setMargin(false);
 	    	
@@ -143,7 +150,20 @@ public class AddTaskMainLayoutFactory {
             v1.setWidth("100%");
             v1.setMargin(false);
             
-	    	return v1;
+            
+	    	*/
+	    	
+	    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,clearButton);
+	    	hbuttons.setWidth("25%");
+	    	
+	    	FormLayout form = new FormLayout(taskName,retail,seed);
+	    	form.setWidth("100%");
+	    	
+	    	VerticalLayout vl = new VerticalLayout(form,hbuttons);
+	    	vl.setMargin(false);
+	    	vl.setSizeFull();
+
+	    	return vl;
 	    }
 
 		@Override

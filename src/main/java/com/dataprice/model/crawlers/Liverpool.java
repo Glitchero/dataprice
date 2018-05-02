@@ -162,9 +162,9 @@ public class Liverpool extends AbstractCrawler{
 			NumberFormat df = new DecimalFormat("#.##",otherSymbols);
 					
 			if (price.equals("0.0")) {
-				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(df.format(Double.parseDouble(oldPrice))),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(df.format(Double.parseDouble(oldPrice))),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			}else {
-				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(df.format(Double.parseDouble(price))),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+				return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.valueOf(df.format(Double.parseDouble(price))),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			}
 			
 		} catch (Exception e) {

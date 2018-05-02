@@ -154,7 +154,7 @@ public class Walmart extends AbstractCrawler{
 			
 			String brand = "";
 			
-			return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+			return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,crawlInfo.getProductName(),description,crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		} catch (Exception e) {
 			return null;
 		}

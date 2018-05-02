@@ -71,7 +71,11 @@ public class EditProductLayoutFactory {
    private TextField textFieldId;
    private TextField textFieldRetail;
    private TextField textFieldPrice;
+   private TextField textFieldTaskName;
+   
    private TextField textFieldBrand;
+   private TextField textFieldCategory;
+   
    private TextField textFieldUpdateDate;
    private TextArea description;
    private Image productImage;
@@ -113,13 +117,14 @@ public class EditProductLayoutFactory {
 			textFieldPrice.setWidth("100%");
 			textFieldPrice.setEnabled(false);
 			
-			textFieldBrand = new TextField("Marca:");
-			textFieldBrand.setWidth("100%");
-			textFieldBrand.setEnabled(false);
 			
 			textFieldUpdateDate = new TextField("Actualizado:");
 			textFieldUpdateDate.setWidth("100%");
 			textFieldUpdateDate.setEnabled(false);
+			
+			textFieldTaskName = new TextField("Nombre del Task:");
+			textFieldTaskName.setWidth("100%");
+			textFieldTaskName.setEnabled(false);
 			
 			//Key condition
 			if (settings.getKeyType().equals("sku")) {
@@ -130,12 +135,18 @@ public class EditProductLayoutFactory {
 	
 			textFieldKey.setWidth("100%");
 	
+			textFieldBrand = new TextField("Marca:");
+			textFieldBrand.setWidth("100%");
+	
+			textFieldCategory = new TextField("Categoría:");
+			textFieldCategory.setWidth("100%");
+			
 			productChecked = new CheckBox("Marcar producto como revisado.");
 			productChecked.setValue(true);
 			
 		   	binder = new Binder<>(Product.class);		   	
 		
-			editButton = new Button("Actualizar la base de datos");
+			editButton = new Button("Actualizar la Base de Datos");
 			editButton.setIcon(VaadinIcons.EDIT);
 			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			editButton.addClickListener(this);
@@ -229,7 +240,7 @@ public class EditProductLayoutFactory {
 
 		public Component layout() {
 						
-			FormLayout formLayout2 = new FormLayout(textFieldId,textFieldRetail,textFieldPrice,textFieldBrand,textFieldUpdateDate);
+			FormLayout formLayout2 = new FormLayout(textFieldId,textFieldRetail,textFieldPrice,textFieldTaskName,textFieldUpdateDate);
 			formLayout2.setWidth("100%");
 			formLayout2.setMargin(false);
 			
@@ -287,14 +298,14 @@ public class EditProductLayoutFactory {
 			v3.setMargin(new MarginInfo(true, false, false, false));
 					
 			
-			FormLayout formLayoutKey = new FormLayout(textFieldKey);
-			formLayoutKey.setWidth("100%");
-			formLayoutKey.setMargin(false);
+		//	FormLayout formLayoutKey = new FormLayout(textFieldKey);
+		//	formLayoutKey.setWidth("100%");
+		//	formLayoutKey.setMargin(false);
 			
 			
-			HorizontalLayout hKey = new HorizontalLayout(formLayoutKey,productChecked);	
+			HorizontalLayout hKey = new HorizontalLayout(textFieldKey,textFieldBrand,textFieldCategory,productChecked);	
 			hKey.setComponentAlignment(productChecked, Alignment.BOTTOM_CENTER);
-			hKey.setWidth("50%");
+			hKey.setWidth("70%");
 			hKey.setMargin(new MarginInfo(true, false, false, false));
 									
 			HorizontalLayout h1 = new HorizontalLayout(editButton);
@@ -343,6 +354,8 @@ public class EditProductLayoutFactory {
 				for (Product p : topProductsTable.getSelectedItems()) {
 					p.setSku(product.getSku());
 					p.setUpc(product.getUpc());
+					p.setBrand(product.getBrand());
+					p.setCategory(product.getCategory());
 					modifyProductService.modifyProduct(p);
 				}
 			}
@@ -359,6 +372,14 @@ public class EditProductLayoutFactory {
 			binder.forField(textFieldKey)
 			//  .asRequired("Key must be set")
 			  .bind(settings.getKeyType()); //sku or upc from product
+
+			binder.forField(textFieldBrand)
+			//  .asRequired("Key must be set")
+			  .bind("brand"); //sku or upc from product
+			
+			binder.forField(textFieldCategory)
+			//  .asRequired("Key must be set")
+			  .bind("category"); //sku or upc from product
 
 			binder.forField(productChecked)
 			  .bind("checked");
@@ -428,9 +449,18 @@ public class EditProductLayoutFactory {
 		for (Product p : retrieveList) {
 			if (!p.getSeller().equals(sellerSelected)) { //From different store
 			    retrieveFilteredList.add(p);
-			    if (p.getUpc().equals(product.getUpc())) { //Store those with same key!!
-			    	retrieveFilteredAndMatchedList.add(p);
-			    }
+			  //Store those with same key!!   
+			    if (settings.getKeyType().equals("sku")) {
+					if (p.getSku().equals(product.getSku()) && !p.getSku().equals("")) { 
+				    	retrieveFilteredAndMatchedList.add(p);
+				    }
+				}else {
+					if (p.getUpc().equals(product.getUpc()) && !p.getUpc().equals("")) { 
+				    	retrieveFilteredAndMatchedList.add(p);
+				    }	
+				} 
+			    
+			    
 			}
 			con++;
 			if (con>settings.getNumRetrieved()) {
@@ -459,8 +489,14 @@ public class EditProductLayoutFactory {
 		//Set product precio
 		textFieldRetail.setValue(product.getTask().getRetail().getRetailName());
 		
-		//Set product taskname
+		//Set product TaskName
+		 textFieldTaskName.setValue(product.getTask().getTaskName());
+		
+		//Set product Brand
 		textFieldBrand.setValue(product.getBrand());
+		
+		//Set product category
+		textFieldCategory.setValue(product.getCategory());
 		
 		//Set product date
 		textFieldUpdateDate.setValue(product.getUpdateDay().toString());

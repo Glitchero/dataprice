@@ -43,18 +43,16 @@ import com.vaadin.ui.themes.ValoTheme;
 public class ReportSettingsLayoutFactory {
 	
 	private Label mainTittle;	
+	
+	private Label subTittle;
 
 	private List<String> competitors;
 	
-	private List<String> categories;
-	
 	private Settings settings;
 	
-	private TwinColSelect<String> categoriesSelect;
-
 	private TwinColSelect<String> competitorsSelect;
 	
-	private TwinColSelect<String> fieldsSelect;
+	//private TwinColSelect<String> fieldsSelect;
 	
 	private DateField lastDate;
 		
@@ -63,8 +61,6 @@ public class ReportSettingsLayoutFactory {
 	private Button generateReport;
 	
 	private Button exportReport;
-
-	private Label separator1;
 
 	private ReportSettings reportSettings;
 	
@@ -86,43 +82,22 @@ public class ReportSettingsLayoutFactory {
 			binder = new Binder<>(ReportSettings.class);
 			
 			reportSettings = new ReportSettings();
-					
-			separator1 = new Label("<hr />",ContentMode.HTML);	
-			separator1.setWidth("100%");
-
-			mainTittle = new Label("<b><font size=\"5\">Seleccione los parámetros de su reporte: </font></b>",ContentMode.HTML);	
 			
-			
-			categoriesSelect = new TwinColSelect<>("Selecciona tus categorías:");
-			categoriesSelect.setItems(categories);
-			categoriesSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
-			categoriesSelect.setHeight("165px"); //170 antes
+			mainTittle = new Label("<b><font size=\"5\">Creador de Reportes </font></b>",ContentMode.HTML);	
+			subTittle = new Label("<font size=\"2\">Crea reportes con los parámetros deseados y visualízalos en el navegador o en Excel. </font>",ContentMode.HTML);	
 			
 			competitorsSelect = new TwinColSelect<>("Selecciona tu competencia:");
 			competitorsSelect.setItems(competitors);
 			competitorsSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
-			competitorsSelect.setHeight("165px");
-			
-			//Name and Price are the minimum
-			fieldsSelect = new TwinColSelect<>("Selecciona los campos a agregar:");
-			fieldsSelect.setItems("Key(UPC or SKU)","Category","Descripción", "Marca","Url", "ImageUrl","Fecha de Actualizacíon");
-			fieldsSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
-			fieldsSelect.setHeight("170px");
 			
 			lastDate = new DateField("Seleccione la fecha de última actualización:");
-			//startDate.setValue(LocalDate.now());
-			lastDate.setWidth("100%");
-			
-					
-			//System.out.println("Tiempo: " + LocalDate.now());
-			//reportSettings.setStartDate(LocalDate.now());
-			//reportSettings.setEndDate(LocalDate.now());
+			lastDate.setWidth("20%");
 			
 			typeOfReport = new ComboBox("Seleccione el tipo de reporte:");
 			typeOfReport.setItems("Matriz de Precios en Unidades","Matriz de Precios en Porcentajes");
-			typeOfReport.setWidth("100%");
+			typeOfReport.setWidth("50%");
 			
-			generateReport = new Button("Generar Reporte");
+			generateReport = new Button("Ver Reporte en Navegador");
 			generateReport.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			generateReport.addClickListener(this);
 			generateReport.setWidth("100%");
@@ -142,7 +117,6 @@ public class ReportSettingsLayoutFactory {
 			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 			settings = user.getSettings();
 						
-			categories = reportsService.getCategoryListForSeller(settings.getMainSeller());
 			competitors = reportsService.getCompetitorsList(settings.getMainSeller());
 			return this;
 		}
@@ -150,39 +124,22 @@ public class ReportSettingsLayoutFactory {
 
 		
 		public Component layout() {
-			HorizontalLayout h3 = new HorizontalLayout(lastDate);
-			h3.setWidth("50%");
-			h3.setMargin(false);
-			
+	
 			HorizontalLayout h4 = new HorizontalLayout(generateReport,exportReport);
-			h4.setWidth("100%");
+			h4.setWidth("40%");
 			h4.setMargin(false);
 			
+			FormLayout f1 = new FormLayout(competitorsSelect,lastDate,typeOfReport);
 			
 			
-			VerticalLayout h2 = new VerticalLayout(h3,typeOfReport,h4);
-		//	h2.setComponentAlignment(generateReport, Alignment.BOTTOM_CENTER);
-			h2.setWidth("100%");
-			h2.setMargin(false);
-			
-			HorizontalLayout h1 = new HorizontalLayout(categoriesSelect,competitorsSelect,h2);
-			h1.setSizeFull();
-			h1.setMargin(false);
-		//	h1.setComponentAlignment(v1, Alignment.TOP_CENTER);
-			
-			VerticalLayout v2 = new VerticalLayout(h1,separator1);
-		//	VerticalLayout v2 = new VerticalLayout(h1);
-			v2.setComponentAlignment(h1, Alignment.MIDDLE_CENTER);
-			v2.setSizeFull();
+			VerticalLayout v2 = new VerticalLayout(mainTittle,subTittle,f1,h4);
 			v2.setMargin(false);
-			
+			v2.setSizeFull();
+
 			return v2;
 		}
 
 		public ReportSettingsLayout bind() {
-			binder.forField(categoriesSelect)
-			  .asRequired("categories are required")
-			  .bind("categories");
 			
 			binder.forField(competitorsSelect)
 			  .asRequired("competitors are required")

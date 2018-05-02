@@ -1,10 +1,15 @@
 package com.dataprice.ui.reports;
 
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.vaadin.ui.Notification.Type;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.ReportSettings;
@@ -14,17 +19,36 @@ import com.dataprice.service.reports.ReportsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.products.Icon;
+import com.dataprice.ui.reports.exporter.DefaultGridHolder;
+import com.dataprice.ui.reports.exporter.ExcelExport;
+import com.dataprice.ui.reports.exporter.TableHolder;
+import com.dataprice.ui.reports.gridutil.GridUtil;
+import com.dataprice.ui.reports.gridutil.cell.CellFilterChangedListener;
+import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
 import com.vaadin.annotations.Push;
+import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.FooterCell;
+import com.vaadin.ui.components.grid.FooterRow;
+import com.vaadin.ui.components.grid.HeaderCell;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.renderers.NumberRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 
 @Push
@@ -35,7 +59,10 @@ public class MatrixReportLayoutFactory {
 	private List<Product> products;
 	private Grid<Product> productsTable;
 	private Settings settings;
+	private GridCellFilter filter;
 	
+	private DecimalFormat df = new DecimalFormat("#0.00");
+
 	private Icon upArrow;
 	private Icon downArrow;
 	private Icon equalArrow;
@@ -53,101 +80,176 @@ public class MatrixReportLayoutFactory {
 			
 			upArrow = new Icon(VaadinIcons.ARROW_UP);
 			upArrow.setRedColor();
-		//	upArrow.setCaption("Soy más caro");
 			
 			downArrow = new Icon(VaadinIcons.ARROW_DOWN);
-		//	downArrow.setCaption("Soy más barato");
 			
 			equalArrow = new Icon(VaadinIcons.SCALE);
 			equalArrow.setBlueColor();
-		//	equalArrow.setCaption("Tengo mismo precio");
 			
 			
 			productsTable = new Grid<>(Product.class);						  
 			productsTable.removeAllColumns();
 
-			 if (settings.getKeyType().equals("sku")) {
-			     productsTable.addComponentColumn(p -> {
-				 Label label = new Label("<b><font size=\"3\">" + p.getSku() + "</font></b>",ContentMode.HTML);	
-			     return label;
-			     }).setCaption("Sku").setId("Mysku");	
-			 }else {
-				 productsTable.addComponentColumn(p -> {
-				 Label label = new Label("<b><font size=\"3\">" + p.getUpc() + "</font></b>",ContentMode.HTML);	
-				 return label;
-				 }).setCaption("Upc").setId("Myupc");	
-			 }
+				
+			if (settings.getKeyType().equals("sku")) {
+				productsTable.addColumn(p -> p.getSku()).setCaption("Sku").setId("Mysku");
+			}else {
+				productsTable.addColumn(p -> p.getUpc()).setCaption("Upc").setId("Myupc");
+			}
 			
-			productsTable.addComponentColumn(p -> {
-				Label label = new Label("<b><font size=\"3\">" + p.getName() + "</font></b>",ContentMode.HTML);	
-			    return label;
-			}).setCaption("Nombre").setId("Myname");	
+			productsTable.addColumn(p -> {
+				Link  productLink =  new Link();
+				productLink.setCaption(p.getName());
+				ExternalResource externalResourceLink = new ExternalResource(p.getProductUrl());
+				productLink.setResource(externalResourceLink);
+				productLink.setTargetName("_blank");								
+			    return productLink;
+			}).setCaption("Nombre").setId("Myname").setRenderer(new ComponentRenderer());	
 			
-			productsTable.addComponentColumn(p -> {
-				Label label = new Label("<b><font size=\"3\">" + p.getUpdateDay() + "</font></b>",ContentMode.HTML);	
-			    return label;
-			}).setCaption("Actualizado").setId("Update");
+	        productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
 			
-			productsTable.addComponentColumn(p -> {
-				Label label = new Label("<b><font size=\"3\">" + p.getPrice() + "</font></b>",ContentMode.HTML);	
-			    return label;
-			}).setCaption("Mi precio").setId("Myprice");
-			
-			
+			productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
+				
+		//	productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150);
+		
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setRenderer(new NumberRenderer(df));
 			
 			
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
 				 
-					 productsTable.addComponentColumn(p -> {
-						 List<Product> products = null;
-						 if (settings.getKeyType().equals("sku")) {
-							 products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
-							}else {
-							 products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
-							}
-						HorizontalLayout h1 = new HorizontalLayout();
-					    Label label = new Label();
-					    Icon icon = null;
-				        if (products.size()!=0) {
-				        	label.setContentMode(ContentMode.HTML);
-				        	if (p.getPrice()<products.get(0).getPrice()) {
-					        	label.setValue("<font size = \"3\" color=\"green\">" + products.get(0).getPrice().toString());	
-					        	icon = new Icon(VaadinIcons.ARROW_DOWN);
-					        	h1.addComponent(label);
-					        	h1.addComponent(icon);
-				        	}else {
-				        		if (p.getPrice()>products.get(0).getPrice()) {
-					        	label.setValue("<font size = \"3\" color=\"red\">" + products.get(0).getPrice().toString());
-					        	icon = new Icon(VaadinIcons.ARROW_UP);
-					        	icon.setRedColor();
-					        	h1.addComponent(label);
-					        	h1.addComponent(icon);
-				        		}else {
-				        			label.setValue("<font size = \"3\" color=\"blue\">" + products.get(0).getPrice().toString());	
-				        			icon = new Icon(VaadinIcons.SCALE);
-				        			icon.setBlueColor();
-				        			h1.addComponent(label);
-				        			h1.addComponent(icon);
-				        		}
-				        	}
-				        }
-					    return h1;
-					}).setCaption(seller).setId(seller);
-				  
-				}			
+				 productsTable.addComponentColumn(p -> {
+					 List<Product> products = null;
+					 if (settings.getKeyType().equals("sku")) {
+						 products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
+						}else {
+						 products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
+						}
+				
+					PositionIndicator positionIndicator = null;
+			        if (products.size()!=0) {
+			        	positionIndicator = new PositionIndicator(p.getPrice(),products.get(0).getPrice());
+			        }
+				    return positionIndicator;
+				}).setCaption(seller).setId(seller);
+				 
+			}		
 			
-			productsTable.addComponentColumn(p -> {
-				Label label = new Label("<b><font size=\"3\">" + p.getBrand() + "</font></b>",ContentMode.HTML);	
-			    return label;
-			}).setCaption("Marca").setId("Mybrand");
 			
 			productsTable.setWidth("100%");
+			productsTable.setHeight("520px"); //500 antes
 			productsTable.setItems(products);
-				
 			
+		  
+		    
 			return this;
 		}
 
+		
+		public MatrixReportLayout filter() {
+			
+			filter = new GridCellFilter(productsTable);
+			filter.setLinkFilter("Myname", true, false);
+			if (settings.getKeyType().equals("sku")) {
+					filter.setTextFilter("Mysku", true, true);
+			}else {
+					filter.setTextFilter("Myupc", true, true);
+			}
+			filter.setTextFilter("Mybrand", true, true);
+			filter.setTextFilter("Mycategory", true, true);				
+			filter.setNumberFilter("Myprice", Double.class,"invalid input", "inferior", "superior");		
+					
+			for (String seller : reportSettings.getCompetitors()) {
+					filter.setIndicatorFilter(seller);
+			}
+			
+			return this;			
+		}
+		
+		public MatrixReportLayout footer() {
+			 final FooterRow footerRow = productsTable.appendFooterRow();
+			 if (settings.getKeyType().equals("sku")) {
+			        footerRow.getCell("Mysku")
+	                .setHtml("Total:");
+			 }else {
+			        footerRow.getCell("Myupc")
+	                .setHtml("Total:");
+			}
+
+			 final FooterCell footerCell = footerRow.join("Myname", "Mybrand", "Mycategory", "Myprice");
+			 // inital total count
+			 footerCell.setHtml("<b>" + products.size() + "</b>");
+			 // filter change count recalculate
+			 productsTable.getDataProvider().addDataProviderListener(event -> {
+			 List<Product> data = event.getSource()
+			      .fetch(new Query<>()).collect(Collectors.toList());
+			       footerCell.setHtml("<b>" + data.size() + "</b>");
+			  });
+			return this;			
+		}
+		
+		
+		public MatrixReportLayout header() {
+			
+			 HeaderRow fistHeaderRow = productsTable.prependHeaderRow();
+		        if (settings.getKeyType().equals("sku")) {
+		        	  fistHeaderRow.join("Mysku", "Myname", "Mybrand");
+				        fistHeaderRow.getCell("Mysku")
+				                .setHtml("");
+				}else {
+					  fistHeaderRow.join("Mysku", "Myname", "Mybrand");
+				        fistHeaderRow.getCell("Myupc")
+				                .setHtml("");
+				}
+		        
+		      
+		        HeaderCell join = fistHeaderRow.join("Mycategory", "Myprice");
+		        HorizontalLayout buttonLayout = new HorizontalLayout();
+		        buttonLayout.setSpacing(true);
+		        join.setComponent(buttonLayout);
+		        Button clearAllFilters = new Button("Limpiar Filtros", event -> filter.clearAllFilters());
+		        clearAllFilters.setIcon(VaadinIcons.CLOSE);
+		        clearAllFilters.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		        buttonLayout.addComponent(clearAllFilters);
+
+		        Button changeVisibility = new Button("Exportar a Excel");
+		        changeVisibility.addClickListener(new Button.ClickListener() {
+		        	 private static final long serialVersionUID = -73954695086117200L;		        	  
+		        	 final TableHolder tableHolder = new DefaultGridHolder(productsTable);
+			         private ExcelExport excelExport;
+		            @Override
+		            public void buttonClick(final ClickEvent event) {
+		               //Do the exporting stuff
+		               System.out.println("Hola me llamo Rene");
+	
+	                excelExport = new ExcelExport(tableHolder);
+	                excelExport.setDisplayTotals(false);
+	                excelExport.setRowHeaders(false);
+	             // excelExport.setExcelFormatOfProperty("date", "mm/dd/yyyy");
+	             // excelExport.setDoubleDataFormat("#0.00");
+	                excelExport.export();
+	                
+	                
+		            }
+		        });
+		        changeVisibility.setIcon(VaadinIcons.CLOUD_DOWNLOAD);
+		        changeVisibility.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		        buttonLayout.addComponent(changeVisibility);
+
+
+		        // listener's on filter
+		      
+		        filter.addCellFilterChangedListener(new CellFilterChangedListener() {
+
+		            @Override
+		            public void changedFilter(final GridCellFilter cellFilter) {
+		                Notification.show("Filtro ejecutado" , Type.TRAY_NOTIFICATION);
+		            }
+		        });
+		        
+			return this;			
+		}
+		
+		
 		public Component layout() {
 			
 			HorizontalLayout f1 = new HorizontalLayout(upArrow, new Label("Soy más caro"));
@@ -178,9 +280,9 @@ public class MatrixReportLayoutFactory {
 			java.util.Date lastUpdate = java.sql.Date.valueOf(reportSettings.getLastUpdate());
 			
 			if (settings.getKeyType().equals("sku")) {
-				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), reportSettings.getCategories(),lastUpdate,reportSettings.getCompetitors());
+				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,reportSettings.getCompetitors());
 			}else {
-				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), reportSettings.getCategories(),lastUpdate,reportSettings.getCompetitors());
+				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,reportSettings.getCompetitors());
 			}
 			System.out.println("TOtal de productos: " + products.size());
 			return this;
@@ -198,7 +300,7 @@ public class MatrixReportLayoutFactory {
 	private ReportsService reportsService;
 	
 	public Component createComponent(ReportSettings reportSettings) {
-		return new MatrixReportLayout(reportSettings).load().init().layout();
+		return new MatrixReportLayout(reportSettings).load().init().filter().footer().header().layout();
 	}
 
 	

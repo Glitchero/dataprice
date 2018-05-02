@@ -64,9 +64,15 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	List<String> getSellersList();
 	
 	
-	// Query for reports!!. //group by p.seller
+	/**
+	 * Get all the competitors in General for a specific seller.
+	 * Used in Reports.
+	 * @return
+	 */
+
 	@Query("select p.seller from Product p where p.seller<>:sellerName group by p.seller")
 	List<String> getCompetitorsList(@Param("sellerName") String sellerName);
+	
 	
 	// Query for reports!!. 
 	@Query("select p.task.taskName from Product p where p.seller=:sellerName group by p.task.taskName")
@@ -85,12 +91,42 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	 * @return
 	 */
 	
-	@Query("select p from Product p where p.seller=:sellerName and p.task.taskName IN :categories and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1)")
-	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("categories") Set<String> categories , @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
+	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1)")
+	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
 	
-	@Query("select p from Product p where p.seller=:sellerName and p.task.taskName IN :categories and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1)")
-	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("categories") Set<String> categories , @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
+	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1)")
+	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
+	
+	
+	
+	/**
+	 * Get all the competitors that have at least one match with the mainSeller. Add later parameter date!!
+	 * Used in Dashboard
+	 * @return
+	 */
+	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.sku <> '' and p.sku in (select p.sku from Product p group by p.sku having count(p.sku)> 1) group by p.seller")
+	List<String> getCompetitorsBySku(@Param("mainSeller") String mainSeller);
+	
+
+	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.upc <> '' and p.upc in (select p.upc from Product p group by p.upc having count(p.upc)> 1) group by p.seller")
+	List<String> getCompetitorsByUpc(@Param("mainSeller") String mainSeller);
+	
+	
+	/**
+	 * Get total of products from competition. Add later parameter date!!
+	 * Used in Dashboard
+	 * @return
+	 */
+	@Query("select count(p.productKey) from Product p where p.seller<>:mainSeller and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:mainSeller) group by p.sku having count(p.sku)> 1)")
+	Integer getTotalOfProductsFromCompetitorBySku(@Param("mainSeller") String mainSeller, @Param("competition") String competition);
+	
+
+	@Query("select count(p.productKey) from Product p where p.seller<>:mainSeller and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:mainSeller) group by p.upc having count(p.upc)> 1)")
+	Integer getTotalOfProductsFromCompetitorByUpc(@Param("mainSeller") String mainSeller,@Param("competition") String competition);
+	
+	
+	
 	
 	
 }

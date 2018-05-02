@@ -130,7 +130,7 @@ public class SuperWalmart extends AbstractCrawler{
 			}
 			String brand = "";
 			
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,"",Double.valueOf(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand);
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,"",Double.valueOf(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		} catch (Exception e) {
 			return null;
 		}

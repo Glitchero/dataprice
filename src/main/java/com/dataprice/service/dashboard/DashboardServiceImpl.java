@@ -44,5 +44,25 @@ public class DashboardServiceImpl implements DashboardService {
 	public Integer getNumOfTasksByRetail(String retailName) {
 		return taskRepository.getNumOfTasksByRetail(retailName);
 	}
+
+	@Override
+	public List<String> getCompetitorsBySku(String mainSeller) {
+		return productRepository.getCompetitorsBySku(mainSeller);
+	}
+
+	@Override
+	public List<String> getCompetitorsByUpc(String mainSeller) {
+		return productRepository.getCompetitorsByUpc(mainSeller);
+	}
+
+	@Override
+	public Integer getTotalOfProductsFromCompetitorByUpc(String mainSeller, String competition) {
+		return productRepository.getTotalOfProductsFromCompetitorByUpc(mainSeller, competition);
+	}
+
+	@Override
+	public Integer getTotalOfProductsFromCompetitorBySku(String mainSeller, String competition) {
+		return productRepository.getTotalOfProductsFromCompetitorBySku(mainSeller, competition);
+	}
 	
 }

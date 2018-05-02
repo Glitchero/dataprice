@@ -55,59 +55,62 @@ public class Product {
 	private String productKey="";
 	 
 	@Column(name = "product_id")
-	private String productId;
+	private String productId = "";
 	
 	//@Field(analyze = Analyze.NO)
 	@Column(name = "seller")
-	private String seller;
+	private String seller = "";
 	
 	@Field(index=Index.YES, analyze=Analyze.YES)
 	@Column(name = "name")
 	@Analyzer(definition = "customanalyzer")
-	private String name;
+	private String name = "";
 	
 	@Lob 
 	@Column(name = "description",length = 512)
-	private String description;
+	private String description="";
 	
 	@Column(name = "price")
-	private Double price;
+	private Double price=0.0;
 
 	@Column(name = "image_url")
-	private String imageUrl;
+	private String imageUrl="";
 	
 	@Column(name = "product_url")
-	private String productUrl;
+	private String productUrl="";
 	
 	@Field(index=Index.YES, analyze=Analyze.NO)
 	@Column(name = "sku")
-	private String sku;
+	private String sku="";
 	
 	@Field(index=Index.YES, analyze=Analyze.NO)
 	@Column(name = "upc")
-	private String upc;
+	private String upc="";
 	
 	@Field(index=Index.YES, analyze=Analyze.NO)
 	@Column(name = "brand")
-	private String brand;
+	private String brand="";
+	
+	@Column(name = "category")
+	private String category="";
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "task_id")
 	private Task task;
 
 	@Column(name = "checked")
-	private boolean checked;
+	private boolean checked = false;
 	
 	//@Temporal(TemporalType.DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_day", nullable = false)
-	private Date updateDay;
+	private Date updateDay = new Date();
 
 	public Product() {
 		//Default Constructor
 	}
 		
-	public Product(String productKey, String productId,String seller,Task task,String name,String description, Double price, String imageUrl, String productUrl,String sku, String upc, String brand) {
+	public Product(String productKey, String productId,String seller,Task task,String name,String description, Double price, String imageUrl, String productUrl,String sku, String upc, String brand, String category) {
 		this.productKey = productKey;
 		this.productId = productId;
 		this.seller = seller;
@@ -120,6 +123,7 @@ public class Product {
 		this.sku = sku;
 		this.upc = upc;
 		this.brand = brand;
+		this.category = category;
 		this.updateDay = new Date();
 	}
 
@@ -220,6 +224,14 @@ public class Product {
 
 	public void setBrand(String brand) {
 		this.brand = brand;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getUpc() {
