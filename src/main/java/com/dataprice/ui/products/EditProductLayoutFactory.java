@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.ProductEquivalences;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
+import com.dataprice.service.addproductequivservice.AddProductEquivService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifyproduct.ModifyProductService;
+import com.dataprice.service.removeproductequivalency.RemoveProductEquivalencyService;
 import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
@@ -348,7 +351,19 @@ public class EditProductLayoutFactory {
 			
 			modifyProductService.modifyProduct(product);
 			
+			ProductEquivalences pe = new ProductEquivalences();
+			pe.setProductKey(product.getProductKey());
+			pe.setSku(product.getSku());
+			pe.setUpc(product.getUpc());
+			pe.setBrand(product.getBrand());
+			pe.setCategory(product.getCategory());
+			if (product.isChecked()) {
+				addProductEquivService.saveEquivalency(pe);
+			}else {
+				removeProductEquivalencyService.removeEquivalency(pe);
+			}
 			
+		
 			//Propagate the profile
 			if (topProductsTable.getSelectedItems().size()!=0) {
 				for (Product p : topProductsTable.getSelectedItems()) {
@@ -356,7 +371,22 @@ public class EditProductLayoutFactory {
 					p.setUpc(product.getUpc());
 					p.setBrand(product.getBrand());
 					p.setCategory(product.getCategory());
+					p.setChecked(product.isChecked());
+					
 					modifyProductService.modifyProduct(p);
+					
+					ProductEquivalences pe2 = new ProductEquivalences();
+					pe2.setProductKey(p.getProductKey());
+					pe2.setSku(p.getSku());
+					pe2.setUpc(p.getUpc());
+					pe2.setBrand(p.getBrand());
+					pe2.setCategory(p.getCategory());
+					if (product.isChecked()) {
+						addProductEquivService.saveEquivalency(pe2);
+					}else {
+						removeProductEquivalencyService.removeEquivalency(pe2);
+					}
+					
 				}
 			}
 			
@@ -392,6 +422,13 @@ public class EditProductLayoutFactory {
 		
 				
 	}
+   
+   
+    @Autowired 
+    private RemoveProductEquivalencyService removeProductEquivalencyService;
+   
+    @Autowired 
+    private AddProductEquivService addProductEquivService;
    
 	@Autowired 
 	private UserServiceImpl userServiceImpl;
@@ -451,7 +488,7 @@ public class EditProductLayoutFactory {
 			    retrieveFilteredList.add(p);
 			  //Store those with same key!!   
 			    if (settings.getKeyType().equals("sku")) {
-					if (p.getSku().equals(product.getSku()) && !p.getSku().equals("")) { 
+					if (p.getSku().equals(product.getSku()) && !p.getSku().equals("")) { //Not consider those with blanks spaces as key
 				    	retrieveFilteredAndMatchedList.add(p);
 				    }
 				}else {

@@ -9,6 +9,7 @@ import com.dataprice.model.entity.ReportSettings;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
+import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.service.reports.ReportsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
@@ -51,17 +52,11 @@ public class ReportSettingsLayoutFactory {
 	private Settings settings;
 	
 	private TwinColSelect<String> competitorsSelect;
-	
-	//private TwinColSelect<String> fieldsSelect;
-	
-	private DateField lastDate;
-		
+			
 	private ComboBox typeOfReport;
 	
 	private Button generateReport;
 	
-	private Button exportReport;
-
 	private ReportSettings reportSettings;
 	
 	private class ReportSettingsLayout extends VerticalLayout implements Button.ClickListener {
@@ -81,7 +76,7 @@ public class ReportSettingsLayoutFactory {
 
 			binder = new Binder<>(ReportSettings.class);
 			
-			reportSettings = new ReportSettings();
+			reportSettings = new ReportSettings(settings.getLastUpdateInDays()); //1 day last update!!!
 			
 			mainTittle = new Label("<b><font size=\"5\">Creador de Reportes </font></b>",ContentMode.HTML);	
 			subTittle = new Label("<font size=\"2\">Crea reportes con los parámetros deseados y visualízalos en el navegador o en Excel. </font>",ContentMode.HTML);	
@@ -90,23 +85,14 @@ public class ReportSettingsLayoutFactory {
 			competitorsSelect.setItems(competitors);
 			competitorsSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
 			
-			lastDate = new DateField("Seleccione la fecha de última actualización:");
-			lastDate.setWidth("20%");
-			
 			typeOfReport = new ComboBox("Seleccione el tipo de reporte:");
-			typeOfReport.setItems("Matriz de Precios en Unidades","Matriz de Precios en Porcentajes");
+			typeOfReport.setItems("Matriz de Precios con Indicadores","Matriz de Precios en Porcentajes","Matriz de Precios");
 			typeOfReport.setWidth("50%");
 			
-			generateReport = new Button("Ver Reporte en Navegador");
+			generateReport = new Button("Generar Reporte");
 			generateReport.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			generateReport.addClickListener(this);
 			generateReport.setWidth("100%");
-			
-			exportReport = new Button("Exportar a Excel");
-			exportReport.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			exportReport.addClickListener(this);
-			exportReport.setWidth("100%");
-			
 			
 			return this;
 		}
@@ -114,10 +100,18 @@ public class ReportSettingsLayoutFactory {
 
 
 		public ReportSettingsLayout load() {
-			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			User user = userServiceImpl.getUserByUsername("admin");
 			settings = user.getSettings();
 						
-			competitors = reportsService.getCompetitorsList(settings.getMainSeller());
+			//competitors = reportsService.getCompetitorsList(settings.getMainSeller());
+			
+			if (settings.getKeyType().equals("sku")) {
+				competitors = dashboardService.getCompetitorsBySku(settings.getMainSeller());
+			}else {
+				competitors = dashboardService.getCompetitorsByUpc(settings.getMainSeller());
+			}
+				
+				
 			return this;
 		}
 	
@@ -125,11 +119,11 @@ public class ReportSettingsLayoutFactory {
 		
 		public Component layout() {
 	
-			HorizontalLayout h4 = new HorizontalLayout(generateReport,exportReport);
-			h4.setWidth("40%");
+			HorizontalLayout h4 = new HorizontalLayout(generateReport);
+			h4.setWidth("20%");
 			h4.setMargin(false);
 			
-			FormLayout f1 = new FormLayout(competitorsSelect,lastDate,typeOfReport);
+			FormLayout f1 = new FormLayout(competitorsSelect,typeOfReport);
 			
 			
 			VerticalLayout v2 = new VerticalLayout(mainTittle,subTittle,f1,h4);
@@ -145,10 +139,6 @@ public class ReportSettingsLayoutFactory {
 			  .asRequired("competitors are required")
 			  .bind("competitors");
 			
-			binder.forField(lastDate)
-			  .asRequired("last date is required")
-			  .bind("lastUpdate");
-
 			binder.forField(typeOfReport)
 			  .asRequired("Type of report is required")
 			  .bind("typeOfReport");
@@ -159,29 +149,8 @@ public class ReportSettingsLayoutFactory {
 		}
 
 		@Override
-		public void buttonClick(ClickEvent event) {
-			
-			if (event.getSource()==generateReport) {
-				generateReport();
-				
-			}else {
-				exportToExcel();
-			}
-			
-			
-		}
-
-
-
-		private void exportToExcel() {
-			try {
-				binder.writeBean(reportSettings);
-			} catch (ValidationException e) {
-				Notification.show("ERROR","Error in reports Settings",Type.ERROR_MESSAGE);
-				return;
-			}			
-			exportToExcelListener.exportToExcel(reportSettings);
-			
+		public void buttonClick(ClickEvent event) {			
+			generateReport();			
 		}
 
 
@@ -197,6 +166,9 @@ public class ReportSettingsLayoutFactory {
 
 	
 	}
+	
+    @Autowired
+    private DashboardService dashboardService;
 		
 	@Autowired 
 	private ReportsService reportsService;

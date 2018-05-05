@@ -27,6 +27,7 @@ import com.dataprice.ui.tasks.TaskLayoutFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dataprice.ui.dashboard.DashboardLayoutFactory;
+import com.dataprice.ui.feed.FeedLayoutFactory;
 import com.dataprice.ui.login.LoginUI;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
@@ -165,6 +166,30 @@ public class VaadinHybridMenuUI extends UI {
 				.setNavigateTo(MemberPage.class)
 				.build(hybridMenu);
       */
+
+	//	Method for getting the authorities, in order words, the user roles. Check if this is ok.
+		/**
+		 * 
+		 * protected boolean hasRole(String[] roles) {
+           boolean result = false;
+              for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+                  String userRole = authority.getAuthority();
+                  for (String role : roles) {
+                      if (role.equals(userRole)) {
+                      result = true;
+                      break;
+                   }
+               }
+
+                 if (result) {
+                     break;
+                 }
+            }
+
+            return result;
+           }
+		 */
+	//	SecurityContextHolder.getContext().getAuthentication().getAuthorities()
 		TopMenuSubContent userAccountMenu = TopMenuSubContentBuilder.get()
 				.setButtonCaption(SecurityContextHolder.getContext().getAuthentication().getName())
 				.setButtonIcon(new ThemeResource("images/profilDummy.jpg"))
@@ -327,6 +352,16 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(reportsButton);
+		
+		
+		MenuButton feedsButton = LeftMenuButtonBuilder.get()
+				.withCaption("Feeds")
+				.withIcon(VaadinIcons.DATABASE)
+				.withNavigateTo(FeedLayoutFactory.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(feedsButton);
+		
 		
 		}else {
 			

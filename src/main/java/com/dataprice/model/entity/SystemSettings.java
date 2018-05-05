@@ -1,40 +1,26 @@
 package com.dataprice.model.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 /**
- * Store the settings for a specific user.
+ * Store a specific setting for the isntance.
  * @author rene
  *
  */
 
 @Entity
-@Table(name="SETTINGS")
-public class Settings {
-
-	/**
-	 * Id automatically populated with the user_id. 
-	 * Important to define default values for new users.
-	 */
+@Table(name="SYSTEMSETTINGS")
+public class SystemSettings {
+	
+	
 	@Id
-	@Column(unique = true, nullable = false)
-	private Integer id;
-		
-	/** user with this associated settings */
-	@MapsId
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
-	private User user;
+	@GeneratedValue
+	@Column(name = "system_settings_id")
+	private Integer systemSettingsId;
 	
 	@Column(name = "main_seller")
 	private String mainSeller = null;	
@@ -46,23 +32,12 @@ public class Settings {
 	private String keyType ="sku";   //sku or upc
 	
 	@Column(name = "last_update_in_days")
-	private Integer lastUpdateInDays = 1;  
+	private Integer lastUpdateInDays = 1;   
 	
-    public Settings() {
-    	
-    }
-	 
-
-	public User getUser() {
-		return user;
+	
+	public SystemSettings() {
+	    	
 	}
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
 
 	public String getMainSeller() {
 		return mainSeller;
@@ -84,21 +59,20 @@ public class Settings {
 		return keyType;
 	}
 
-
 	public void setKeyType(String keyType) {
 		this.keyType = keyType;
 	}
-
 
 	public Integer getLastUpdateInDays() {
 		return lastUpdateInDays;
 	}
 
-
 	public void setLastUpdateInDays(Integer lastUpdateInDays) {
 		this.lastUpdateInDays = lastUpdateInDays;
 	}
 	 
-	 
-	 
+	
+	
+	
+
 }

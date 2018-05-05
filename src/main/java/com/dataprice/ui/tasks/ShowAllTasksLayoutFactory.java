@@ -236,7 +236,7 @@ public class ShowAllTasksLayoutFactory{
 		
 		
 		
-		public ShowAllTasksLayout layout() {
+		public Component layout() {
 	
 			HeaderRow HeaderRow = tasksTable.prependHeaderRow();
 			HeaderRow.getCell("retail").setComponent(retailFilter);
@@ -246,10 +246,12 @@ public class ShowAllTasksLayoutFactory{
 			hbutton.setMargin(false);
 			hbutton.setWidth("50%");
 
-			addComponent(hbutton);
-			addComponent(tasksTable);
-			
-			return this;
+			VerticalLayout v1 = new VerticalLayout(hbutton,tasksTable);
+			v1.setComponentAlignment(hbutton, Alignment.TOP_RIGHT);
+            v1.setWidth("100%");
+            v1.setMargin(false);
+
+			return v1;
 		}
 	
 

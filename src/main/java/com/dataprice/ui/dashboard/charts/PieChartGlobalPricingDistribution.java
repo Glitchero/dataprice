@@ -108,13 +108,15 @@ private class PieChart extends VerticalLayout {
 		
 
 	    public PieChart load() {
+	    	User user = userServiceImpl.getUserByUsername("admin");
+			settings = user.getSettings();
+			
 	    	LocalDate today = LocalDate.now();
-		    LocalDate yesterday = today.minus(Period.ofDays(1));
+		    LocalDate yesterday = today.minus(Period.ofDays(settings.getLastUpdateInDays()));
 			java.util.Date lastUpdate = java.sql.Date.valueOf(yesterday);
 			
 
-			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-			settings = user.getSettings();
+			
 			
 			if (settings.getKeyType().equals("sku")) {
 
@@ -140,14 +142,35 @@ private class PieChart extends VerticalLayout {
 				        		}
 				        	}
 				        }
-
 					}
-				 
 				}
 				
 			}else {
 				
-				
+				competitorsUsed = dashboardService.getCompetitorsByUpc(settings.getMainSeller());
+				Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
+						
+				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
+
+				for (String competitorUsed : competitorsUsed) {
+					
+					for (Product p: products) {
+						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc());
+					   
+				        if (productCompetition.size()!=0) {
+				                
+				        	if (p.getPrice()<productCompetition.get(0).getPrice()) {
+				        		cheaper++;	
+				        	}else {
+				        		if (p.getPrice()>productCompetition.get(0).getPrice()) {
+				        			expensive++;
+				        		}else {
+				        			equal++;
+				        		}
+				        	}
+				        }
+					}
+				}
 				
 				
 				

@@ -73,6 +73,8 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		private Label subTittle;
 		private Binder<Settings> binder;
 		
+		private RadioButtonGroup<Integer> daysGroup;
+		
 	
 		 public AddSettingsMainLayout init() {
 
@@ -92,6 +94,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			keyGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 			
      
+			daysGroup = new RadioButtonGroup<>("Seleccione la última actualización (en días): ");
+			daysGroup.setItems(1, 2,3,4,5,6,7);
+			daysGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 	
 			slider =  new Slider(1, 100);
 			slider.setWidth("50%");
@@ -149,6 +154,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				binder.forField(keyGroup)
 				  .bind("keyType");
 				
+				binder.forField(daysGroup)
+				  .bind("lastUpdateInDays");
+				
 				binder.readBean(settings);
 			
 				return this;
@@ -160,16 +168,17 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			 
 		    	setMargin(true);
 		    
+		    	/**
 		    	InlineDateTimeField date=new InlineDateTimeField("Correr los bots diariamente a las:");
 		    	date.setValue(LocalDateTime.now());
 		    	date.setLocale(Locale.US);
 		    	date.setResolution(DateTimeResolution.MINUTE);
 		    	date.setStyleName("mytheme");
-		   		    	
+		   		*/    	
 		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton);
 		    	hbuttons.setWidth("25%");
 		    	
-		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,date);//,f);//,selector);
+		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,daysGroup);//,f);//,selector);
 		    	form.setWidth("100%");
 		    	
 		    	VerticalLayout vl = new VerticalLayout(mainTittle,subTittle,form,hbuttons);

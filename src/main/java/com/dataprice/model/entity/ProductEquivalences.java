@@ -23,6 +23,13 @@ public class ProductEquivalences {
 	
 	@Column(name = "upc")
 	private String upc;
+	
+	@Column(name = "brand")
+	private String brand;
+	
+	
+	@Column(name = "category")
+	private String category;
 
 	
 	
@@ -53,6 +60,29 @@ public class ProductEquivalences {
 		this.upc = upc;
 	}
 
+	
+	
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	@Override
+	public String toString() {
+		return productKey + "-" + sku + "-" + upc;	
+	}
+	
 	
 	
 	

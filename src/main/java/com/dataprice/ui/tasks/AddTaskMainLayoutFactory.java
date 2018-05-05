@@ -70,13 +70,13 @@ public class AddTaskMainLayoutFactory {
 	    	task = new Task();
 	    	
 	    	taskName = new TextField("Categoría");
-	    	taskName.setWidth("40%");
+	    	taskName.setWidth("100%");
 	    	
 	    	retail = new ComboBox("Retail");
-	    	retail.setWidth("40%");
+	    	retail.setWidth("100%");
 	    	
 	    	seed = new TextField("Seed");
-	    	seed.setWidth("80%");
+	    	seed.setWidth("100%");
 	    	
 	    	
 		//	status = new TextField("Status");
@@ -126,7 +126,7 @@ public class AddTaskMainLayoutFactory {
 		
 	    public Component layout() {		
  	
-	    	/**
+	    	
 	    	HorizontalLayout h2 = new HorizontalLayout(taskName,retail);
 	    	h2.setWidth("100%");
 	    	h2.setMargin(false);
@@ -140,19 +140,21 @@ public class AddTaskMainLayoutFactory {
 	    	h1.setWidth("100%");
 	    	h1.setMargin(false);
 	    	
-	    		    	HorizontalLayout h4 = new HorizontalLayout(saveButton,clearButton);
+	    	HorizontalLayout h4 = new HorizontalLayout(saveButton,clearButton);
 	    	h4.setWidth("25%");
 	    	h4.setMargin(false);
 	    	
 	    	
             VerticalLayout v1 = new VerticalLayout(h1,h4);
-            v1.setComponentAlignment(h4, Alignment.MIDDLE_LEFT);
+            v1.setComponentAlignment(h4, Alignment.TOP_LEFT);
             v1.setWidth("100%");
             v1.setMargin(false);
             
+	    	return v1;
             
-	    	*/
+            
 	    	
+	    	/**
 	    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,clearButton);
 	    	hbuttons.setWidth("25%");
 	    	
@@ -164,6 +166,7 @@ public class AddTaskMainLayoutFactory {
 	    	vl.setSizeFull();
 
 	    	return vl;
+	    	*/
 	    }
 
 		@Override

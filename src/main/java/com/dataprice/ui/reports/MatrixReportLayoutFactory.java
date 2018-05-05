@@ -18,7 +18,9 @@ import com.dataprice.model.entity.User;
 import com.dataprice.service.reports.ReportsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
+import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.products.Icon;
+import com.dataprice.ui.reports.exporter.CsvExport;
 import com.dataprice.ui.reports.exporter.DefaultGridHolder;
 import com.dataprice.ui.reports.exporter.ExcelExport;
 import com.dataprice.ui.reports.exporter.TableHolder;
@@ -29,6 +31,8 @@ import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
@@ -41,6 +45,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.FooterCell;
 import com.vaadin.ui.components.grid.FooterRow;
@@ -60,9 +65,13 @@ public class MatrixReportLayoutFactory {
 	private Grid<Product> productsTable;
 	private Settings settings;
 	private GridCellFilter filter;
+	private ProgressBar excelProgressBar;
+	private ProgressBar csvProgressBar;
 	
-	private DecimalFormat df = new DecimalFormat("#0.00");
-
+	//private DecimalFormat df = new DecimalFormat("#0.00");
+	private DecimalFormat df = new DecimalFormat("####,###,###.00");
+	
+	
 	private Icon upArrow;
 	private Icon downArrow;
 	private Icon equalArrow;
@@ -77,6 +86,15 @@ public class MatrixReportLayoutFactory {
 		}
 
 		public MatrixReportLayout init() {
+			excelProgressBar = new ProgressBar();
+			excelProgressBar.setCaption("Procesando...");
+			excelProgressBar.setIndeterminate(true);
+			excelProgressBar.setVisible(false);
+			
+			csvProgressBar = new ProgressBar();
+			csvProgressBar.setCaption("Procesando...");
+			csvProgressBar.setIndeterminate(true);
+			csvProgressBar.setVisible(false);
 			
 			upArrow = new Icon(VaadinIcons.ARROW_UP);
 			upArrow.setRedColor();
@@ -89,7 +107,6 @@ public class MatrixReportLayoutFactory {
 			
 			productsTable = new Grid<>(Product.class);						  
 			productsTable.removeAllColumns();
-
 				
 			if (settings.getKeyType().equals("sku")) {
 				productsTable.addColumn(p -> p.getSku()).setCaption("Sku").setId("Mysku");
@@ -98,7 +115,7 @@ public class MatrixReportLayoutFactory {
 			}
 			
 			productsTable.addColumn(p -> {
-				Link  productLink =  new Link();
+				MyLink  productLink =  new MyLink(p.getName());
 				productLink.setCaption(p.getName());
 				ExternalResource externalResourceLink = new ExternalResource(p.getProductUrl());
 				productLink.setResource(externalResourceLink);
@@ -112,7 +129,7 @@ public class MatrixReportLayoutFactory {
 				
 		//	productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150);
 		
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setRenderer(new NumberRenderer(df));
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
 			
 			
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
@@ -136,7 +153,7 @@ public class MatrixReportLayoutFactory {
 			
 			
 			productsTable.setWidth("100%");
-			productsTable.setHeight("520px"); //500 antes
+			productsTable.setHeight("500px"); //500 antes
 			productsTable.setItems(products);
 			
 		  
@@ -192,17 +209,17 @@ public class MatrixReportLayoutFactory {
 			
 			 HeaderRow fistHeaderRow = productsTable.prependHeaderRow();
 		        if (settings.getKeyType().equals("sku")) {
-		        	  fistHeaderRow.join("Mysku", "Myname", "Mybrand");
+		        	  fistHeaderRow.join("Mysku", "Myname");
 				        fistHeaderRow.getCell("Mysku")
 				                .setHtml("");
 				}else {
-					  fistHeaderRow.join("Mysku", "Myname", "Mybrand");
+					  fistHeaderRow.join("Myupc", "Myname");
 				        fistHeaderRow.getCell("Myupc")
 				                .setHtml("");
 				}
 		        
 		      
-		        HeaderCell join = fistHeaderRow.join("Mycategory", "Myprice");
+		        HeaderCell join = fistHeaderRow.join("Mybrand","Mycategory","Myprice");
 		        HorizontalLayout buttonLayout = new HorizontalLayout();
 		        buttonLayout.setSpacing(true);
 		        join.setComponent(buttonLayout);
@@ -211,30 +228,108 @@ public class MatrixReportLayoutFactory {
 		        clearAllFilters.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		        buttonLayout.addComponent(clearAllFilters);
 
-		        Button changeVisibility = new Button("Exportar a Excel");
-		        changeVisibility.addClickListener(new Button.ClickListener() {
+		        //Excel exporting section!!
+		        Button excelExportButton = new Button("Exportar a Excel");
+		        excelExportButton.addClickListener(new Button.ClickListener() {
+		        	
+		        	
 		        	 private static final long serialVersionUID = -73954695086117200L;		        	  
 		        	 final TableHolder tableHolder = new DefaultGridHolder(productsTable);
 			         private ExcelExport excelExport;
+		         
+			         
 		            @Override
 		            public void buttonClick(final ClickEvent event) {
 		               //Do the exporting stuff
-		               System.out.println("Hola me llamo Rene");
-	
+		            	excelExportInNewThread();
+		            /**
 	                excelExport = new ExcelExport(tableHolder);
 	                excelExport.setDisplayTotals(false);
 	                excelExport.setRowHeaders(false);
 	             // excelExport.setExcelFormatOfProperty("date", "mm/dd/yyyy");
 	             // excelExport.setDoubleDataFormat("#0.00");
-	                excelExport.export();
-	                
-	                
+	                excelExport.export(); 
+	                */        
 		            }
+		            
+					private void excelExportInNewThread() {
+						   new Thread(() -> {
+					        	vaadinHybridMenuUI.access(() -> {
+					        		excelProgressBar.setVisible(true);
+					        		excelExportButton.setVisible(false);
+					            });
+					        						        		     
+				                excelExport = new ExcelExport(tableHolder);
+				                excelExport.setReportTitle("Reporte de Precios");
+				                excelExport.setExportFileName("Excel-Report.xls");
+				                excelExport.setDisplayTotals(false);
+				                excelExport.setRowHeaders(false);							           				                
+				                excelExport.export(); 
+				               
+					        	vaadinHybridMenuUI.access(() -> {
+					        		excelProgressBar.setVisible(false);
+					        		excelExportButton.setVisible(true);
+					            });
+					        }).start();	
+					}
+					
+					
 		        });
-		        changeVisibility.setIcon(VaadinIcons.CLOUD_DOWNLOAD);
-		        changeVisibility.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-		        buttonLayout.addComponent(changeVisibility);
-
+		        
+		        final Resource excelExportIcon = FontAwesome.FILE_EXCEL_O;
+		        excelExportButton.setIcon(excelExportIcon);
+		        excelExportButton.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		        
+		        //CSV exporting section!!
+		        Button csvExportButton = new Button("Exportar a CSV");
+		        csvExportButton.addClickListener(new Button.ClickListener() {
+		        	
+		        	
+		        	 private static final long serialVersionUID = -73954695086117200L;		        	  
+		        	 final TableHolder tableHolder = new DefaultGridHolder(productsTable);
+			         private CsvExport csvExport;
+		         
+			         
+		            @Override
+		            public void buttonClick(final ClickEvent event) {
+		               //Do the exporting stuff
+		            	csvExportInNewThread(); 
+		            }
+		            
+					private void csvExportInNewThread() {
+						   new Thread(() -> {
+					        	vaadinHybridMenuUI.access(() -> {
+					        		csvProgressBar.setVisible(true);
+					        		csvExportButton.setVisible(false);
+					            });
+					        	
+					        	csvExport = new CsvExport(tableHolder);
+					        	csvExport.setExportFileName("CSV-Report.csv");
+					        	csvExport.setDisplayTotals(false);
+				                csvExport.setRowHeaders(false);
+				                csvExport.export(); 
+				                
+					        	vaadinHybridMenuUI.access(() -> {
+					        		csvProgressBar.setVisible(false);
+					        		csvExportButton.setVisible(true);
+					            });
+					        }).start();	
+					}
+					
+					
+		        });
+		        
+		        final Resource csvExportIcon = FontAwesome.FILE_TEXT_O;
+		        csvExportButton.setIcon(csvExportIcon);
+		        csvExportButton.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
+		       
+		        //Add buttons to Layout
+		    
+		        buttonLayout.addComponent(excelExportButton);
+		        buttonLayout.addComponent(excelProgressBar);
+		        
+		        buttonLayout.addComponent(csvExportButton);
+		        buttonLayout.addComponent(csvProgressBar);
 
 		        // listener's on filter
 		      
@@ -255,14 +350,14 @@ public class MatrixReportLayoutFactory {
 			HorizontalLayout f1 = new HorizontalLayout(upArrow, new Label("Soy más caro"));
 			f1.setMargin(false);
 			
-			HorizontalLayout f2 = new HorizontalLayout(equalArrow, new Label("Tengo mismo precio"));
+			HorizontalLayout f2 = new HorizontalLayout(equalArrow, new Label("Mismo precio"));
 			f1.setMargin(false);
 			
 			HorizontalLayout f3 = new HorizontalLayout(downArrow, new Label("Soy más barato"));
 			f1.setMargin(false);
 			
 			HorizontalLayout h1 = new HorizontalLayout(f1,f2,f3);
-			h1.setWidth("50%");
+			h1.setWidth("35%");
 			h1.setMargin(false);
 			
 			VerticalLayout v1 = new VerticalLayout(h1,productsTable);
@@ -274,7 +369,9 @@ public class MatrixReportLayoutFactory {
 		}
 
 		public MatrixReportLayout load() {
-			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		//	User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			User user = userServiceImpl.getUserByUsername("admin");
+			
 			settings = user.getSettings();
 			
 			java.util.Date lastUpdate = java.sql.Date.valueOf(reportSettings.getLastUpdate());
@@ -289,6 +386,9 @@ public class MatrixReportLayoutFactory {
 		}
 		
 	}
+	
+	@Autowired
+	private VaadinHybridMenuUI vaadinHybridMenuUI;
 
 	@Autowired
 	private ShowAllProductsService showAllProductsService;

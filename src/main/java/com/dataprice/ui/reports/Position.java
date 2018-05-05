@@ -6,7 +6,7 @@ import java.util.List;
 public class Position {
 
 	private final String cheaperPosition = "Soy más barato";
-	private final String equalPosition = "Tengo mismo precio";
+	private final String equalPosition = "Mismo precio";
 	private final String expensivePosition = "Soy más caro";
 	
 	private String position = "";	

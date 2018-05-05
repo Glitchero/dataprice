@@ -28,6 +28,10 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	@Autowired
 	private PerMatrixReportLayoutFactory perMatrixReportLayoutFactory;
 	
+	@Autowired
+	private RawMatrixReportLayoutFactory rawMatrixReportLayoutFactory;
+	
+	
 	@PostConstruct
 	void init() {
 		
@@ -35,10 +39,7 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 		setMargin(false);
 		removeAllComponents();
 		addLayout();
-		
-        
-		
-		
+	
 	}
 
 	private void addLayout() {
@@ -55,12 +56,17 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	@Override
 	public void generateReport(ReportSettings reportSettings) {
 		removeAllComponents();
-		if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Unidades")) {
+		if (reportSettings.getTypeOfReport().equals("Matriz de Precios con Indicadores")) {
 			Component priceMatrixReport = matrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(priceMatrixReport);
 		}else {
-			Component priceMatrixReport = perMatrixReportLayoutFactory.createComponent(reportSettings);
-			addComponent(priceMatrixReport);
+			if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Porcentajes")) {
+				Component priceMatrixReport = perMatrixReportLayoutFactory.createComponent(reportSettings);
+				addComponent(priceMatrixReport);
+			}else {
+				Component rawMatrixReport = rawMatrixReportLayoutFactory.createComponent(reportSettings);
+				addComponent(rawMatrixReport);
+			}
 		}
 		
 	}
@@ -68,7 +74,7 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	@Override
 	public void exportToExcel(ReportSettings reportSettings) {
 		removeAllComponents();
-		if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Unidades")) {
+		if (reportSettings.getTypeOfReport().equals("Matriz de Precios con Indicadores")) {
 			Component excelPriceMatrixReport = excelMatrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(excelPriceMatrixReport);
 			

@@ -1,8 +1,11 @@
 package com.dataprice.service.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 public class CustomUserDetails extends User {
@@ -13,4 +16,18 @@ public class CustomUserDetails extends User {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
 
+	
+	
+	/**
+	 *  Figure out how to add the authorities.
+	 *  @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+
+        list.add(new SimpleGrantedAuthority(ROLE_PREFIX + role));
+
+        return list;
+    }
+	 * 
+	 */
 }

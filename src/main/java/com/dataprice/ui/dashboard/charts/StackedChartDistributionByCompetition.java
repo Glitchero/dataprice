@@ -47,7 +47,6 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 		private List<String> competitorsUsed;
 		private List<String> competitorsUsedWithTotal;
 		private List<Product> products;
-		private List<Integer> distribution;
 		private List<Double> cheaperList;
 		private List<Double> expensiveList;
 		private List<Double> equalList;
@@ -91,10 +90,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 		            BarDataset lds = (BarDataset) ds;
 		            List<Double> data = new ArrayList<>();
 		            for (int i = 0; i < labels.size(); i++) {		            	
-		            //  data.add((double) (Math.random() > 0.5 ? -1 : 1) * Math.round(Math.random() * 100));
-		            //	System.out.println(lds.toString());
 		            	data.add(valueList.get(con));
-		           // 	System.out.println(distribution.get(con) + " - " + con);
 		            	con++;
 		            }
 		            lds.dataAsList(data);
@@ -116,18 +112,22 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 			Integer equal = 0;
 			Integer expensive = 0;
 			
+			User user = userServiceImpl.getUserByUsername("admin");
+			settings = user.getSettings();
+			
 			LocalDate today = LocalDate.now();
-		    LocalDate yesterday = today.minus(Period.ofDays(1));
+		    LocalDate yesterday = today.minus(Period.ofDays(settings.getLastUpdateInDays()));
 			java.util.Date lastUpdate = java.sql.Date.valueOf(yesterday);
 			
 			competitorsUsedWithTotal = new ArrayList<String>();
-			distribution = new ArrayList<Integer>();
 			cheaperList = new LinkedList<Double>();
 			expensiveList = new LinkedList<Double>();
 			equalList = new LinkedList<Double>();
 			
-			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-			settings = user.getSettings();
+			valueList = new LinkedList<Double>();
+			
+			
+			
 			
 			
 			if (settings.getKeyType().equals("sku")) {
@@ -137,7 +137,8 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 						
 				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
 
-				for (String competitorUsed : competitorsUsed) {
+				if (products.size()!=0) {
+				 for (String competitorUsed : competitorsUsed) {
 					
 					for (Product p: products) {
 						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku());
@@ -156,75 +157,87 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 				        }
 
 					}
-				    //	Integer total = dashboardService.getTotalOfProductsFromCompetitorBySku(settings.getMainSeller(),competitorUsed);
 						
 					System.out.println("competitorUsed: " + competitorUsed);
 					
 					Integer total = cheaper+expensive+equal;
 					competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
-					/**
-					System.out.println("Cheaper: " + cheaper);
-					System.out.println("expensive: " + expensive);
-					System.out.println("equal: " + equal);
-					
-					
-					Double per_cheaper = cheaper/(double) total;
-					Double per_expensive = expensive/(double) total;
-					
-					int a = (int) Math.round(per_cheaper * 100);
-					*/
-					
-				//	DecimalFormat df=new DecimalFormat("#.##");
 					
 					Locale currentLocale = Locale.getDefault();
 					DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
 					otherSymbols.setDecimalSeparator('.'); 
 					NumberFormat df = new DecimalFormat("#.##",otherSymbols);
 					
-					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));
-					System.out.println("% Cheaper: " + Math.round(cheaper/(double) total * 100) );
-				
-					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));
-					System.out.println("% expensive: " + Math.round(expensive/(double) total * 100));
-
+					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
+					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
 					equalList.add(Double.valueOf(df.format(equal/(double) total * 100)));
-					System.out.println("% equal: " + Math.round(equal/(double) total * 100));
-				
-					
-					System.out.println("Total: " + (total));
-				
-				
+
 					cheaper = 0;
 					expensive = 0;
 					equal = 0;
 					total = 0;
 				}
 				
-				valueList = new LinkedList<Double>();
+				
 				valueList.addAll(cheaperList);
 				valueList.addAll(equalList);
 				valueList.addAll(expensiveList);
-				
+				}	
 			}else {
 				competitorsUsed = dashboardService.getCompetitorsByUpc(settings.getMainSeller());
-				for (String competitorUsed : competitorsUsed) {
-					Integer total = dashboardService.getTotalOfProductsFromCompetitorByUpc(settings.getMainSeller(),competitorUsed);
+				Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
+						
+				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
+
+				if (products.size()!=0) {
+				 for (String competitorUsed : competitorsUsed) {
+					
+					for (Product p: products) {
+						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc());
+					   
+				        if (productCompetition.size()!=0) {
+				                
+				        	if (p.getPrice()<productCompetition.get(0).getPrice()) {
+				        		cheaper++;	
+				        	}else {
+				        		if (p.getPrice()>productCompetition.get(0).getPrice()) {
+				        			expensive++;
+				        		}else {
+				        			equal++;
+				        		}
+				        	}
+				        }
+
+					}
+						
+					System.out.println("competitorUsed: " + competitorUsed);
+					
+					Integer total = cheaper+expensive+equal;
 					competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
 					
-					//Here i have to bring the sku they share main seller and the competitorused.
-					//Traverse the sku list 
+					Locale currentLocale = Locale.getDefault();
+					DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+					otherSymbols.setDecimalSeparator('.'); 
+					NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+					
+					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
+					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
+					equalList.add(Double.valueOf(df.format(equal/(double) total * 100)));
+
+					cheaper = 0;
+					expensive = 0;
+					equal = 0;
+					total = 0;
+				}
+				
+				
+				valueList.addAll(cheaperList);
+				valueList.addAll(equalList);
+				valueList.addAll(expensiveList);
 				}
 			}
 			
-			////////////////////////////
-			for (int i=0;i<5; i++) {
-				distribution.add(25);
-			}
-			for (int i=5;i<20; i++) {
-				distribution.add(50);
-			}
-			///////////////////////////
-			
+					
 			return this;
 		}
 		

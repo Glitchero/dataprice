@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.ProductEquivalences;
 import com.dataprice.repository.product.ProductRepository;
+import com.dataprice.repository.productequivalences.ProductEquivalencesRepository;
 
 @Service
 @Transactional(readOnly=true)
@@ -16,6 +18,9 @@ public class AddProductServiceImpl implements AddProductService {
 	@Autowired
 	private ProductRepository productRepository;
 
+	@Autowired
+	private ProductEquivalencesRepository productEquivalencesRepository;
+	
 	@Transactional
 	public void saveProduct(Product productDAO) {
 		
@@ -42,10 +47,23 @@ public class AddProductServiceImpl implements AddProductService {
 			product.setProductUrl(productDAO.getProductUrl());
 			product.setImageUrl(productDAO.getImageUrl());
 			product.setTask(productDAO.getTask());
-			product.setSku(productDAO.getSku());
-			product.setUpc(productDAO.getUpc());
-			product.setBrand(productDAO.getBrand());
-			product.setCategory(productDAO.getCategory());
+			//Added memory for products
+			if (productEquivalencesRepository.exists(productDAO.getProductKey())) {
+				ProductEquivalences retrievedEquivalency = productEquivalencesRepository.findOne(productDAO.getProductKey());
+				product.setSku(retrievedEquivalency.getSku());
+				product.setUpc(retrievedEquivalency.getUpc());
+				product.setBrand(retrievedEquivalency.getBrand());
+				product.setCategory(retrievedEquivalency.getCategory());
+				product.setChecked(true);
+			}else {
+				//Case: There is no memory
+				product.setSku(productDAO.getSku());
+				product.setUpc(productDAO.getUpc());
+				product.setBrand(productDAO.getBrand());
+				product.setCategory(productDAO.getCategory());
+			}		
+			/////
+
 			product.setUpdateDay(productDAO.getUpdateDay());
 			productRepository.save(product);	
 			

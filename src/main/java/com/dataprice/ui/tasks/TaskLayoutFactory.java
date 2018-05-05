@@ -33,27 +33,27 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 	@Autowired
 	private VaadinHybridMenuUI vaadinHybridMenuUI;
 	
-	private TabSheet tabSheet;
-	private Label mainTittle;
-    private Label subTittle;
+	//private TabSheet tabSheet;
+	//private Label mainTittle;
+    //private Label subTittle;
 	
 	private void addLayout() {
 		
-		mainTittle = new Label("<b><font size=\"5\">Administrador de Bots </font></b>",ContentMode.HTML);	
-		subTittle = new Label("<font size=\"2\">Visualice, ejecute, elimine o reporte bots en caso de fallo </font>",ContentMode.HTML);	
+	//	mainTittle = new Label("<b><font size=\"5\">Administrador de Bots </font></b>",ContentMode.HTML);	
+	//	subTittle = new Label("<font size=\"2\">Visualice, ejecute, elimine o reporte bots en caso de fallo </font>",ContentMode.HTML);	
 		
-		tabSheet = new TabSheet();
+	//	tabSheet = new TabSheet();
 		Component addTasks = mainLayoutFactory.createComponent(this);
 		Component showTasks = showTasksLayoutFactory.createComponent(this,this);
 	
 		
-	 	tabSheet.addTab(addTasks,"Agrega Bots");
-		tabSheet.addTab(showTasks,"Ver Bots");
+	// 	tabSheet.addTab(addTasks,"Agrega Bots");
+	//	tabSheet.addTab(showTasks,"Ver Bots");
 		
-		addComponent(mainTittle);
-		addComponent(subTittle);
-		addComponent(tabSheet);
-		
+	//	addComponent(mainTittle);
+	//	addComponent(subTittle);
+		addComponent(addTasks);
+		addComponent(showTasks);
 		
 	}
 	

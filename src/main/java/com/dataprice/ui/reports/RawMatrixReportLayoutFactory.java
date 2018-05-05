@@ -1,12 +1,14 @@
 package com.dataprice.ui.reports;
 
-
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.vaadin.ui.Notification.Type;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.ReportSettings;
@@ -21,31 +23,34 @@ import com.dataprice.ui.reports.exporter.CsvExport;
 import com.dataprice.ui.reports.exporter.DefaultGridHolder;
 import com.dataprice.ui.reports.exporter.ExcelExport;
 import com.dataprice.ui.reports.exporter.TableHolder;
+import com.dataprice.ui.reports.gridutil.GridUtil;
 import com.dataprice.ui.reports.gridutil.cell.CellFilterChangedListener;
 import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.components.grid.FooterCell;
 import com.vaadin.ui.components.grid.FooterRow;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -53,33 +58,33 @@ import com.vaadin.ui.themes.ValoTheme;
 @Push
 @UIScope
 @org.springframework.stereotype.Component
-public class PerMatrixReportLayoutFactory {
+public class RawMatrixReportLayoutFactory {
 
 	private List<Product> products;
 	private Grid<Product> productsTable;
 	private Settings settings;
 	private GridCellFilter filter;
-
 	private ProgressBar excelProgressBar;
 	private ProgressBar csvProgressBar;
+	
+	//private DecimalFormat df = new DecimalFormat("#0.00");
+	private DecimalFormat df = new DecimalFormat("####,###,###.00");
+	
+	
 	private Icon upArrow;
 	private Icon downArrow;
 	private Icon equalArrow;
 	
-	private DecimalFormat df = new DecimalFormat("####,###,###.00");
 	
-	
-	private class PerMatrixReportLayout extends VerticalLayout  {
+	private class MatrixReportLayout extends VerticalLayout  {
 
 		private ReportSettings reportSettings;
 		
-		public PerMatrixReportLayout(ReportSettings reportSettings) {
+		public MatrixReportLayout(ReportSettings reportSettings) {
 			this.reportSettings = reportSettings;
 		}
 
-		public PerMatrixReportLayout init() {
-			
-			
+		public MatrixReportLayout init() {
 			excelProgressBar = new ProgressBar();
 			excelProgressBar.setCaption("Procesando...");
 			excelProgressBar.setIndeterminate(true);
@@ -90,60 +95,68 @@ public class PerMatrixReportLayoutFactory {
 			csvProgressBar.setIndeterminate(true);
 			csvProgressBar.setVisible(false);
 			
-			
-			upArrow = new Icon(VaadinIcons.STOP);
+			upArrow = new Icon(VaadinIcons.ARROW_UP);
 			upArrow.setRedColor();
 			
-			downArrow = new Icon(VaadinIcons.STOP);
+			downArrow = new Icon(VaadinIcons.ARROW_DOWN);
 			
-			equalArrow = new Icon(VaadinIcons.STOP);
+			equalArrow = new Icon(VaadinIcons.SCALE);
 			equalArrow.setBlueColor();
 			
 			
 			productsTable = new Grid<>(Product.class);						  
 			productsTable.removeAllColumns();
-
+				
 			if (settings.getKeyType().equals("sku")) {
 				productsTable.addColumn(p -> p.getSku()).setCaption("Sku").setId("Mysku");
 			}else {
 				productsTable.addColumn(p -> p.getUpc()).setCaption("Upc").setId("Myupc");
 			}
 			
-			productsTable.addColumn(p -> p.getName()).setCaption("Nombre").setId("Myname");
+			productsTable.addColumn(p -> {
+				MyLink  productLink =  new MyLink(p.getName());
+				productLink.setCaption(p.getName());
+				ExternalResource externalResourceLink = new ExternalResource(p.getProductUrl());
+				productLink.setResource(externalResourceLink);
+				productLink.setTargetName("_blank");								
+			    return productLink;
+			}).setCaption("Nombre").setId("Myname").setRenderer(new ComponentRenderer());	
 			
 	        productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
 			
 			productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
-				
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
 					
-
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));			
+			
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
 				 
-				 productsTable.addComponentColumn(p -> {
+				 productsTable.addColumn(p -> {
 					 List<Product> products = null;
 					 if (settings.getKeyType().equals("sku")) {
 						 products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
 						}else {
 						 products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
 						}
-					 BarPositionIndicator barPositionIndicator = null;
+					 Double rivalPrice = null;
 			        if (products.size()!=0) {
-			        	barPositionIndicator = new BarPositionIndicator(p.getPrice(),products.get(0).getPrice());
+			        	rivalPrice = products.get(0).getPrice();
 			        }
-				    return barPositionIndicator;
-				}).setCaption(seller).setId(seller);
+				    return rivalPrice;
+				}).setCaption(seller).setId(seller).setWidth(150).setRenderer(new NumberRenderer(df));
 			  
-			}
-			
+			}	
+						
 			productsTable.setWidth("100%");
-			productsTable.setHeight("500px");
+			productsTable.setHeight("500px"); //500 antes
 			productsTable.setItems(products);
-
+			
+		  
+		    
 			return this;
 		}
 
-		public PerMatrixReportLayout filter() {
+		
+		public MatrixReportLayout filter() {
 			
 			filter = new GridCellFilter(productsTable);
 			filter.setLinkFilter("Myname", true, false);
@@ -157,13 +170,13 @@ public class PerMatrixReportLayoutFactory {
 			filter.setNumberFilter("Myprice", Double.class,"invalid input", "inferior", "superior");		
 					
 			for (String seller : reportSettings.getCompetitors()) {
-					filter.setIndicatorFilter(seller);
+				filter.setNumberFilter(seller, Double.class,"invalid input", "inferior", "superior");		
 			}
 			
 			return this;			
 		}
 		
-		public PerMatrixReportLayout footer() {
+		public MatrixReportLayout footer() {
 			 final FooterRow footerRow = productsTable.appendFooterRow();
 			 if (settings.getKeyType().equals("sku")) {
 			        footerRow.getCell("Mysku")
@@ -185,7 +198,8 @@ public class PerMatrixReportLayoutFactory {
 			return this;			
 		}
 		
-		public PerMatrixReportLayout header() {
+		
+		public MatrixReportLayout header() {
 			
 			 HeaderRow fistHeaderRow = productsTable.prependHeaderRow();
 		        if (settings.getKeyType().equals("sku")) {
@@ -348,7 +362,7 @@ public class PerMatrixReportLayoutFactory {
 	        return v1;
 		}
 
-		public PerMatrixReportLayout load() {
+		public MatrixReportLayout load() {
 			User user = userServiceImpl.getUserByUsername("admin");
 			settings = user.getSettings();
 			
@@ -364,10 +378,10 @@ public class PerMatrixReportLayoutFactory {
 		}
 		
 	}
-
+	
 	@Autowired
 	private VaadinHybridMenuUI vaadinHybridMenuUI;
-		
+
 	@Autowired
 	private ShowAllProductsService showAllProductsService;
 	
@@ -378,7 +392,7 @@ public class PerMatrixReportLayoutFactory {
 	private ReportsService reportsService;
 	
 	public Component createComponent(ReportSettings reportSettings) {
-		return new PerMatrixReportLayout(reportSettings).load().init().filter().footer().header().layout();
+		return new MatrixReportLayout(reportSettings).load().init().filter().footer().header().layout();
 	}
 
 	

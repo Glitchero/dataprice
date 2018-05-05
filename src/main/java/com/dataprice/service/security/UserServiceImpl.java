@@ -1,5 +1,7 @@
 package com.dataprice.service.security;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +16,10 @@ public class UserServiceImpl implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	/**
+	 * Should check for empty users!! Do it later!!
+	 * https://stackoverflow.com/questions/37615034/spring-security-spring-boot-how-to-set-roles-for-users
+	 */
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		User user = userRepository.findByUsername(username);
@@ -22,9 +28,9 @@ public class UserServiceImpl implements UserDetailsService {
 	
 	
     public User getUserByUsername(String username) throws UsernameNotFoundException {
-		
 		User user = userRepository.findByUsername(username);
 		return user;
 	}
+
 
 }

@@ -1,6 +1,7 @@
 package com.dataprice.model.entity;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -15,12 +16,16 @@ public class ReportSettings {
 	
 //	private LocalDate endDate = LocalDate.now(); 
 
-	private LocalDate lastUpdate = LocalDate.now(); 
+	private LocalDate lastUpdate = LocalDate.now().minus(Period.ofDays(1));  //Between today and yesterday
 	
-	private String typeOfReport="Matriz de Precios en Unidades";
+	private String typeOfReport="Matriz de Precios con Indicadores";
 	
 	public ReportSettings() {
-
+		
+	}
+	
+    public ReportSettings(Integer days) {
+    	this.lastUpdate = LocalDate.now().minus(Period.ofDays(days));
 	}
 	
 	public ReportSettings(Set<String> competitors, String typeOfReport, LocalDate lastUpdate) {
