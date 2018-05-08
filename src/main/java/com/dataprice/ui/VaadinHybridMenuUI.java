@@ -21,11 +21,15 @@ import com.dataprice.ui.products.ProductLayoutFactory;
 import com.dataprice.ui.reports.ReportsMainLayout;
 import com.dataprice.ui.settings.SettingsLayoutFactory;
 import com.dataprice.ui.tasks.AddTaskFactory;
+import com.dataprice.ui.tasks.MySingleThreadPoolExecutor;
 import com.dataprice.ui.tasks.TaskExportImportLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
+import com.dataprice.ui.user.UserLayoutFactory;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.dataprice.model.entity.Role;
 import com.dataprice.ui.dashboard.DashboardLayoutFactory;
 import com.dataprice.ui.feed.FeedLayoutFactory;
 import com.dataprice.ui.login.LoginUI;
@@ -72,6 +76,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -91,7 +96,7 @@ public class VaadinHybridMenuUI extends UI {
 
 	public static final String NAME = "/ui";
 	
-	private Future<?> job = null;
+	private Future<?> job;  //before it was equal to null 
 	
 	private final SpringViewProvider viewProvider;
 	private final NavigationManager navigationManager;
@@ -109,6 +114,8 @@ public class VaadinHybridMenuUI extends UI {
 	protected void init(VaadinRequest vaadinRequest) {
 		UI.getCurrent().setPollInterval(5000);
 
+		job = MySingleThreadPoolExecutor.getInstance().getCurrentJob();
+		
 		MenuConfig menuConfig = new MenuConfig();
 		menuConfig.setDesignItem(DesignItem.getWhiteBlueDesign());
 
@@ -138,6 +145,19 @@ public class VaadinHybridMenuUI extends UI {
 		
 	
 	}
+	
+	private boolean hasRole(String role) {
+		Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>)
+		  SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+		  boolean hasRole = false;
+		  for (GrantedAuthority authority : authorities) {
+		     hasRole = authority.getAuthority().equals(role);
+		     if (hasRole) {
+		      break;
+		     }
+		  }
+		  return hasRole;
+		}
 
 	private void buildTopMenu(HybridMenu hybridMenu) {
 
@@ -167,29 +187,9 @@ public class VaadinHybridMenuUI extends UI {
 				.build(hybridMenu);
       */
 
-	//	Method for getting the authorities, in order words, the user roles. Check if this is ok.
-		/**
-		 * 
-		 * protected boolean hasRole(String[] roles) {
-           boolean result = false;
-              for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
-                  String userRole = authority.getAuthority();
-                  for (String role : roles) {
-                      if (role.equals(userRole)) {
-                      result = true;
-                      break;
-                   }
-               }
 
-                 if (result) {
-                     break;
-                 }
-            }
-
-            return result;
-           }
-		 */
-	//	SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+		
+	
 		TopMenuSubContent userAccountMenu = TopMenuSubContentBuilder.get()
 				.setButtonCaption(SecurityContextHolder.getContext().getAuthentication().getName())
 				.setButtonIcon(new ThemeResource("images/profilDummy.jpg"))
@@ -224,13 +224,18 @@ public class VaadinHybridMenuUI extends UI {
 				.setNavigateTo(HomePage.class)
 				.build(hybridMenu);
         */
+		if(!hasRole(Role.Retailer.name())) {
+        //Only show notifications for the admin.
 		TopMenuButton notiButton = TopMenuButtonBuilder.get()
 				.setIcon(VaadinIcons.BELL_O)
 				.setAlignment(Alignment.MIDDLE_RIGHT)
 				.build(hybridMenu);
 
 		this.notificationCenter.setNotificationButton(notiButton);
-
+		
+	    }
+		
+		
 		TopMenuLabel label = TopMenuLabelBuilder.get()
 				.setCaption("<b>Data</b> Price")
 				.setIcon(new ThemeResource("images/hybridmenu-Logo.png"))
@@ -298,8 +303,8 @@ public class VaadinHybridMenuUI extends UI {
 
 	private void buildLeftMenu(HybridMenu hybridMenu) {
 		
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals("admin")) {
-		
+		if(!hasRole(Role.Retailer.name())) {
+		//If is admin user
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.DASHBOARD)
@@ -363,8 +368,17 @@ public class VaadinHybridMenuUI extends UI {
 		hybridMenu.addLeftMenuButton(feedsButton);
 		
 		
+		MenuButton userButton = LeftMenuButtonBuilder.get()
+				.withCaption("Users")
+				.withIcon(VaadinIcons.USER)
+				.withNavigateTo(UserLayoutFactory.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(userButton);
+		
+		
 		}else {
-			
+			//If is retailer
 			MenuButton homeButton = LeftMenuButtonBuilder.get()
 					.withCaption("Dashboard")
 					.withIcon(VaadinIcons.DASHBOARD)
@@ -395,57 +409,33 @@ public class VaadinHybridMenuUI extends UI {
 	
 	/*
 	 * Hard Coded way to solve task execution from a button!
-	 */
+	 * 
+	 
 	public void startTasksExecution(Runnable run) {
 		
 	   if (job==null) {		   
-		   job = ThreadPoolInit.executorService.submit(run);	
-		     NotificationBuilder.get(this.notificationCenter)
-				.withCaption("Test")
-				.withDescription("Tasks have been submitted")
-				.withPriority(ENotificationPriority.MEDIUM)
-				.withIcon(VaadinIcons.INFO)
-				.withCloseButton()
-				.build();
+		   job = ThreadPoolInit.executorService.submit(run);			    
 	   }
+	   
 	   if (job.isDone()) {
-		   job = ThreadPoolInit.executorService.submit(run);
-		     NotificationBuilder.get(this.notificationCenter)
-				.withCaption("Test")
-				.withDescription("Tasks have been submitted")
-				.withPriority(ENotificationPriority.MEDIUM)
-				.withIcon(VaadinIcons.INFO)
-				.withCloseButton()
-				.build();
+		   job = ThreadPoolInit.executorService.submit(run);		    
 	   }
 	 
 	}
+	*/
 	
-	public void finishTasksExecution(){
-		/**
-		access(new Runnable() {     
-     	   @Override     
-     	   public void run() {         
-     		     NotificationBuilder.get(notificationCenter)
-				.withCaption("Test")
-				.withDescription("Tasks completed")
-				.withPriority(ENotificationPriority.HIGH)
-				.withIcon(VaadinIcons.INFO)
-				.withCloseButton()
-				.build(); 
-     	   }
-     	});
-     	*/
-		
-				NotificationBuilder.get(this.notificationCenter)
-				.withCaption("Test")
-				.withDescription("Tasks completed")
-				.withPriority(ENotificationPriority.HIGH)
-				.withIcon(VaadinIcons.INFO)
-				.withCloseButton()
-				.build();	
-	   
-	}
+	
+	public void startTasksExecution(Runnable run) {
+		   //Happens only the first time 
+		   if (job==null) {		   
+			   job = MySingleThreadPoolExecutor.getInstance().runTask(run);			    
+		   }
+		   
+		   if (job.isDone()) {
+			   job = MySingleThreadPoolExecutor.getInstance().runTask(run);			    
+		   }
+		 
+		}
 	
 	
 	public void stopTasksExecution(){
@@ -457,16 +447,6 @@ public class VaadinHybridMenuUI extends UI {
 		}
     }
 	
-	public void cancelNotification(){
-				job.cancel(true);
-				NotificationBuilder.get(this.notificationCenter)
-				.withCaption("Test")
-				.withDescription("Tasks stopped")
-				.withPriority(ENotificationPriority.HIGH)
-				.withIcon(VaadinIcons.INFO)
-				.withCloseButton()
-				.build();	
-    }
 
 	public boolean isTaskSetRunning(){
 		if (job!=null) {
@@ -477,31 +457,19 @@ public class VaadinHybridMenuUI extends UI {
 		}
 		
 		return false;
-
     }
 	
 	
-	public void noSellerSelectedNotification(){
-		NotificationBuilder.get(this.notificationCenter)
-		.withCaption("Opps")
-		.withDescription("No seller selected yet, please go to settings.")
-		.withPriority(ENotificationPriority.HIGH)
-		.withIcon(VaadinIcons.INFO)
-		.withCloseButton()
-		.build();	
-    }
-
-
 	//@WebServlet(urlPatterns = "/*")
     //@VaadinServletConfiguration(ui = VaadinHybridMenuUI.class, productionMode = false)
     //public static class Servlet extends VaadinServlet {
     //}
 
+	/**
     @WebListener
     public static class ThreadPoolInit implements ServletContextListener {
 
         static ExecutorService executorService;
-
         @Override
         public void contextInitialized(ServletContextEvent sce) {
         	System.out.println("Empezando executor");
@@ -513,6 +481,6 @@ public class VaadinHybridMenuUI extends UI {
         	executorService.shutdown();
         }
     }
-    
+    */
     
 }

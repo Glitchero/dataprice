@@ -10,8 +10,12 @@ import org.hibernate.search.annotations.Resolution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.dataprice.model.entity.Country;
+import com.dataprice.model.entity.Retail;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.User;
+import com.dataprice.service.addcountryservice.AddCountryService;
+import com.dataprice.service.addretailservice.AddRetailService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifysettings.ModifySettingsService;
 import com.dataprice.service.security.UserServiceImpl;
@@ -72,6 +76,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		//private Button defaultSetingsButton; 
 		private Label subTittle;
 		private Binder<Settings> binder;
+		private Button loadRetailsButton;
 		
 		private RadioButtonGroup<Integer> daysGroup;
 		
@@ -126,6 +131,12 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			saveButton.addClickListener(this);
 			saveButton.setWidth("100%");
 			
+			
+			loadRetailsButton = new Button("Load Retails");
+			loadRetailsButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			loadRetailsButton.addClickListener(this);
+			loadRetailsButton.setWidth("100%");
+			
 		//	defaultSetingsButton = new Button("Restore default values");
 		//	defaultSetingsButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		//	defaultSetingsButton.addClickListener(this);
@@ -175,8 +186,8 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		    	date.setResolution(DateTimeResolution.MINUTE);
 		    	date.setStyleName("mytheme");
 		   		*/    	
-		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton);
-		    	hbuttons.setWidth("25%");
+		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,loadRetailsButton);
+		    	hbuttons.setWidth("50%");
 		    	
 		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,daysGroup);//,f);//,selector);
 		    	form.setWidth("100%");
@@ -191,10 +202,63 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		 
 		 @Override
 			public void buttonClick(ClickEvent event) {
+			     if (event.getSource()==saveButton) {
 	                	 edit();
+			     } else  {
+			    	     loadRetails();
+			     }
 			}
 		 
-		 private void edit() {
+		 private void loadRetails() {
+			 
+			Country country = new Country();
+			country.setCountryId(1);
+			country.setCountryName("México");
+			country.setCurrency("Peso MXN");
+			country.setNickname("MX");
+			addCountryService.saveCountry(country);	
+			
+			Retail retail1 = new Retail();
+			retail1.setRetailId(1);
+			retail1.setRetailName("Walmart(MarketPlace)");
+			retail1.setCrawlerName("Walmart");
+			retail1.setCountry(country);		
+			addRetailService.saveRetail(retail1);
+			
+			Retail retail2 = new Retail();
+			retail2.setRetailId(2);
+			retail2.setRetailName("Liverpool");
+			retail2.setCrawlerName("Liverpool");
+			retail2.setCountry(country);		
+			addRetailService.saveRetail(retail2);
+			
+			Retail retail3 = new Retail();
+			retail3.setRetailId(3);
+			retail3.setRetailName("Coppel");
+			retail3.setCrawlerName("Coppel");
+			retail3.setCountry(country);		
+			addRetailService.saveRetail(retail3);
+			
+			Retail retail4 = new Retail();
+			retail4.setRetailId(4);
+			retail4.setRetailName("Chedraui");
+			retail4.setCrawlerName("Chedraui");
+			retail4.setCountry(country);		
+			addRetailService.saveRetail(retail4);
+			
+			Retail retail5 = new Retail();
+			retail5.setRetailId(5);
+			retail5.setRetailName("Walmart(Super)");
+			retail5.setCrawlerName("SuperWalmart");
+			retail5.setCountry(country);		
+			addRetailService.saveRetail(retail5);
+			
+			Notification.show("RETAILS","Loaded of Retails Complete",Type.WARNING_MESSAGE);
+			
+		}
+
+
+		private void edit() {
 			 
 				try {
 					binder.writeBean(settings);
@@ -236,6 +300,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		 
 	}
 	
+	@Autowired 
+	private AddCountryService addCountryService;
+	
+	@Autowired 
+	private AddRetailService addRetailService;
 	
 	@Autowired 
 	private ModifySettingsService modifySettingsService;

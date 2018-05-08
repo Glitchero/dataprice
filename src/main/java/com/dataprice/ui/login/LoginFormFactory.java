@@ -36,7 +36,7 @@ public class LoginFormFactory {
 		private TextField username;
 		private PasswordField passwordField;
 		private Button loginButton;
-		private Button signupButton;
+	//	private Button signupButton;
 		
 		public LoginForm init() {
 			
@@ -49,8 +49,8 @@ public class LoginFormFactory {
 			
 			loginButton = new Button("Login");
 			loginButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			signupButton = new Button("Sign up");
-			signupButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+		//	signupButton = new Button("Sign up");
+		//	signupButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			
 			username = new TextField("Username");
 			passwordField = new PasswordField("Password");
@@ -67,7 +67,7 @@ public class LoginFormFactory {
 			loginLayout.addComponent(username);
 			loginLayout.addComponent(passwordField);
 			
-			loginLayout.addComponent(new HorizontalLayout(loginButton, signupButton));
+			loginLayout.addComponent(new HorizontalLayout(loginButton));
 			loginLayout.setSizeUndefined();
 			loginLayout.setMargin(true);
 			
@@ -89,11 +89,11 @@ public class LoginFormFactory {
 				}
 			});
 			
-			signupButton.addClickListener(new ClickListener() {
-				public void buttonClick(ClickEvent event) {
-					UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/signup");
-				}
-			});
+		//	signupButton.addClickListener(new ClickListener() {
+		//		public void buttonClick(ClickEvent event) {
+		//			UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/signup");
+		//		}
+		//	});
 			
 			panel.setContent(loginLayout);
 			

@@ -115,17 +115,18 @@ private class PieChart extends VerticalLayout {
 		    LocalDate yesterday = today.minus(Period.ofDays(settings.getLastUpdateInDays()));
 			java.util.Date lastUpdate = java.sql.Date.valueOf(yesterday);
 			
-
+          
+	       
 			
-			
-			if (settings.getKeyType().equals("sku")) {
+			  if (settings.getKeyType().equals("sku")) {
 
-				competitorsUsed = dashboardService.getCompetitorsBySku(settings.getMainSeller());
-				Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
-						
-				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
+				  competitorsUsed = dashboardService.getCompetitorsBySku(settings.getMainSeller());
+				  Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
+				  
+				 if (competitorsUsedSet.size()!=0) {
+				  products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
 
-				for (String competitorUsed : competitorsUsed) {
+				  for (String competitorUsed : competitorsUsed) {
 					
 					for (Product p: products) {
 						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku());
@@ -144,12 +145,12 @@ private class PieChart extends VerticalLayout {
 				        }
 					}
 				}
-				
+			  }	
 			}else {
 				
 				competitorsUsed = dashboardService.getCompetitorsByUpc(settings.getMainSeller());
 				Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
-						
+				if (competitorsUsedSet.size()!=0) {
 				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
 
 				for (String competitorUsed : competitorsUsed) {
@@ -170,16 +171,16 @@ private class PieChart extends VerticalLayout {
 				        	}
 				        }
 					}
-				}
-				
-				
-				
-				
+				}				
+		      }	
 			}
 			return this;
-	    }
+			
+	     }
 
 	 
+	    
+	    
 	}
 
     @Autowired

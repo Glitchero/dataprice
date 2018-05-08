@@ -18,6 +18,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
+import com.dataprice.model.entity.Role;
 import com.dataprice.model.entity.User;
 
 @org.springframework.stereotype.Component
@@ -61,7 +62,7 @@ public class SignupFormFactory {
 						return;
 					}
 					
-					registerUserService.save(username.getValue(), passwordField.getValue());
+					registerUserService.save(username.getValue(), passwordField.getValue(),Role.Retailer);
 					
 					UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/login");
 				}

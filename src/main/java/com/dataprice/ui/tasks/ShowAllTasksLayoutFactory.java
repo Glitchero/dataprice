@@ -1,77 +1,53 @@
 package com.dataprice.ui.tasks;
 
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.entity.Product;
-import com.dataprice.model.entity.ProductHistory;
-import com.dataprice.model.entity.ProductHistoryKey;
-import com.dataprice.model.entity.Retail;
 import com.dataprice.model.entity.Task;
 import com.dataprice.service.addproducthistservice.AddProductHistService;
 import com.dataprice.service.addproductservice.AddProductService;
-import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.crawltask.CrawlTaskServiceImpl;
 import com.dataprice.service.modifytask.ModifyTaskServiceImpl;
-import com.dataprice.service.removeproduct.RemoveProductService;
 import com.dataprice.service.removetask.RemoveTaskService;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.products.Icon;
+import com.dataprice.ui.reports.exporter.ExcelExport;
+import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
 import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
-import com.dataprice.ui.tasks.TaskExecuteOrder.OriginalIterator;
 import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
-import com.dataprice.ui.UIComponentBuilder;
-import com.dataprice.utils.NotificationsMessages;
 import com.vaadin.annotations.Push;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.ui.ContentMode;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.colorpicker.Color;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.components.grid.FooterRow;
-import com.vaadin.ui.components.grid.HeaderRow;
-import com.vaadin.ui.components.grid.MultiSelectionModel;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
-import com.vaadin.ui.renderers.LocalDateTimeRenderer;
 import com.vaadin.ui.renderers.ProgressBarRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+
+import kaesdingeling.hybridmenu.builder.NotificationBuilder;
+import kaesdingeling.hybridmenu.data.enums.ENotificationPriority;
+
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
+
 
 @Push
 @UIScope
@@ -79,27 +55,18 @@ import com.vaadin.data.HasValue.ValueChangeListener;
 public class ShowAllTasksLayoutFactory{
 
 	private List<Task> tasks;
+	private GridCellFilter filter;
+	private Grid<Task> tasksTable;	
 	
-	private Grid<Task> tasksTable;
-	
-	private ComboBox retailFilter;
-	
-	private ComboBox taskNameFilter;
-	
-	private List<Retail> retailers;
-	
-	
-	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener,ValueChangeListener{
+	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener{
 
 		private Button removeTasksButton;
-		private Button reportButton;
 		private Button runTasksButton;
 		private Button stopTasksButton;
-		//private Thread thread;
 		
-		
-		private ProgressBar progressBar;  //Tell us to wait for cancell!
-		
+	//	private ProgressBar cancelProgressBar;  //Tell us to wait for cancell!
+		private ProgressBar removeProgressBar;  //Tell us to wait for cancell!
+
 		private TaskFinishedListener taskFinishedListener;
 		private TaskSetFinishedListener taskSetFinishedListener;
 		public ShowAllTasksLayout(TaskFinishedListener taskFinishedListener, TaskSetFinishedListener taskSetFinishedListener) {
@@ -111,13 +78,17 @@ public class ShowAllTasksLayoutFactory{
 
 
 		public ShowAllTasksLayout init() {
+
+		//	cancelProgressBar = new ProgressBar();
+		//	cancelProgressBar.setCaption("Cancelling...");
+		//	cancelProgressBar.setIndeterminate(true);
+		//	cancelProgressBar.setVisible(false);
 			
 			
-			
-			progressBar = new ProgressBar();
-			progressBar.setCaption("Cancelling...");
-	        progressBar.setIndeterminate(true);
-	        progressBar.setVisible(false);
+			removeProgressBar = new ProgressBar();
+			removeProgressBar.setCaption("Removiendo...");
+			removeProgressBar.setIndeterminate(true);
+			removeProgressBar.setVisible(false);
 	        
 	        
 			removeTasksButton = new Button("Eliminar");
@@ -125,31 +96,13 @@ public class ShowAllTasksLayoutFactory{
 			removeTasksButton.setIcon(VaadinIcons.TRASH);
 			removeTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			removeTasksButton.setWidth("100%");
-			
-			reportButton = new Button("Reportar");
-			reportButton.setIcon(VaadinIcons.TOOLS);
-			reportButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
-			reportButton.setWidth("100%");
-			
+							
 			runTasksButton = new Button("Correr");
 			runTasksButton.setWidth("100%");
 			runTasksButton.addClickListener(this);
 			runTasksButton.setIcon(VaadinIcons.PLAY_CIRCLE);
 			runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
-			
-			
-			retailFilter = new ComboBox();
-			retailFilter.setStyleName(ValoTheme.COMBOBOX_SMALL);
-			retailFilter.setItems(retailers);
-			retailFilter.addValueChangeListener(this);
-			
-			
-			taskNameFilter = new ComboBox();
-			taskNameFilter.setStyleName(ValoTheme.COMBOBOX_SMALL);
-		//	taskNameFilter.setItems(taskNames); //Create query!!.
-		//	taskNameFilter.addValueChangeListener(this);
-			
-			
+	
 			stopTasksButton =  new Button("Cancelar");
 			stopTasksButton.setWidth("100%");
 			stopTasksButton.setIcon(VaadinIcons.STOP);
@@ -157,16 +110,15 @@ public class ShowAllTasksLayoutFactory{
 			stopTasksButton.addClickListener(this);
 			
 			tasksTable = new Grid<>(Task.class);
+			tasksTable.removeAllColumns();
 			tasksTable.setWidth("100%");
 			
-			tasksTable.setColumnOrder("taskName", "retail", "seed", "progress", "runDateTime");
+			tasksTable.addColumn(p -> p.getTaskName()).setCaption("Categoría").setId("Mytaskname");
+			tasksTable.addColumn(p -> p.getRetail().getRetailName()).setCaption("Retail").setId("Myretailname");
 
 			tasksTable.addColumn(t ->
 		      t.getProgress(),
 		      new ProgressBarRenderer()).setCaption("Progreso");
-			
-		//	tasksTable.addColumn(t ->
-		//      t.getStatus()).setCaption("Estatus");
 			
 			
 			tasksTable.addComponentColumn(t -> {
@@ -208,21 +160,16 @@ public class ShowAllTasksLayoutFactory{
 			tasksTable.addColumn(t ->
 		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>Semilla</a>",
 		      new HtmlRenderer()).setCaption("Semillas");
-					
-
-			tasksTable.removeColumn("taskId");
-			tasksTable.removeColumn("seed");
-			tasksTable.removeColumn("progress");
-			tasksTable.removeColumn("runDateTime");
-			tasksTable.removeColumn("downloadedProducts");
-			tasksTable.removeColumn("status");
 			
 			tasksTable.setItems(tasks);
 			tasksTable.setSelectionMode(SelectionMode.MULTI);
 			tasksTable.setSizeFull();
 			
+             //Set some filters taskName and retail
+			filter = new GridCellFilter(tasksTable);
+			filter.setTextFilter("Mytaskname", true, false);
+			filter.setTextFilter("Myretailname", true, false);
 
-			
 			return this;
 		}
 
@@ -230,7 +177,13 @@ public class ShowAllTasksLayoutFactory{
 
 		public ShowAllTasksLayout load() {
 			tasks = showAllTasksService.getAllTasks();    
-			retailers = showAllRetailsService.getAllRetailers();
+			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
+				System.out.println("Los tasks no se están ejecutando");
+				Notification.show("ESTATUS","Los tasks no se están ejecutando", Type.WARNING_MESSAGE);
+			}else {
+				System.out.println("Los tasks se están ejecutando");
+				Notification.show("ESTATUS","Los tasks se están ejecutando", Type.WARNING_MESSAGE);
+			}
 			return this;
 		}
 		
@@ -238,11 +191,9 @@ public class ShowAllTasksLayoutFactory{
 		
 		public Component layout() {
 	
-			HeaderRow HeaderRow = tasksTable.prependHeaderRow();
-			HeaderRow.getCell("retail").setComponent(retailFilter);
-			HeaderRow.getCell("taskName").setComponent(taskNameFilter);
+
 			//Remove all buttons when progress bar is activated.
-			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,removeTasksButton,reportButton,progressBar);
+			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,removeTasksButton,removeProgressBar);
 			hbutton.setMargin(false);
 			hbutton.setWidth("50%");
 
@@ -272,64 +223,84 @@ public class ShowAllTasksLayoutFactory{
 
 
 		private void stopTasks() {
+		    //stopTasksInNewThread();
 			if (vaadinHybridMenuUI.isTaskSetRunning()) {
-				 stopTasksButton.setVisible(false);
-				 progressBar.setVisible(true); // give the user some visual hint about cancelling taking place
-				 vaadinHybridMenuUI.stopTasksExecution();
+			 //   stopTasksButton.setVisible(false);
+			 //   cancelProgressBar.setVisible(true);
+			    vaadinHybridMenuUI.stopTasksExecution();
 			}else {
 				Notification.show("CUIDADO","Los tasks no se están ejecutando", Type.ERROR_MESSAGE);
-			}  			        
+			}
 	     }
 		
 			
-		/**
-		 * Should be nice to have this for the remove because it takes time
-		 * https://github.com/alejandro-du/large-dataset-example/blob/master/src/main/java/com/example/MyUI.java
-		 */
+/**
+		private void stopTasksInNewThread() {
+			new Thread(() -> {	
+				
+				if (vaadinHybridMenuUI.isTaskSetRunning()) {
+					vaadinHybridMenuUI.access(() -> {
+						 stopTasksButton.setVisible(false);
+						 cancelProgressBar.setVisible(true);
+   		             });
+					 vaadinHybridMenuUI.stopTasksExecution();		 
+				}else {
+					vaadinHybridMenuUI.access(() -> {
+						Notification.show("CUIDADO","Los tasks no se están ejecutando", Type.ERROR_MESSAGE);
+   		             });	
+				}  				
+				
+			}).start();	
+		}
+*/
+
+
 		private void deleteTasks() {
-			/**
-			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
-				MultiSelectionModel<Task> selectionModel = (MultiSelectionModel<Task>) tasksTable.getSelectionModel();
-				
-				for(Task task : selectionModel.getSelectedItems()) {
-					tasks.remove(task);
-					removeTaskService.removeTask(task);
-				}
-				
-				Notification.show("REMOVE","Tasks have been removed", Type.WARNING_MESSAGE);
-				
-				tasksTable.getDataProvider().refreshAll();
-				tasksTable.deselectAll();
-			}else {
-				Notification.show("CUIDADO","No se permite eliminar durante la ejecución", Type.ERROR_MESSAGE);
-			}   
-			*/
-			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
-			     if (tasksTable.getSelectedItems().size()!=0) {
-			    	 for (Task task : tasksTable.getSelectedItems()) {
-			    		 removeTaskService.removeTask(task);
-			    	 }
-			    	 refreshTable();
-			    	 tasksTable.deselectAll();
-			    	 Notification.show("REMOVE","Tasks have been removed", Type.WARNING_MESSAGE);
-			     }else {
-			    	 Notification.show("CUIDADO","Seleccione al menos un task para borrar", Type.ERROR_MESSAGE);
-			     }
-				     
-			}else {
-				Notification.show("CUIDADO","No se permite eliminar durante la ejecución", Type.ERROR_MESSAGE);
-			}   
-			
-			
+			deleteTasksInNewThread();			
 		}
 			
 		
 		
-        private void runTasks() {
+        private void deleteTasksInNewThread() {
+        	new Thread(() -> {	
+        	if (!vaadinHybridMenuUI.isTaskSetRunning()) {
+   			     if (tasksTable.getSelectedItems().size()!=0) {
+   			    	vaadinHybridMenuUI.access(() -> {
+   			    		removeProgressBar.setVisible(true);
+   			    		removeTasksButton.setVisible(false);
+   		             });
+   			    	 for (Task task : tasksTable.getSelectedItems()) {
+   			    		 removeTaskService.removeTask(task);
+   			    	 }
+   			    	 refreshTable();
+   			    	 tasksTable.deselectAll();
+   			    	vaadinHybridMenuUI.access(() -> {
+   			    		removeProgressBar.setVisible(false);
+   			    		removeTasksButton.setVisible(true);
+   			    		Notification.show("REMOVE","Tasks have been removed", Type.WARNING_MESSAGE);
+   		            });
+   			    	 
+   			     }else {
+   			    	vaadinHybridMenuUI.access(() -> {
+   			    		Notification.show("CUIDADO","Seleccione al menos un task para borrar", Type.ERROR_MESSAGE);
+   		             });	 
+   			     }
+   				     
+   			}else {
+			    	vaadinHybridMenuUI.access(() -> {
+		   				Notification.show("CUIDADO","No se permite eliminar durante la ejecución", Type.ERROR_MESSAGE);
+   		             });	
+   			}   
+    	  }).start();	
+			
+		}
+
+
+
+		private void runTasks() {
 
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
-                //vaadinHybridMenuUI.startTasksExecution(new TasksExecutor());
-				
+      		    
 				if (tasksTable.getSelectedItems().size()!=0) { //at least one selected
 					System.out.println("Tamaño de la seleccion: " + tasksTable.getSelectedItems().size() );
 					System.out.println("at least one selected");
@@ -337,11 +308,28 @@ public class ShowAllTasksLayoutFactory{
 					tasksSelected.addAll(tasksTable.getSelectedItems());
 					TasksExecutor tasksExecutor = new TasksExecutor(tasksSelected);
 					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);
-					
+					// Send notification
+ 
+					 NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
+						.withCaption("Test")
+						.withDescription(tasksTable.getSelectedItems().size() + " tasks have been submitted")
+						.withPriority(ENotificationPriority.MEDIUM)
+						.withIcon(VaadinIcons.INFO)
+						.withCloseButton()
+						.build();
+					 
                 } else {
                 		System.out.println("Normal execution");
                 		TasksExecutor tasksExecutor = new TasksExecutor();
-    					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);  	  	
+    					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);  
+    					
+    					NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
+ 						.withCaption("Test")
+ 						.withDescription("All Tasks have been submitted")
+ 						.withPriority(ENotificationPriority.MEDIUM)
+ 						.withIcon(VaadinIcons.INFO)
+ 						.withCloseButton()
+ 						.build();
                 }	
 				
 			}else {
@@ -378,7 +366,7 @@ public class ShowAllTasksLayoutFactory{
 	                }		
 
 	                initialization(tasks);
-	                
+	                refreshTable();  //Notify tasktable
 	                Task task = null;
 
 	        		executor = Executors.newFixedThreadPool(Configuration.NUMBEROFCORES);		
@@ -412,7 +400,19 @@ public class ShowAllTasksLayoutFactory{
 	        			//wait for all experiments
 	        		  }
 	        		
-	                taskSetFinishedListener.taskSetFinished();
+	        		/** 
+	                //taskSetFinishedListener.taskSetFinished();
+	        		vaadinHybridMenuUI.access(() -> {
+              		    NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
+              		    .withCaption("Test")
+      				    .withDescription("Tasks finish succesfuly")
+      				    .withPriority(ENotificationPriority.MEDIUM)
+      			    	.withIcon(VaadinIcons.INFO)
+      				    .withCloseButton()
+      				    .build();
+  		             });
+	        		*/
+	        		
 	                long endTime   = System.currentTimeMillis();
                	    long totalTime = endTime - startTime;
                	    System.out.println("Total time execution: " + totalTime);
@@ -424,14 +424,19 @@ public class ShowAllTasksLayoutFactory{
 	        		  {
 	            		//Wait for tasks to finished, again!!
 	        		  }
-	                 vaadinHybridMenuUI.access(new Runnable() {     
-                  	     @Override     
-                  	     public void run() {         
-                  		    progressBar.setVisible(false);
-                  		    stopTasksButton.setVisible(true);
-                  		    vaadinHybridMenuUI.cancelNotification();
-                  	    }
-                  	  });
+	            	
+	            	vaadinHybridMenuUI.access(() -> {
+	            	//	cancelProgressBar.setVisible(false);
+              		//  stopTasksButton.setVisible(true);
+              		    NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
+              	    	  .withCaption("Test")
+    				      .withDescription("Tasks stopped")
+    				      .withPriority(ENotificationPriority.HIGH)
+    				      .withIcon(VaadinIcons.INFO)
+    				      .withCloseButton()
+    				      .build();
+  		             });
+	            	refreshTable();
 	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");                
 	                return;
 	                
@@ -576,19 +581,19 @@ public class ShowAllTasksLayoutFactory{
 	    private void setTaskDownloadedProducts(Task task, int downloadedProducts) {
 	    	task.setDownloadedProducts(downloadedProducts);
 	    	modifyTaskService.modifyTask(task);
-	    	refreshTable();
+	    	//refreshTable();
 		}
 	    
 	    private void setTaskStatus(Task task,String status) {
 	    	task.setStatus(status);
         	modifyTaskService.modifyTask(task);
-        	refreshTable();
+        	//refreshTable();
 	    }
 	    
 	    private void setTaskProgress(Task task,Double progress) {
 	    	task.setProgress(progress);
         	modifyTaskService.modifyTask(task);
-        	refreshTable();
+        	//refreshTable();
 	    }
 	    
 	    private void setTodayDateAndExecutionTime(Task task, Long totalTime) {
@@ -606,26 +611,9 @@ public class ShowAllTasksLayoutFactory{
 	    	
 	    	task.setRunDateTime(date);
         	modifyTaskService.modifyTask(task);
-        	refreshTable();
+        	//refreshTable();
 	    }
 
-
-
-		@Override
-		public void valueChange(ValueChangeEvent event) {
-			
-		    if (retailFilter.getValue()!=null) {
-		       Retail selectedRetail = (Retail) retailFilter.getValue();
-			   tasks = showAllTasksService.getAllTasksFromRetailId(selectedRetail.getRetailId());
-		        
-                vaadinHybridMenuUI.access(new Runnable() {     
-            	   @Override     
-            	   public void run() {         
-            		   tasksTable.setItems(tasks); 
-            	   }
-            	});
-		    }
-		}
 		
 	}
 	
@@ -658,15 +646,14 @@ public class ShowAllTasksLayoutFactory{
 	}
 
 	public void refreshTable() {
+		
              tasks = showAllTasksService.getAllTasks();
-        
              vaadinHybridMenuUI.access(new Runnable() {     
             	   @Override     
             	   public void run() {         
             		   tasksTable.setItems(tasks); 
             	   }
             	});
-             
             
 	}
 

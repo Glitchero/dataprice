@@ -127,14 +127,11 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 			valueList = new LinkedList<Double>();
 			
 			
-			
-			
-			
-			if (settings.getKeyType().equals("sku")) {
+			  if (settings.getKeyType().equals("sku")) {
 
 				competitorsUsed = dashboardService.getCompetitorsBySku(settings.getMainSeller());
 				Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
-						
+				if (competitorsUsedSet.size()!=0) {	
 				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
 
 				if (products.size()!=0) {
@@ -183,10 +180,11 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 				valueList.addAll(equalList);
 				valueList.addAll(expensiveList);
 				}	
+				}
 			}else {
 				competitorsUsed = dashboardService.getCompetitorsByUpc(settings.getMainSeller());
 				Set<String> competitorsUsedSet = new HashSet<String>(competitorsUsed);
-						
+				if (competitorsUsedSet.size()!=0) {			
 				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,competitorsUsedSet);  //Change function for string.
 
 				if (products.size()!=0) {
@@ -236,7 +234,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 				valueList.addAll(expensiveList);
 				}
 			}
-			
+			}
 					
 			return this;
 		}

@@ -12,9 +12,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name="RETAIL")
 public class Retail {
-	
+	//@GeneratedValue
 	@Id
-	@GeneratedValue
 	@Column(name = "retail_id")
 	private Integer retailId;
 	
@@ -28,7 +27,9 @@ public class Retail {
 	@JoinColumn(name = "country_id")
 	private Country country;
 
-	
+	public Retail() {
+		//Default Constructor
+	}
 	
 	public Integer getRetailId() {
 		return retailId;

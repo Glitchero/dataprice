@@ -34,9 +34,9 @@ public class User implements UserDetails {
 	@Column(name = "password")
 	private String password;
 	
-//	@Column(name = "role", nullable = false)
-//	@Enumerated(EnumType.STRING)
-//	private Role role;
+	@Column(name = "role", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Role role;
 	
 	 /** user settings */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
@@ -62,13 +62,13 @@ public class User implements UserDetails {
 		return this.username;
 	}
 
-//	public Role getRole() {
-//	    return role;
-//	}
+	public Role getRole() {
+	    return role;
+	}
 
-//	public void setRole(Role role) {
-//	    this.role = role;
-//	}
+	public void setRole(Role role) {
+	    this.role = role;
+	}
 	
 	public boolean isAccountNonExpired() {
 		return true;
