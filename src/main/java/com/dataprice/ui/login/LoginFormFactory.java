@@ -78,7 +78,8 @@ public class LoginFormFactory {
 						Authentication authenticated = daoAuthenticationProvider.authenticate(auth);
 						SecurityContextHolder.getContext().setAuthentication(authenticated);
 						
-						UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/ui");
+					//	UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/ui");
+						UI.getCurrent().getPage().setLocation("/ui");
 					} catch (AuthenticationException e) {
 						Notification.show("Error!", "Login fail! Try again", Type.ERROR_MESSAGE);
 						System.out.println(e.getMessage());

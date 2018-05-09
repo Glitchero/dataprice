@@ -211,7 +211,8 @@ public class VaadinHybridMenuUI extends UI {
 				//SecurityContext context = SecurityContextHolder.getContext();
 		        //context.setAuthentication(null);
 				SecurityContextHolder.clearContext();
-				UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/login");
+				//UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/login");
+				UI.getCurrent().getPage().setLocation("/login");
 			}
 		});
 		

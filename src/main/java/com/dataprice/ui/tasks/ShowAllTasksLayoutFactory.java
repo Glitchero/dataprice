@@ -179,10 +179,10 @@ public class ShowAllTasksLayoutFactory{
 			tasks = showAllTasksService.getAllTasks();    
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
 				System.out.println("Los tasks no se están ejecutando");
-				Notification.show("ESTATUS","Los tasks no se están ejecutando", Type.WARNING_MESSAGE);
+				Notification.show("ESTATUS","Los Tasks no se están ejecutando", Type.WARNING_MESSAGE);
 			}else {
 				System.out.println("Los tasks se están ejecutando");
-				Notification.show("ESTATUS","Los tasks se están ejecutando", Type.WARNING_MESSAGE);
+				Notification.show("ESTATUS","Los Tasks se están ejecutando", Type.WARNING_MESSAGE);
 			}
 			return this;
 		}

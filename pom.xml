@@ -6,7 +6,6 @@
     <groupId>com.dataprice</groupId>
     <artifactId>dataprice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
 
     <name>dataprice</name>
     <description>Demo project for Spring Boot and Vaadins HybridMenu addon</description>
@@ -29,27 +28,7 @@
     </properties>
 
     <dependencies>
-    
-    <!--  
-		<dependency>
-			<groupId>org.percepta.mgrankvi</groupId>
-			<artifactId>TimeSelector</artifactId>
-			<version>2.0.0</version>
-		</dependency> 
-		
-		<dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-compatibility-client</artifactId>
-        </dependency>
-        
-		<dependency>
-			<groupId>org.vaadin.thomas</groupId>
-			<artifactId>timefield</artifactId>
-			<version>3.0.0-v8comp</version>
-		</dependency>  
-		-->
-
-        
+  
         <dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
@@ -68,7 +47,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+		<!--	<scope>provided</scope> -->
 		</dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -225,39 +204,59 @@
     </dependencyManagement>
 
     <build>
+       <finalName>dataprice</finalName>
         <plugins>
-            <plugin>
+        
+        <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.11</version>
+                <configuration>
+                    <imageName>glitchero/${project.artifactId}</imageName>
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+            
+          <!--  <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
                 <version>${vaadin.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>update-theme</goal>
+                            <goal>update-theme</goal>   
                             <goal>update-widgetset</goal>
                             <goal>compile</goal>
-                            <goal>compile-theme</goal>
+                            <goal>compile-theme</goal>  
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
+                </executions>   
+            </plugin>    -->
+         <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.0.0</version>
-                <!-- Clean up also any pre-compiled themes -->
+                 Clean up also any pre-compiled themes 
                 <configuration>
                     <filesets>
                         <fileset>
                             <directory>src/main/webapp/VAADIN/themes</directory>
                             <includes>
-                                <include>**/styles.css</include>
+                            <include>**/styles.css</include>
                                 <include>**/styles.scss.cache</include>
                             </includes>
                         </fileset>
                     </filesets>
-                </configuration>
-            </plugin>
+                </configuration> 
+            </plugin>  -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -266,13 +265,14 @@
 				</configuration>
             </plugin>
 
-			<plugin>
+		 <!--	<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>				
-<!-- 				<configuration>
+				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>			
-				</configuration> -->
-			</plugin>
+				</configuration> 
+			</plugin>  -->
+			
         </plugins>
     </build>
 
