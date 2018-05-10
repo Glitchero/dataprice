@@ -16,4 +16,10 @@ spring:
     password: ${DATABASE_PASSWORD}
     driver-class-name: ${DATABASE_DRIVER}
     initialize: true
-    
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+            hibernate.enable_lazy_load_no_trans: true
+            hibernate.search.default.directory_provider: ram
+            hibernate.search.default.indexBase: ./target/lucene
