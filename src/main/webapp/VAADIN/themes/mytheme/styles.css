@@ -17188,3 +17188,41 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .hybridMenu.design_dark .topMenu .menuSubMenu .menuSubMenuContent .menuSubMenuHr, .mytheme .hybridMenu.design_dark .topMenu .menuSubMenu .menuSubMenuContent .menuSubMenuButton:hover {
 	background: #535353;
 }
+
+.mytheme .v-inline-datefield-calendarpanel-header,.v-inline-datefield-calendarpanel-body{
+  display: none;
+  }
+  
+.myprogress .v-progressbar-indicator {
+	border-radius: 4px;
+	height: inherit;
+	background-color: #2c9020;
+	background-image: -webkit-linear-gradient(top, #2f9822 2%, #26811b 98%);
+    background-image: linear-gradient(to bottom,#2f9822 2%, #26811b 98%);
+	
+	
+	border: 1px solid #1362b1;
+	box-sizing: border-box;
+	max-width: 100%;
+	min-width: 8px;
+	-webkit-transition: width 160ms;
+	-moz-transition: width 160ms;
+	transition: width 160ms;
+}
+
+.myprogressbar .v-progressbar-indicator {
+	border-radius: 4px;
+	height: inherit;
+	background-color: #ff0000;
+	background-image: -webkit-linear-gradient(top, #ff0000 2%, #ff0000 98%);
+    background-image: linear-gradient(to bottom,#ff0000 2%, #ff0000 98%);
+	
+	
+	border: 1px solid #1362b1;
+	box-sizing: border-box;
+	max-width: 100%;
+	min-width: 8px;
+	-webkit-transition: width 160ms;
+	-moz-transition: width 160ms;
+	transition: width 160ms;
+}

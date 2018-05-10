@@ -1,5 +1,7 @@
 package com.dataprice.model.crawlers.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -7,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class PhantomFactory
 {
@@ -47,10 +50,23 @@ public class PhantomFactory
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
-
+  		
+  		WebDriver driver = null;
+  		try {
+			      driver = new RemoteWebDriver(
+				    new URL("http://127.0.0.1:8910"),
+				    DesiredCapabilities.phantomjs());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  		
   	    phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		
-  		return phantomDriver;   
+  		return driver; 
+  		
+    	  
+    	  
       }
    };
 

@@ -240,7 +240,7 @@
                 </configuration>
             </plugin>
             
-          <plugin>
+  <!--        <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
                 <version>${vaadin.plugin.version}</version>
@@ -249,13 +249,13 @@
                         <goals>
                            <goal>update-theme</goal> 
                             <goal>update-widgetset</goal>
-                            <goal>compile</goal>
+                            <goal>compile</goal>  
                             <goal>compile-theme</goal>  
                         </goals>
                     </execution>
                 </executions>   
-            </plugin>   
-           <plugin>
+            </plugin>   -->
+       <!--    <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.0.0</version>
@@ -270,7 +270,7 @@
                         </fileset>
                     </filesets>
                 </configuration> 
-            </plugin>   
+            </plugin>  --> 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
