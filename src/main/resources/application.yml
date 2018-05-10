@@ -11,7 +11,7 @@ spring:
 spring:
   profiles: container
   datasource:
-    url: jdbc:mysql://mysql:3306/univers?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mysql://demo-mysql:3306/univers?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password: Harbinger1945
     driver-class-name: com.mysql.cj.jdbc.Driver
