@@ -54,7 +54,7 @@ public class PhantomFactory
   		WebDriver driver = null;
   		try {
 			      driver = new RemoteWebDriver(
-				    new URL("http://172.17.0.4:8910"),
+				    new URL("http://172.17.0.3:8910"),
 				    DesiredCapabilities.phantomjs());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block

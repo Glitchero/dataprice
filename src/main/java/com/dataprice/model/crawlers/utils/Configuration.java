@@ -10,7 +10,7 @@ public class Configuration {
 	 * ITERATOR_STRATEGY = ActiveHosts
 	 */
 	public final static String ITERATOR_STRATEGY = "Random";
-	public final static int NUMBEROFCORES = 3; 
+	public final static int NUMBEROFCORES = 2; 
 	public final static int LIMIT_NUMBER_OF_TASKS = 5000;
 
 	/** Crawler Configuration.
