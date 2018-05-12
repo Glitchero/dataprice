@@ -78,7 +78,7 @@ public class PhantomFactory
 
    public void removeDriver() 
    {
-	  driver.get().close();
+	 // driver.get().close();
       driver.get().quit();
       driver.remove();
    }
