@@ -31,7 +31,7 @@ public class PhantomFactory
       @Override
       protected WebDriver initialValue()
       {
-    	 /**
+    	/** 
     	String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36";
   		
   		DesiredCapabilities desiredCaps = new DesiredCapabilities();
@@ -51,6 +51,7 @@ public class PhantomFactory
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
   		*/
+    	
   		WebDriver driver = null;
   		try {
 			      driver = new RemoteWebDriver(
@@ -77,6 +78,7 @@ public class PhantomFactory
 
    public void removeDriver() 
    {
+	  driver.get().close();
       driver.get().quit();
       driver.remove();
    }
