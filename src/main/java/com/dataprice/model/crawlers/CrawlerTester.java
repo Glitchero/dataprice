@@ -1,5 +1,9 @@
 package com.dataprice.model.crawlers;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -7,62 +11,113 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.dataprice.model.crawlers.utils.ContentParser;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
+import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.Retail;
 import com.dataprice.model.entity.Task;
+import com.dataprice.service.crawltask.CrawlTaskServiceImpl;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class CrawlerTester {
 
-	
-	
-	public static void main(String[] args) {
-		/**
-		Task t = new Task();
-		t.setRetail("Chedraui");
-		t.setSeed("https://www.chedraui.com.mx/chedrauistorefront/chedraui/es/Departamentos/Super/Despensa/Galletas%2C-Cereales-y-Barras/c/MC010102?q=%3Arelevance%3Abrand%3ADond%C3%A9&text=&toggleView=grid");
-		t.setTaskName("Galletas");
 		
-		Crawler c = new Chedraui();
-
-		List<Product> prods = c.getProductsFromTask(t);
-    	
-		for (Product p : prods) {
+	public static void main(String[] args) {
+		
+		Task task = new Task();
+		task.setSeed("https://deportes.mercadolibre.com.mx/aerobics-y-fitness/suplementos/_DisplayType_LF_Tienda_centurfit");
+		
+		task.setTaskName("proteinas");
+		
+		Crawler crawler = new MercadoLibre();
+		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
+	
+		for (CrawlInfo crawlInfo : productsInfo) {
+			Product p = crawler.parseProductFromURL(crawlInfo, task);
 			System.out.println(p);
 		}
-		System.out.println("tamaño" + prods.size());
+	
 		
-		*/
-		// 10009090 = 2 h 46 m 49 s
-		// 299643635825
+		
+		//String id = ContentParser.parseContent("https://articulo.mercadolibre.com.mx/MLM-592290886-proteina-meta-nutrition-full-protein-2-kg-57-porciones-_JM", "/(ML[A-Z]-[0-9]*)-");
+		//System.out.println("el id es:" + id);
+		
+		
 		/**
-		Calendar today = Calendar.getInstance();
-		long milliseconds = 1140784;
-		int seconds = (int) (milliseconds / 1000) % 60 ;
-		int minutes = (int) ((milliseconds / (1000*60)) % 60);
-		int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
-		
-		today.set(Calendar.HOUR_OF_DAY, hours);
-		
-		today.set(Calendar.MINUTE, minutes);
-		
-		today.set(Calendar.SECOND, seconds);
-		
-		Date date = today.getTime();
-		
-		System.out.println(date);
-		*/
-		String value = "5831";
-		System.out.println(Double.parseDouble(value));
-		Locale currentLocale = Locale.getDefault();
-		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
-		otherSymbols.setDecimalSeparator('.'); 
-		NumberFormat df = new DecimalFormat("#.##",otherSymbols);
-		
-		 System.out.print(Double.valueOf(df.format(Double.parseDouble(value))));
-		
-		
+		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF); 
+
+		WebClient webClient = new WebClient();
+	//	webClient.getOptions().setJavaScriptEnabled(true);
+		  String pageAsXml = "";
+		  HtmlPage page;
+		try {
+			page = webClient.getPage("https://www.walmart.com.mx/Linea-Blanca/Lavadoras-y-Secadoras/Lavadoras/Lavadora-Mabe-18-Kg-Blanca_00075763896986");
+	        webClient.setJavaScriptTimeout(10000);
+	        webClient.waitForBackgroundJavaScript(10000);
+	        //just wait
+	        try {
+				Thread.sleep(10*1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			pageAsXml = page.asXml();
+		} catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			PrintWriter out = new PrintWriter("filename.txt");
+			out.println(pageAsXml);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	//	System.out.println(pageAsXml);
+		webClient.close();
+         */
 	}
 	
+	
+	
+	/** EXTRA STUFF
+	Calendar today = Calendar.getInstance();
+	long milliseconds = 1140784;
+	int seconds = (int) (milliseconds / 1000) % 60 ;
+	int minutes = (int) ((milliseconds / (1000*60)) % 60);
+	int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+	
+	today.set(Calendar.HOUR_OF_DAY, hours);
+	
+	today.set(Calendar.MINUTE, minutes);
+	
+	today.set(Calendar.SECOND, seconds);
+	
+	Date date = today.getTime();
+	
+	System.out.println(date);
+	
+	String value = "5831";
+	System.out.println(Double.parseDouble(value));
+	Locale currentLocale = Locale.getDefault();
+	DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+	otherSymbols.setDecimalSeparator('.'); 
+	NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+	System.out.print(Double.valueOf(df.format(Double.parseDouble(value))));
+	*/
 	
 	
 }

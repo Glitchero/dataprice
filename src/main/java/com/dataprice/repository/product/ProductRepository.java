@@ -42,27 +42,25 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	List<Product> getProductsFromSellerNameWithMatches(@Param("sellerName") String sellerName);
 	
 	@Query("select p from Product p where p.seller=:sellerName and p.sku=:skuId")
-	List<Product> getProductsFromSellerNameAndSku(@Param("sellerName") String sellerName, @Param("skuId") String skuId);
+	List<Product> getProductsFromSellerNameAndSku(@Param("sellerName") String sellerName, @Param("skuId") String skuId);	
 	*/
 	
-	@Query("select p from Product p where p.seller=:sellerName and p.sku <> '' and p.sku in (select p.sku from Product p group by p.sku having count(p.sku)> 1)")
-	List<Product> getProductsFromSellerNameWithMatchesSku(@Param("sellerName") String sellerName);
-	
-	@Query("select p from Product p where p.seller=:sellerName and p.sku=:skuId")
-	List<Product> getProductsFromSellerNameAndSku(@Param("sellerName") String sellerName, @Param("skuId") String skuId);
-	
-	
-	@Query("select p from Product p where p.seller=:sellerName and p.upc <> '' and p.upc in (select p.upc from Product p group by p.upc having count(p.upc)> 1)")
-	List<Product> getProductsFromSellerNameWithMatchesUpc(@Param("sellerName") String sellerName);
-	
-	@Query("select p from Product p where p.seller=:sellerName and p.upc=:upcId")
-	List<Product> getProductsFromSellerNameAndUpc(@Param("sellerName") String sellerName, @Param("upcId") String upcId);
+
+  
+	@Query("select p from Product p where p.seller=:sellerName and p.sku=:skuId and DATE(p.updateDay) >= :lastDate")
+	List<Product> getProductsFromSellerNameAndSku(@Param("sellerName") String sellerName, @Param("skuId") String skuId,@Param("lastDate") Date lastDate);
+		
+
+	@Query("select p from Product p where p.seller=:sellerName and p.upc=:upcId and DATE(p.updateDay) >= :lastDate")
+	List<Product> getProductsFromSellerNameAndUpc(@Param("sellerName") String sellerName, @Param("upcId") String upcId,@Param("lastDate") Date lastDate);
 	
 	
-	// Query for settings!!.
+	// Queries for settings!!.
 	@Query("select p.seller from Product p group by p.seller")
 	List<String> getSellersList();
 	
+	@Query("select p.seller from Product p where p.seller<>:sellerName group by p.seller")
+	List<String> getSellersListExceptForSeller(@Param("sellerName") String sellerName);
 	
 	/**
 	 * Get all the competitors in General for a specific seller.
@@ -87,22 +85,22 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	 * 3.- Filter by category
 	 * 4.- Filter by dateRange
 	 *  
+	 * Used in Dashboard and in reports
 	 * @param sellerName
 	 * @return
 	 */
 	
-	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1)")
+	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1) and p.checked=1")
 	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
 	
-	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1)")
+	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1) and p.checked=1")
 	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
-	
-	
+		
 	
 	/**
-	 * Get all the competitors that have at least one match with the mainSeller. Add later parameter date!!
-	 * Used in Dashboard
+	 * Get all the competitors that have at least one match with the mainSeller. Add later parameter date???
+	 * Used only in Dashboard
 	 * @return
 	 */
 	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.sku <> '' and p.sku in (select p.sku from Product p group by p.sku having count(p.sku)> 1) group by p.seller")
@@ -113,7 +111,18 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	List<String> getCompetitorsByUpc(@Param("mainSeller") String mainSeller);
 	
 	
-	/**
+	
+	
+
+	
+	
+	
+	
+	
+	/////////------------------Queries Not Used---Delete Them Later-------------------------///////////
+	
+	
+	/** I think this is not used, check it with ctrl + h
 	 * Get total of products from competition. Add later parameter date!!
 	 * Used in Dashboard
 	 * @return
@@ -126,7 +135,17 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	Integer getTotalOfProductsFromCompetitorByUpc(@Param("mainSeller") String mainSeller,@Param("competition") String competition);
 	
 	
+	@Query("select p from Product p where p.seller=:sellerName and p.sku <> '' and p.sku in (select p.sku from Product p group by p.sku having count(p.sku)> 1)")
+	List<Product> getProductsFromSellerNameWithMatchesSku(@Param("sellerName") String sellerName);
 	
+	@Query("select p from Product p where p.seller=:sellerName and p.upc <> '' and p.upc in (select p.upc from Product p group by p.upc having count(p.upc)> 1)")
+	List<Product> getProductsFromSellerNameWithMatchesUpc(@Param("sellerName") String sellerName);
 	
+	@Query("select p from Product p where p.seller=:sellerName and p.sku=:skuId")
+	List<Product> getProductsFromSellerNameAndSku(@Param("sellerName") String sellerName, @Param("skuId") String skuId);
+		
+
+	@Query("select p from Product p where p.seller=:sellerName and p.upc=:upcId")
+	List<Product> getProductsFromSellerNameAndUpc(@Param("sellerName") String sellerName, @Param("upcId") String upcId);
 	
 }

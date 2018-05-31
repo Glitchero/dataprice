@@ -158,7 +158,7 @@ public class ReportSettingsLayoutFactory {
 			try {
 				binder.writeBean(reportSettings);
 			} catch (ValidationException e) {
-				Notification.show("ERROR","Error in reports Settings",Type.ERROR_MESSAGE);
+				Notification.show("ERROR","Error en los ajustes del reporte",Type.ERROR_MESSAGE);
 				return;
 			}			
 			generateReportListener.generateReport(reportSettings);

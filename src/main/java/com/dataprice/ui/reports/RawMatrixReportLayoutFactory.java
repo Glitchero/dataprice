@@ -37,6 +37,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
@@ -66,7 +67,7 @@ public class RawMatrixReportLayoutFactory {
 	private GridCellFilter filter;
 	private ProgressBar excelProgressBar;
 	private ProgressBar csvProgressBar;
-	
+	private java.util.Date lastUpdate;
 	//private DecimalFormat df = new DecimalFormat("#0.00");
 	private DecimalFormat df = new DecimalFormat("####,###,###.00");
 	
@@ -133,9 +134,11 @@ public class RawMatrixReportLayoutFactory {
 				 productsTable.addColumn(p -> {
 					 List<Product> products = null;
 					 if (settings.getKeyType().equals("sku")) {
-						 products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
+						 //products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
+						 products = reportsService.getProductsFromSellerNameAndSku(seller, p.getSku(), lastUpdate);
 						}else {
-						 products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
+						 //products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
+						 products = reportsService.getProductsFromSellerNameAndUpc(seller, p.getUpc(), lastUpdate);	
 						}
 					 Double rivalPrice = null;
 			        if (products.size()!=0) {
@@ -149,7 +152,7 @@ public class RawMatrixReportLayoutFactory {
 			productsTable.setWidth("100%");
 			productsTable.setHeight("500px"); //500 antes
 			productsTable.setItems(products);
-			
+			productsTable.setSelectionMode(SelectionMode.NONE);
 		  
 		    
 			return this;
@@ -366,7 +369,7 @@ public class RawMatrixReportLayoutFactory {
 			User user = userServiceImpl.getUserByUsername("admin");
 			settings = user.getSettings();
 			
-			java.util.Date lastUpdate = java.sql.Date.valueOf(reportSettings.getLastUpdate());
+			lastUpdate = java.sql.Date.valueOf(reportSettings.getLastUpdate());
 			
 			if (settings.getKeyType().equals("sku")) {
 				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,reportSettings.getCompetitors());

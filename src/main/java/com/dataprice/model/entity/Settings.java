@@ -48,6 +48,9 @@ public class Settings {
 	@Column(name = "last_update_in_days")
 	private Integer lastUpdateInDays = 1;  
 	
+	@Column(name = "cores")
+	private Integer cores = 1;
+	
     public Settings() {
     	
     }
@@ -97,6 +100,16 @@ public class Settings {
 
 	public void setLastUpdateInDays(Integer lastUpdateInDays) {
 		this.lastUpdateInDays = lastUpdateInDays;
+	}
+
+
+	public Integer getCores() {
+		return cores;
+	}
+
+
+	public void setCores(Integer cores) {
+		this.cores = cores;
 	}
 	 
 	 

@@ -198,13 +198,15 @@ public class VaadinHybridMenuUI extends UI {
 				.setAlignment(Alignment.MIDDLE_RIGHT)
 				.build(hybridMenu);
 
-		userAccountMenu.addLabel("Account");
-		userAccountMenu.addHr();
+		userAccountMenu.addLabel("Cuenta Demo");
+	//	userAccountMenu.addHr();
+		/**
 		userAccountMenu.addButton("Ayuda").addClickListener(new ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				//startTasksExecution();
 			}
 		});
+		*/
 		userAccountMenu.addHr();
 		userAccountMenu.addButton("Cerrar Sesión").addClickListener(new ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -238,8 +240,9 @@ public class VaadinHybridMenuUI extends UI {
 		
 		
 		TopMenuLabel label = TopMenuLabelBuilder.get()
-				.setCaption("<b>Data</b> Price")
-				.setIcon(new ThemeResource("images/hybridmenu-Logo.png"))
+			//	.setCaption("<b>Data</b> Price")
+				.setCaption("")
+				.setIcon(new ThemeResource("images/logo-light.png"))
 			//	.setIcon(new ThemeResource("images/logofinal.png"))
 				.build(hybridMenu);
 
@@ -389,7 +392,7 @@ public class VaadinHybridMenuUI extends UI {
 			hybridMenu.addLeftMenuButton(homeButton);
 			
 			MenuButton reportsButton = LeftMenuButtonBuilder.get()
-					.withCaption("Reports")
+					.withCaption("Reportes")
 					.withIcon(VaadinIcons.CHART_GRID)
 					.withNavigateTo(ReportsMainLayout.class)
 					.build();

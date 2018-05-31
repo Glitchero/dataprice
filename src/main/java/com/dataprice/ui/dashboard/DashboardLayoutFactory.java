@@ -3,7 +3,11 @@ package com.dataprice.ui.dashboard;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.dataprice.model.entity.Settings;
+import com.dataprice.model.entity.User;
+import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.ui.dashboard.charts.DonutChartProductsPerRetail;
 import com.dataprice.ui.dashboard.charts.LineChartProductsPerDay;
 import com.dataprice.ui.dashboard.charts.PieChartBotsPerRetail;
@@ -36,13 +40,20 @@ public class DashboardLayoutFactory extends VerticalLayout implements View{
 	@Autowired
 	private PieChartGlobalPricingDistribution pieChartGlobalPricingDistribution;
 
-
+	@Autowired 
+	private UserServiceImpl userServiceImpl;
+	
+	
+	
 	@Autowired
 	private StackedChartDistributionByCompetition stackedChartDistributionByCompetition;
 	
 	private void addLayout() {
 		
-		Label mainTittle = new Label("<b><font size=\"5\">Dashboard </font></b>",ContentMode.HTML);
+		User user = userServiceImpl.getUserByUsername("admin");
+		Settings settings = user.getSettings();
+	
+		Label mainTittle = new Label("<b><font size=\"5\">" + "Dashboard para " + settings.getMainSeller() + "</font></b>" ,ContentMode.HTML);
 		Label subTittle = new Label("<font size=\"2\">Obtenga un vistazo rápido de su posición en el mercado en cuanto a precios </font>",ContentMode.HTML);
 	
 		Component pieChartGlobalDistribution = pieChartGlobalPricingDistribution.createComponent();

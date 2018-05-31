@@ -44,16 +44,18 @@ public class LoginFormFactory {
 			root.setMargin(true);
 			root.setHeight("100%");
 			
-			panel = new Panel("Login");
+			panel = new Panel("Autentificación");
 			panel.setSizeUndefined();
 			
-			loginButton = new Button("Login");
+			loginButton = new Button("Aceptar");
 			loginButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 		//	signupButton = new Button("Sign up");
 		//	signupButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			
-			username = new TextField("Username");
-			passwordField = new PasswordField("Password");
+			username = new TextField("Usuario(Usuario de Prueba)");
+			username.setValue("Usuario de Prueba");
+			passwordField = new PasswordField("Contraseña(12345)");
+			passwordField.setValue("12345");
 			
 			return this;
 		}
@@ -81,7 +83,7 @@ public class LoginFormFactory {
 					//	UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/ui");
 						UI.getCurrent().getPage().setLocation("/ui");
 					} catch (AuthenticationException e) {
-						Notification.show("Error!", "Login fail! Try again", Type.ERROR_MESSAGE);
+						Notification.show("Error!", "El acceso falló! Vuelva a intentarlo.", Type.ERROR_MESSAGE);
 						System.out.println(e.getMessage());
 					}
 					

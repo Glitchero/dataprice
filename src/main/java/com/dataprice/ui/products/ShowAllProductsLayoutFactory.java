@@ -182,7 +182,7 @@ public class ShowAllProductsLayoutFactory {
 
 
 		private void searchProduct() {		
-		  List<Product> retrieveList = searchProductService.search(textFieldWithTwoButtons.getTextfield().getValue());	
+		  List<Product> retrieveList = searchProductService.search(textFieldWithTwoButtons.getTextfield().getValue(),null);	
         
 		  if(retrieveList!=null) { 
 		      if(retrieveList.size()!=0) { 

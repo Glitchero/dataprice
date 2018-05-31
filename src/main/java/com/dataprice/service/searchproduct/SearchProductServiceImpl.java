@@ -14,10 +14,10 @@ public class SearchProductServiceImpl implements SearchProductService{
 	  @Autowired
 	  private ProductSearch productSearch;
 	  
-	  public List search(String q) {
+	  public List search(String q,List <String> wanted) {
 		    List searchResults = null;
 		    try {
-		      searchResults = productSearch.search(q);
+		      searchResults = productSearch.search(q,wanted);
 		    }
 		    catch (Exception ex) {
 		      // here you should handle unexpected errors

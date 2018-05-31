@@ -74,7 +74,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 		                .and()
 		            .scales()
 		            .add(Axis.X, new DefaultScale()
-		                    .stacked(true))
+		                    .stacked(true).display(false))
 		            .add(Axis.Y, new DefaultScale()
 		                    .stacked(true))
 		            .and()
@@ -118,7 +118,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 			LocalDate today = LocalDate.now();
 		    LocalDate yesterday = today.minus(Period.ofDays(settings.getLastUpdateInDays()));
 			java.util.Date lastUpdate = java.sql.Date.valueOf(yesterday);
-			
+			System.out.println("Ultima actualización" + lastUpdate);
 			competitorsUsedWithTotal = new ArrayList<String>();
 			cheaperList = new LinkedList<Double>();
 			expensiveList = new LinkedList<Double>();
@@ -138,7 +138,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 				 for (String competitorUsed : competitorsUsed) {
 					
 					for (Product p: products) {
-						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku());
+						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
 				                
@@ -191,7 +191,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 				 for (String competitorUsed : competitorsUsed) {
 					
 					for (Product p: products) {
-						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc());
+						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
 				                

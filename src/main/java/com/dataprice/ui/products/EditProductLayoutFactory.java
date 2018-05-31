@@ -473,8 +473,9 @@ public class EditProductLayoutFactory {
 
 		//Set topProductsTable
 		String searchQuery = product.getName() + product.getBrand() + product.getSku();
-		
-		List<Product> retrieveList = searchProductService.search(searchQuery);
+		//Get all sellers except for the main seller.
+		List <String> wantedSellers = showAllProductsService.getSellersListExceptForSeller(settings.getMainSeller());
+		List<Product> retrieveList = searchProductService.search(searchQuery,wantedSellers);
 		
 		if (retrieveList.size()!=0) { //Do this only if products related are found
 		boolean remove = retrieveList.remove(product);
@@ -484,9 +485,9 @@ public class EditProductLayoutFactory {
 		int con = 0;
 		
 		for (Product p : retrieveList) {
-			if (!p.getSeller().equals(sellerSelected)) { //From different store
+		  //	if (!p.getSeller().equals(sellerSelected)) { //From different store
 			    retrieveFilteredList.add(p);
-			  //Store those with same key!!   
+			    //Store those with same key!!   
 			    if (settings.getKeyType().equals("sku")) {
 					if (p.getSku().equals(product.getSku()) && !p.getSku().equals("")) { //Not consider those with blanks spaces as key
 				    	retrieveFilteredAndMatchedList.add(p);
@@ -498,7 +499,7 @@ public class EditProductLayoutFactory {
 				} 
 			    
 			    
-			}
+		//	}
 			con++;
 			if (con>settings.getNumRetrieved()) {
 			    break;	

@@ -80,7 +80,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		
 		private RadioButtonGroup<Integer> daysGroup;
 		
-	
+		private RadioButtonGroup<Integer> coresGroup;
+		
+		
 		 public AddSettingsMainLayout init() {
 
 			mainTittle = new Label("<b><font size=\"5\">Ajustes del Sistema </font></b>",ContentMode.HTML);	
@@ -102,6 +104,12 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			daysGroup = new RadioButtonGroup<>("Seleccione la última actualización (en días): ");
 			daysGroup.setItems(1, 2,3,4,5,6,7);
 			daysGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+			
+			
+			coresGroup = new RadioButtonGroup<>("Seleccione el número de nucleos: ");
+			coresGroup.setItems(1, 2,3,4,5,6,7);
+			coresGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+			
 	
 			slider =  new Slider(1, 100);
 			slider.setWidth("50%");
@@ -168,6 +176,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				binder.forField(daysGroup)
 				  .bind("lastUpdateInDays");
 				
+				binder.forField(coresGroup)
+				  .bind("cores");
+				
 				binder.readBean(settings);
 			
 				return this;
@@ -189,7 +200,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,loadRetailsButton);
 		    	hbuttons.setWidth("50%");
 		    	
-		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,daysGroup);//,f);//,selector);
+		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,daysGroup,coresGroup);//,f);//,selector);
 		    	form.setWidth("100%");
 		    	
 		    	VerticalLayout vl = new VerticalLayout(mainTittle,subTittle,form,hbuttons);
@@ -252,6 +263,29 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			retail5.setCrawlerName("SuperWalmart");
 			retail5.setCountry(country);		
 			addRetailService.saveRetail(retail5);
+			
+			Retail retail6 = new Retail();
+			retail6.setRetailId(6);
+			retail6.setRetailName("Mercado Libre");
+			retail6.setCrawlerName("MercadoLibre");
+			retail6.setCountry(country);		
+			addRetailService.saveRetail(retail6);
+			
+			
+			Retail retail7 = new Retail();
+			retail7.setRetailId(7);
+			retail7.setRetailName("SuplementosFitness");
+			retail7.setCrawlerName("SuplementosFitness");
+			retail7.setCountry(country);		
+			addRetailService.saveRetail(retail7);
+			
+			
+			Retail retail8 = new Retail();
+			retail8.setRetailId(8);
+			retail8.setRetailName("NutritionDepot");
+			retail8.setCrawlerName("NutritionDepot");
+			retail8.setCountry(country);		
+			addRetailService.saveRetail(retail8);
 			
 			Notification.show("RETAILS","Loaded of Retails Complete",Type.WARNING_MESSAGE);
 			

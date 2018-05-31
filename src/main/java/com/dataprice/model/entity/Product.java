@@ -37,7 +37,7 @@ import org.apache.lucene.analysis.snowball.*;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.hibernate.search.bridge.builtin.ByteBridge;
 
-//@FullTextFilterDef(name = "sellers", impl = SellersFilterFactory.class)
+
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
 tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
@@ -57,7 +57,7 @@ public class Product {
 	@Column(name = "product_id")
 	private String productId = "";
 	
-	//@Field(analyze = Analyze.NO)
+	@Field(index=Index.YES, analyze=Analyze.NO)
 	@Column(name = "seller")
 	private String seller = "";
 	

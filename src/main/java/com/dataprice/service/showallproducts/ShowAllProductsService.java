@@ -24,4 +24,6 @@ public interface ShowAllProductsService {
 	public List<Product> getProductsFromSellerNameAndUpc(String seller,String upc);
 	
 	public List<String> getSellersList();
+	
+	public List<String> getSellersListExceptForSeller(String seller);
 }

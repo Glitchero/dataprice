@@ -2,14 +2,17 @@ package com.dataprice.model.crawlers.utils;
 
 public class Regex {
 
-	public final static String SUPLEMENTOSFITNESS_ID = "data-product_id=\"(.*?)\"";
+	/**
+	 * Demo
+	 */
+	public final static String SUPLEMENTOSFITNESS_ID = "";
 	public final static String SUPLEMENTOSFITNESS_NAME = "<h1 class=\"product-title entry-title\">(.*?)</h1>";
 	public final static String SUPLEMENTOSFITNESS_DESCRIPTION = "class=\"product-short-description\">(.*?)<a";
 	public final static String SUPLEMENTOSFITNESS_BRAND ="";
-	public final static String SUPLEMENTOSFITNESS_SKU_RAW ="sku&quot;:&quot;(.*?)&quot";
+	public final static String SUPLEMENTOSFITNESS_SKU ="sku&quot;:&quot;(.*?)&quot";
 	public final static String SUPLEMENTOSFITNESS_OLDPRICE = "";
-	public final static String SUPLEMENTOSFITNESS_PRICE = "display_price&quot;:(.*?),&quot";
-	public final static String SUPLEMENTOSFITNESS_IMAGEURL = "class=\"first slide woocommerce-product-gallery__image\"><a href=\"(.*?)\">";
+	public final static String SUPLEMENTOSFITNESS_PRICE = "";
+	public final static String SUPLEMENTOSFITNESS_IMAGEURL = "class=\"woocommerce-product-gallery__imag.*?><a href=\"(.*?)\">";
 	public final static String SUPLEMENTOSFITNESS_IS_AVAILABLE = "";
 	
 	
@@ -17,12 +20,31 @@ public class Regex {
 	public final static String NUTRITIONDEPOT_NAME = "<title>(.*?)</title>";
 	public final static String NUTRITIONDEPOT_DESCRIPTION = "";
 	public final static String NUTRITIONDEPOT_BRAND ="<span>Marca:</span> <a href=.*?>(.*?)</a>";
-	public final static String NUTRITIONDEPOT_SKU_RAW ="sku&quot;:&quot;(.*?)&quot";
+	public final static String NUTRITIONDEPOT_SKU ="sku&quot;:&quot;(.*?)&quot";
 	public final static String NUTRITIONDEPOT_OLDPRICE = "";
 	public final static String NUTRITIONDEPOT_PRICE = "<span class=\"main_price\">(.*?)</span>";
 	public final static String NUTRITIONDEPOT_IMAGEURL = "<div class=\"image\"><a href=\"(.*?)\" title";
 	public final static String NUTRITIONDEPOT_IS_AVAILABLE = "<span>Disponibilidad:</span>(.*?)</div>";
 	
+	
+	public final static String MERCADOLIBRE_ID = "/(ML[A-Z]-[0-9]*)-";
+	public final static String MERCADOLIBRE_NAME = "<h1 class=\"item-title__primary \">(.*?)</h1>";
+	public final static String MERCADOLIBRE_DESCRIPTION = "";
+	public final static String MERCADOLIBRE_BRAND ="<strong>Marca</strong>.*?<span>(.*?)</span>";
+	public final static String MERCADOLIBRE_PRICE = "<span class=\"price-tag\">.*?<span class=\"price-tag-symbol\" content=\"(.*?)\">";
+	public final static String MERCADOLIBRE_IMAGEURL = "<figure class=\"gallery-image-container.*?<a href=\"(.*?)\" class=\"gallery-trigger";
+	public final static String MERCADOLIBRE_SKU = "<strong>Modelo</strong>.*?<span>(.*?)</span>";
+	public final static String MERCADOLIBRE_SELLER ="<p class=\"title\">(.*?)</p>";
+	
+	
+	//"<h1 class=\"item-title__primary \">(.*?)</h1>";
+	
+	
+	
+	
+	/**
+	 * Demo ended
+	 */
 	
 	/**
 	 * Supermercados

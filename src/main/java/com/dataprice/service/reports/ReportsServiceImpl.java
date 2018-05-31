@@ -40,6 +40,16 @@ public class ReportsServiceImpl implements ReportsService{
 
 	}
 
+	@Override
+	public List<Product> getProductsFromSellerNameAndSku(String seller, String sku, Date lastDate) {
+		return productRepository.getProductsFromSellerNameAndSku(seller, sku, lastDate);
+	}
+
+	@Override
+	public List<Product> getProductsFromSellerNameAndUpc(String seller, String upc, Date lastDate) {
+		return productRepository.getProductsFromSellerNameAndUpc(seller, upc, lastDate);
+	}
+
 
 	
 	

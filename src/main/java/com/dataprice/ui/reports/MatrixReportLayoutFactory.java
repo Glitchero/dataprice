@@ -41,6 +41,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -67,6 +68,8 @@ public class MatrixReportLayoutFactory {
 	private GridCellFilter filter;
 	private ProgressBar excelProgressBar;
 	private ProgressBar csvProgressBar;
+	private java.util.Date lastUpdate;
+	
 	
 	//private DecimalFormat df = new DecimalFormat("#0.00");
 	private DecimalFormat df = new DecimalFormat("####,###,###.00");
@@ -123,13 +126,13 @@ public class MatrixReportLayoutFactory {
 			    return productLink;
 			}).setCaption("Nombre").setId("Myname").setRenderer(new ComponentRenderer());	
 			
-	        productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
+	        productsTable.addColumn(p -> p.getBrand()).setCaption("Marca").setId("Mybrand");
 			
-			productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
+			productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría").setId("Mycategory");
 				
 		//	productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150);
 		
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio (en MXN)").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
 			
 			
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
@@ -137,14 +140,16 @@ public class MatrixReportLayoutFactory {
 				 productsTable.addComponentColumn(p -> {
 					 List<Product> products = null;
 					 if (settings.getKeyType().equals("sku")) {
-						 products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
+						 //products =showAllProductsService.getProductsFromSellerNameAndSku(seller, p.getSku());
+						 products = reportsService.getProductsFromSellerNameAndSku(seller, p.getSku(), lastUpdate);
 						}else {
-						 products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
+						 //products =showAllProductsService.getProductsFromSellerNameAndUpc(seller, p.getUpc());
+						 products = reportsService.getProductsFromSellerNameAndUpc(seller, p.getUpc(), lastUpdate);
 						}
 				
 					PositionIndicator positionIndicator = null;
 			        if (products.size()!=0) {
-			        	positionIndicator = new PositionIndicator(p.getPrice(),products.get(0).getPrice());
+			        	positionIndicator = new PositionIndicator(p.getPrice(),products.get(0).getPrice(),products.get(0).getProductUrl());
 			        }
 				    return positionIndicator;
 				}).setCaption(seller).setId(seller);
@@ -155,11 +160,14 @@ public class MatrixReportLayoutFactory {
 			productsTable.setWidth("100%");
 			productsTable.setHeight("500px"); //500 antes
 			productsTable.setItems(products);
-			
+			productsTable.setSelectionMode(SelectionMode.NONE);
 		  
 		    
 			return this;
 		}
+		
+		
+		
 
 		
 		public MatrixReportLayout filter() {
@@ -374,7 +382,7 @@ public class MatrixReportLayoutFactory {
 			
 			settings = user.getSettings();
 			
-			java.util.Date lastUpdate = java.sql.Date.valueOf(reportSettings.getLastUpdate());
+			lastUpdate = java.sql.Date.valueOf(reportSettings.getLastUpdate());
 			
 			if (settings.getKeyType().equals("sku")) {
 				products = reportsService.getProductsForPriceMatrixBySku(settings.getMainSeller(), lastUpdate,reportSettings.getCompetitors());

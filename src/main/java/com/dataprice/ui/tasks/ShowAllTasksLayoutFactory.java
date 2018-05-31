@@ -8,15 +8,20 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
+import com.dataprice.model.entity.User;
 import com.dataprice.service.addproducthistservice.AddProductHistService;
 import com.dataprice.service.addproductservice.AddProductService;
 import com.dataprice.service.crawltask.CrawlTaskServiceImpl;
 import com.dataprice.service.modifytask.ModifyTaskServiceImpl;
 import com.dataprice.service.removetask.RemoveTaskService;
+import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
@@ -57,6 +62,7 @@ public class ShowAllTasksLayoutFactory{
 	private List<Task> tasks;
 	private GridCellFilter filter;
 	private Grid<Task> tasksTable;	
+	private Settings settings;
 	
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener{
 
@@ -176,6 +182,8 @@ public class ShowAllTasksLayoutFactory{
 
 
 		public ShowAllTasksLayout load() {
+			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			settings = user.getSettings();
 			tasks = showAllTasksService.getAllTasks();    
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
 				System.out.println("Los tasks no se están ejecutando");
@@ -369,7 +377,8 @@ public class ShowAllTasksLayoutFactory{
 	                refreshTable();  //Notify tasktable
 	                Task task = null;
 
-	        		executor = Executors.newFixedThreadPool(Configuration.NUMBEROFCORES);		
+	        		//executor = Executors.newFixedThreadPool(Configuration.NUMBEROFCORES);
+	                executor = Executors.newFixedThreadPool(settings.getCores());	
 	        		TaskExecute taskexecute = null;
 	        		//ITaskIterator taskIterator = new OriginalIterator(tasks);
 	        		ITaskIterator taskIterator = new RandomTaskIterator(tasks);
@@ -616,6 +625,9 @@ public class ShowAllTasksLayoutFactory{
 
 		
 	}
+	
+	@Autowired 
+	private UserServiceImpl userServiceImpl;
 	
 	@Autowired
     private ShowAllRetailsService showAllRetailsService;

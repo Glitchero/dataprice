@@ -129,7 +129,7 @@ private class PieChart extends VerticalLayout {
 				  for (String competitorUsed : competitorsUsed) {
 					
 					for (Product p: products) {
-						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku());
+						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
 				                
@@ -156,7 +156,7 @@ private class PieChart extends VerticalLayout {
 				for (String competitorUsed : competitorsUsed) {
 					
 					for (Product p: products) {
-						List<Product> productCompetition = showAllProductsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc());
+						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
 				                

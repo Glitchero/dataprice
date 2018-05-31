@@ -9,6 +9,9 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 public class PageFetcher {
 
 	private static ConcurrentHashMap<String, PageFetcher> instances = new ConcurrentHashMap<String, PageFetcher>();
@@ -76,6 +79,48 @@ public class PageFetcher {
 			fetchResults.setUrl(urlStr);
 			fetchResults.setContent(sb.toString());
 			fetchResults.setServercode(code);
+
+			return fetchResults;
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("El servido tiene algún problema con la peticiÃ³n, de repente pasa!!");
+			return new FetchResults();
+		}
+	}
+	
+	
+	public FetchResults getURLContentWithHtmlUnit(String urlStr) {
+		
+		FetchResults fetchResults = new FetchResults();
+		try {
+			WebClient webClient = new WebClient();
+			webClient.getOptions().setJavaScriptEnabled(false);
+
+		    String pageAsXml = "";
+			
+			// Applying Politeness delay
+            synchronized (mutex) {
+                long now = (new Date()).getTime();
+                if ((now - lastFetchTime) < Configuration.POLITENESSDELAY) {
+                     try {
+						   Thread.sleep(Configuration.POLITENESSDELAY - (now - lastFetchTime));
+					     } catch (InterruptedException e) {
+						   // TODO Auto-generated catch block
+						   //e.printStackTrace();
+						   //System.out.println("....run()::Extraction::Scraping::isInterrupted");
+						   return null;
+					  }
+                }
+                lastFetchTime = (new Date()).getTime();
+            }
+
+            HtmlPage page = webClient.getPage(urlStr);
+            pageAsXml = page.asXml();
+            
+			fetchResults.setUrl(urlStr);
+			fetchResults.setContent(pageAsXml);
+			fetchResults.setServercode(0);
 
 			return fetchResults;
 

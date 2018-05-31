@@ -17,4 +17,7 @@ public interface ReportsService {
 
 	List<Product> getProductsForPriceMatrixBySku(String mySeller,Date lastDate,Set<String> competition);
 
+	public List<Product> getProductsFromSellerNameAndSku(String seller,String sku,Date lastDate);
+	
+	public List<Product> getProductsFromSellerNameAndUpc(String seller,String upc,Date lastDate);
 }
