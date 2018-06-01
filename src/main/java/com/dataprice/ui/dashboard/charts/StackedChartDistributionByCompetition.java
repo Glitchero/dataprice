@@ -155,7 +155,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 
 					}
 						
-					System.out.println("competitorUsed: " + competitorUsed);
+					
 					
 					Integer total = cheaper+expensive+equal;
 					competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
@@ -164,6 +164,8 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 					DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
 					otherSymbols.setDecimalSeparator('.'); 
 					NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+					
+					
 					
 					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
 					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
@@ -217,6 +219,7 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 					DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
 					otherSymbols.setDecimalSeparator('.'); 
 					NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+					
 					
 					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
 					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				

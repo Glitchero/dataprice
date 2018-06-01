@@ -46,12 +46,12 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	*/
 	
 
-  
-	@Query("select p from Product p where p.seller=:sellerName and p.sku=:skuId and DATE(p.updateDay) >= :lastDate")
+	//**********Important***************
+	@Query("select p from Product p where p.seller=:sellerName and p.sku=:skuId and DATE(p.updateDay) >= :lastDate and p.checked=1")
 	List<Product> getProductsFromSellerNameAndSku(@Param("sellerName") String sellerName, @Param("skuId") String skuId,@Param("lastDate") Date lastDate);
 		
 
-	@Query("select p from Product p where p.seller=:sellerName and p.upc=:upcId and DATE(p.updateDay) >= :lastDate")
+	@Query("select p from Product p where p.seller=:sellerName and p.upc=:upcId and DATE(p.updateDay) >= :lastDate and p.checked=1")
 	List<Product> getProductsFromSellerNameAndUpc(@Param("sellerName") String sellerName, @Param("upcId") String upcId,@Param("lastDate") Date lastDate);
 	
 	
@@ -90,6 +90,7 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	 * @return
 	 */
 	
+	//**********Important***************
 	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1) and p.checked=1")
 	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
@@ -98,16 +99,17 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
 	
+	//**********Important***************
 	/**
-	 * Get all the competitors that have at least one match with the mainSeller. Add later parameter date???
+	 * Get all the competitors that have at least one match with the mainSeller. Add later parameter date??? I dont know if its convenient, check it later!!.
 	 * Used only in Dashboard
 	 * @return
 	 */
-	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.sku <> '' and p.sku in (select p.sku from Product p group by p.sku having count(p.sku)> 1) group by p.seller")
+	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.sku <> '' and p.sku in (select p.sku from Product p group by p.sku having count(p.sku)> 1) and p.checked=1 group by p.seller")
 	List<String> getCompetitorsBySku(@Param("mainSeller") String mainSeller);
 	
 
-	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.upc <> '' and p.upc in (select p.upc from Product p group by p.upc having count(p.upc)> 1) group by p.seller")
+	@Query("select p.seller from Product p where p.seller<>:mainSeller and p.upc <> '' and p.upc in (select p.upc from Product p group by p.upc having count(p.upc)> 1) and p.checked=1 group by p.seller")
 	List<String> getCompetitorsByUpc(@Param("mainSeller") String mainSeller);
 	
 	

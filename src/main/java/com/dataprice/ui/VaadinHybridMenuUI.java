@@ -246,9 +246,9 @@ public class VaadinHybridMenuUI extends UI {
 			//	.setIcon(new ThemeResource("images/logofinal.png"))
 				.build(hybridMenu);
 
-		label.getComponent().addClickListener(e -> {
-			UI.getCurrent().getNavigator().navigateTo(HomePage.class.getSimpleName());
-		});
+	//	label.getComponent().addClickListener(e -> {
+	//		UI.getCurrent().getNavigator().navigateTo(HomePage.class.getSimpleName());
+	//	});
 
 		/**
 		TopMenuButton notiButtonLow = TopMenuButtonBuilder.get()
