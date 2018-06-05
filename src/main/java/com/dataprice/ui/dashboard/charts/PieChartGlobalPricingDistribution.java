@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.dashboard.DemoUtils;
+import com.dataprice.ui.reports.ProductsComparator;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
@@ -106,7 +108,10 @@ private class PieChart extends VerticalLayout {
 			return chart2;
 		}
 		
-
+		/**
+		 * This method can be reduced!! Check later
+		 * @return
+		 */
 	    public PieChart load() {
 	    	User user = userServiceImpl.getUserByUsername("admin");
 			settings = user.getSettings();
@@ -114,9 +119,7 @@ private class PieChart extends VerticalLayout {
 	    	LocalDate today = LocalDate.now();
 		    LocalDate yesterday = today.minus(Period.ofDays(settings.getLastUpdateInDays()));
 			java.util.Date lastUpdate = java.sql.Date.valueOf(yesterday);
-			
-          
-	       
+
 			
 			  if (settings.getKeyType().equals("sku")) {
 
@@ -132,6 +135,10 @@ private class PieChart extends VerticalLayout {
 						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
+				        	
+				        	//Order product list
+				        	ProductsComparator comparator = new ProductsComparator();
+				        	Collections.sort(productCompetition, comparator);
 				                
 				        	if (p.getPrice()<productCompetition.get(0).getPrice()) {
 				        		cheaper++;	
@@ -159,7 +166,11 @@ private class PieChart extends VerticalLayout {
 						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
-				                
+				        	
+				        	//Order product list
+				        	ProductsComparator comparator = new ProductsComparator();
+				        	Collections.sort(productCompetition, comparator);
+				        	
 				        	if (p.getPrice()<productCompetition.get(0).getPrice()) {
 				        		cheaper++;	
 				        	}else {

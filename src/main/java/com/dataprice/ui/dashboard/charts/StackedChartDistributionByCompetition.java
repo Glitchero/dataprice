@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.dashboard.DemoUtils;
 import com.dataprice.ui.products.Icon;
+import com.dataprice.ui.reports.ProductsComparator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Component;
@@ -107,6 +109,10 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 		}	
 		
 		
+		/**
+		 * This method can be reduced!! Check later
+		 * @return
+		 */
 		public StackedChart load() {
 			Integer cheaper = 0;
 			Integer equal = 0;
@@ -141,7 +147,11 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndSku(competitorUsed, p.getSku(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
-				                
+				        	
+				        	//Order product list
+				        	ProductsComparator comparator = new ProductsComparator();
+				        	Collections.sort(productCompetition, comparator);
+				        	
 				        	if (p.getPrice()<productCompetition.get(0).getPrice()) {
 				        		cheaper++;	
 				        	}else {
@@ -196,7 +206,11 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc(),lastUpdate);
 					   
 				        if (productCompetition.size()!=0) {
-				                
+				        	
+				        	//Order product list
+				        	ProductsComparator comparator = new ProductsComparator();
+				        	Collections.sort(productCompetition, comparator);
+				        	
 				        	if (p.getPrice()<productCompetition.get(0).getPrice()) {
 				        		cheaper++;	
 				        	}else {

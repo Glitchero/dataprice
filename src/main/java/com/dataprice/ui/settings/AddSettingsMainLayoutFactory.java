@@ -287,6 +287,31 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			retail8.setCountry(country);		
 			addRetailService.saveRetail(retail8);
 			
+			
+			Retail retail9 = new Retail();
+			retail9.setRetailId(9);
+			retail9.setRetailName("Arome");
+			retail9.setCrawlerName("Arome");
+			retail9.setCountry(country);		
+			addRetailService.saveRetail(retail9);
+			
+			
+			
+			Retail retail10 = new Retail();
+			retail10.setRetailId(10);
+			retail10.setRetailName("Sanborns");
+			retail10.setCrawlerName("Sanborns");
+			retail10.setCountry(country);		
+			addRetailService.saveRetail(retail10);
+			
+			
+			Retail retail11 = new Retail();
+			retail11.setRetailId(11);
+			retail11.setRetailName("Amazon");
+			retail11.setCrawlerName("Amazon");
+			retail11.setCountry(country);		
+			addRetailService.saveRetail(retail11);
+			
 			Notification.show("RETAILS","Loaded of Retails Complete",Type.WARNING_MESSAGE);
 			
 		}

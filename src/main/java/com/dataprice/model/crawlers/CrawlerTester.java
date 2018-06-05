@@ -32,23 +32,18 @@ public class CrawlerTester {
 	public static void main(String[] args) {
 		
 		Task task = new Task();
-		task.setSeed("https://deportes.mercadolibre.com.mx/aerobics-y-fitness/suplementos/_DisplayType_LF_Tienda_centurfit");
+		task.setSeed("https://www.amazon.com.mx/s/ref=nb_sb_noss_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords=perfumes+hombre&lo=fashion&rh=i%3Aaps%2Ck%3Aperfumes+hombre");
 		
-		task.setTaskName("proteinas");
+		task.setTaskName("perfumes");
 		
-		Crawler crawler = new MercadoLibre();
+		Crawler crawler = new Amazon();
 		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
 	
 		for (CrawlInfo crawlInfo : productsInfo) {
-			Product p = crawler.parseProductFromURL(crawlInfo, task);
+		    Product p = crawler.parseProductFromURL(crawlInfo, task);
 			System.out.println(p);
 		}
 	
-		
-		
-		//String id = ContentParser.parseContent("https://articulo.mercadolibre.com.mx/MLM-592290886-proteina-meta-nutrition-full-protein-2-kg-57-porciones-_JM", "/(ML[A-Z]-[0-9]*)-");
-		//System.out.println("el id es:" + id);
-		
 		
 		/**
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF); 

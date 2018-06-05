@@ -37,7 +37,33 @@ public class Regex {
 	public final static String MERCADOLIBRE_SELLER ="<p class=\"title\">(.*?)</p>";
 	
 	
-	//"<h1 class=\"item-title__primary \">(.*?)</h1>";
+	
+	public final static String AROME_ID = "id=\"product_code.*?\">(.*?)<";
+	public final static String AROME_NAME = "<h1 class=\"ty-mainbox-title\" ><label itemprop='name'>(.*?)</label></h1>";
+	public final static String AROME_DESCRIPTION = "";
+	public final static String AROME_BRAND ="Marca</span>:.*?<a.*?>(.*?)</a>";
+	public final static String AROME_PRICE = "<meta content=\"(.*?)\" itemprop=\"price\">";
+	public final static String AROME_IMAGEURL = "data-ca-image-id.*?href=\"(.*?)\" title";
+	public final static String AROME_SKU = "";
+
+	
+	public final static String SANBORNS_ID = "<p>EAN#. (.*?) </p>";
+	public final static String SANBORNS_NAME = "<h1 style=\"padding:16px 8px 6px;\">(.*?)</h1>";
+	public final static String SANBORNS_DESCRIPTION = "";
+	public final static String SANBORNS_BRAND ="";
+	public final static String SANBORNS_PRICE = "id=\"precioCambio\">(.*?)<span>";
+	public final static String SANBORNS_IMAGEURL = "<div class=\"info-Product\"><div class=\"media-container\"><ul class=\"carrusel-producto\"><li><img src=\"(.*?)\".*?data-zoom-image";
+	public final static String SANBORNS_SKU = "";
+	public final static String SANBORNS_PRESENTATION = "Presentacion</dt><dd>(.*?)</dd>";
+	
+	
+	public final static String AMAZON_ID = "dp/([0-9a-zA-Z]{10})/";
+	public final static String AMAZON_NAME = "<span id=\"productTitle\" class=\"a-size-large\">(.*?)</span>";
+	public final static String AMAZON_DESCRIPTION = "";
+	public final static String AMAZON_BRAND ="";
+	public final static String AMAZON_PRICE = "<span id=\"priceblock_.*?price\" class=\"a-size-medium a-color-price\">(.*?)</span>";
+	public final static String AMAZON_IMAGEURL = "data-old-hires=\"(.*?)\"  class=\"a-dynamic-image";
+	public final static String AMAZON_SKU = "";
 	
 	
 	

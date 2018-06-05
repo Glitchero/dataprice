@@ -2,6 +2,7 @@ package com.dataprice.ui.reports;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,6 +143,8 @@ public class RawMatrixReportLayoutFactory {
 						}
 					 Double rivalPrice = null;
 			        if (products.size()!=0) {
+			        	ProductsComparator comparator = new ProductsComparator();
+			        	Collections.sort(products, comparator);
 			        	rivalPrice = products.get(0).getPrice();
 			        }
 				    return rivalPrice;

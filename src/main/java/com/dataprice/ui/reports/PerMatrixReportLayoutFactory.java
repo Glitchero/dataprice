@@ -144,6 +144,8 @@ public class PerMatrixReportLayoutFactory {
 						}
 					 BarPositionIndicator barPositionIndicator = null;
 			        if (products.size()!=0) {
+			        	ProductsComparator comparator = new ProductsComparator();
+			        	Collections.sort(products, comparator);
 			        	barPositionIndicator = new BarPositionIndicator(p.getPrice(),products.get(0).getPrice());
 			        }
 				    return barPositionIndicator;
