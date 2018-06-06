@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -52,6 +53,7 @@ public class PhantomFactory
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
   		
     	*/
+    	/**  
   		WebDriver driver = null;
   		try {
 			      driver = new RemoteWebDriver(
@@ -61,7 +63,32 @@ public class PhantomFactory
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-  		
+  		*/
+    	  
+    	////////////////////////  
+    	  
+    	  String PROXY = "us-wa.proxymesh.com:31280";
+
+    	  org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
+    	  proxy.setHttpProxy(PROXY)
+    	       .setFtpProxy(PROXY)
+    	       .setSslProxy(PROXY);
+    	  
+    	// set some options
+    	  DesiredCapabilities dc = DesiredCapabilities.phantomjs();
+    	  dc.setCapability(CapabilityType.PROXY, proxy);
+
+    	  
+       WebDriver driver = null;
+    		try {
+  			      driver = new RemoteWebDriver(
+  				    new URL("http://172.17.0.3:8910"),dc);
+  		} catch (MalformedURLException e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		}
+    	//////////////////////////  
+    	  
   	 //   phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		
   		return driver; 

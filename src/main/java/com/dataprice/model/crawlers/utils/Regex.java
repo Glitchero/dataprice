@@ -57,7 +57,7 @@ public class Regex {
 	public final static String SANBORNS_PRESENTATION = "Presentacion</dt><dd>(.*?)</dd>";
 	
 	
-	public final static String AMAZON_ID = "dp/([0-9a-zA-Z]{10})/";
+	public final static String AMAZON_ID = "dp/([0-9a-zA-Z]{10})";
 	public final static String AMAZON_NAME = "<span id=\"productTitle\" class=\"a-size-large\">(.*?)</span>";
 	public final static String AMAZON_DESCRIPTION = "";
 	public final static String AMAZON_BRAND ="";
