@@ -86,6 +86,8 @@ public class Amazon extends AbstractCrawler{
 	    	}
 		
 			String urlContent = urlResponse.getContent(); 
+			System.out.println("Url scrapiada: " + crawlInfo.getUrl());
+			System.out.println("content lenght: " + urlContent.length());
 			System.out.println("Server code:" + urlResponse.getServercode());
 		//	System.out.println("Content:" + urlContent);
 			
