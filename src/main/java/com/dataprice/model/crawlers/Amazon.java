@@ -37,7 +37,8 @@ public class Amazon extends AbstractCrawler{
 				
 				//Navigation
 				
-				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]/div/div/div/div[1]/div/div/a"))) {						
+				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]/div/div/div/div[1]/div/div/a"))) {
+					 System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
 				 
@@ -49,7 +50,7 @@ public class Amazon extends AbstractCrawler{
 						linksList.add(new CrawlInfo(we.getAttribute("href")));
 				    }
 				 }
-	*/		
+		*/
 				 
 				//Destroy
 				PhantomFactory.getInstance().removeDriver();		
@@ -74,7 +75,7 @@ public class Amazon extends AbstractCrawler{
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContentWithProxy(crawlInfo.getUrl());
 			
 			if (urlResponse == null){  //Task fatal error.		
 				return null;
@@ -85,9 +86,11 @@ public class Amazon extends AbstractCrawler{
 	    	}
 		
 			String urlContent = urlResponse.getContent(); 
-
+			System.out.println("Server code:" + urlResponse.getServercode());
+		//	System.out.println("Content:" + urlContent);
+			
 			String id = ContentParser.parseContent(crawlInfo.getUrl(), Regex.AMAZON_ID);
-	//		System.out.println(id);
+			System.out.println(id);
 			if (id==null)
 				return new Product();
 			
@@ -96,7 +99,7 @@ public class Amazon extends AbstractCrawler{
 				return new Product();
 			name = name.trim();
 			name = Jsoup.parse(name).text();
-	//		System.out.println(name);
+			System.out.println(name);
 			
 			String description = "";
 			/**
@@ -111,12 +114,13 @@ public class Amazon extends AbstractCrawler{
 			if (price == null) {  
 				return new Product();
 			}
-	//		System.out.println(price);
+			System.out.println(price);
 			price = price.replace(",", "");
 			price = price.replace("$", "");
 			price = price.trim();
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.AMAZON_IMAGEURL);
+			System.out.println(imageUrl);
 			if (imageUrl == null) {  
 				return new Product();
 			}			
@@ -125,7 +129,7 @@ public class Amazon extends AbstractCrawler{
 			String brand = "";		
 			String upc = "";
 			
-
+		//	Thread.sleep(10*1000);
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		
 			

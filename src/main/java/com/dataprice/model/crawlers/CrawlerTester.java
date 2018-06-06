@@ -30,7 +30,7 @@ public class CrawlerTester {
 
 		
 	public static void main(String[] args) {
-		
+
 		Task task = new Task();
 		task.setSeed("https://www.amazon.com.mx/s/ref=nb_sb_noss_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords=perfumes+hombre&lo=fashion&rh=i%3Aaps%2Ck%3Aperfumes+hombre");
 		
@@ -43,8 +43,9 @@ public class CrawlerTester {
 		    Product p = crawler.parseProductFromURL(crawlInfo, task);
 			System.out.println(p);
 		}
-	
+
 		
+		//-----------------------------------------------------------------------------------------
 		/**
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF); 
 
@@ -84,7 +85,7 @@ public class CrawlerTester {
 	//	System.out.println(pageAsXml);
 		webClient.close();
          */
-	}
+	
 	
 	
 	
@@ -114,5 +115,5 @@ public class CrawlerTester {
 	System.out.print(Double.valueOf(df.format(Double.parseDouble(value))));
 	*/
 	
-	
+	}
 }

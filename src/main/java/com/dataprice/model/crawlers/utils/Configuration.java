@@ -49,4 +49,13 @@ public class Configuration {
 	public final static String GMAIL_USERNAME = "";
 	public final static String GMAIL_PASSWORD = "";
 	
+	
+	
+	/** Proxy Configuration
+	 */
+	
+	public final static String ProxyHost = "us-wa.proxymesh.com";
+	public final static int ProxyPort = 31280;
+	public final static String ProxyUsername = "Glitchero";
+	public final static String ProxyPassword = "Harbinger1989?";
 }

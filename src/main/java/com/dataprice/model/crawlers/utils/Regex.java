@@ -62,10 +62,10 @@ public class Regex {
 	public final static String AMAZON_DESCRIPTION = "";
 	public final static String AMAZON_BRAND ="";
 	public final static String AMAZON_PRICE = "<span id=\"priceblock_.*?price\" class=\"a-size-medium a-color-price\">(.*?)</span>";
-	public final static String AMAZON_IMAGEURL = "data-old-hires=\"(.*?)\"  class=\"a-dynamic-image";
+	public final static String AMAZON_IMAGEURL = "data-old-hires=.*?&quot;(.*?)&quot;";
 	public final static String AMAZON_SKU = "";
 	
-	
+	//"data-old-hires=\"(.*?)\"  class=\"a-dynamic-image";
 	
 	
 	/**
