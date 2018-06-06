@@ -65,7 +65,7 @@ public class PhantomFactory
 		}
   		*/
     	  
-    	////////////////////////  
+    	/////////////////Phantom with Proxy Start
     	  
     	  String PROXY = "us-wa.proxymesh.com:31280";
 
@@ -74,7 +74,6 @@ public class PhantomFactory
     	       .setFtpProxy(PROXY)
     	       .setSslProxy(PROXY);
     	  
-    	// set some options
     	  DesiredCapabilities dc = DesiredCapabilities.phantomjs();
     	  dc.setCapability(CapabilityType.PROXY, proxy);
 
@@ -87,7 +86,8 @@ public class PhantomFactory
   			// TODO Auto-generated catch block
   			e.printStackTrace();
   		}
-    	//////////////////////////  
+    		
+        /////////////////Phantom with Proxy End  
     	  
   	 //   phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		

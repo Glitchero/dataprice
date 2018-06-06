@@ -88,7 +88,7 @@ public class Sanborns extends AbstractCrawler{
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContentWithProxy(crawlInfo.getUrl());
 			
 			if (urlResponse == null){  //Task fatal error.		
 				return null;
