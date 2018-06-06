@@ -76,7 +76,8 @@ public class PageFetcher {
     	//Constructor
     	RequestConfig requestConfig = RequestConfig.custom()
                 .setExpectContinueEnabled(false)
-                .setCookieSpec(CookieSpecs.STANDARD)
+             //   .setCookieSpec(CookieSpecs.STANDARD)
+                .setCookieSpec(CookieSpecs.IGNORE_COOKIES)
                 .setRedirectsEnabled(false)
                 .setSocketTimeout(20000)
                 .setConnectTimeout(30000)
