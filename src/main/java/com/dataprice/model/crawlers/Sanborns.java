@@ -48,11 +48,11 @@ public class Sanborns extends AbstractCrawler{
 				
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'promocion')]/div[2]/a"))) {	
-					//System.out.println(we.getAttribute("href"));
+					System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
              
-				 
+				 /**
 				 for (String taskLink : linksSet) { //In case we have pagination.
 						driver.get(taskLink);
 						
@@ -63,7 +63,7 @@ public class Sanborns extends AbstractCrawler{
 								linksList.add(new CrawlInfo(we.getAttribute("href")));
 						 }
 					}
-				 
+				*/ 
 				 
 				//Destroy
 				PhantomFactory.getInstance().removeDriver();		

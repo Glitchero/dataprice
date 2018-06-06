@@ -77,7 +77,7 @@ public class PageFetcher {
     	RequestConfig requestConfig = RequestConfig.custom()
                 .setExpectContinueEnabled(false)
              //   .setCookieSpec(CookieSpecs.STANDARD)
-                .setCookieSpec("easy")
+                .setCookieSpec(CookieSpecs.STANDARD)
                 .setRedirectsEnabled(false)
                 .setSocketTimeout(20000)
                 .setConnectTimeout(30000)
