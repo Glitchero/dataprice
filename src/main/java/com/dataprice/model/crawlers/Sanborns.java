@@ -15,7 +15,9 @@ import com.dataprice.model.crawlers.utils.ContentParser;
 import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
+import com.dataprice.model.crawlers.utils.PageFetcherWithProxy;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
+import com.dataprice.model.crawlers.utils.PhantomFactoryWithProxy;
 import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
@@ -30,7 +32,7 @@ public class Sanborns extends AbstractCrawler{
 			try {
 			
 				//Initialization Phase
-				driver = PhantomFactory.getInstance().getDriver();
+				driver = PhantomFactoryWithProxy.getInstance().getDriver();
 				driver.get(taskDAO.getSeed());
 				System.out.println("Inicializando Phantom");
 				LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
@@ -52,28 +54,28 @@ public class Sanborns extends AbstractCrawler{
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
              
-				 /**
+				
 				 for (String taskLink : linksSet) { //In case we have pagination.
 						driver.get(taskLink);
 						
 						Thread.sleep(Configuration.DRIVERDELAY);
 						
 						 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'promocion')]/div[2]/a"))) {	
-								//System.out.println(we.getAttribute("href"));
+								System.out.println(we.getAttribute("href"));
 								linksList.add(new CrawlInfo(we.getAttribute("href")));
 						 }
 					}
-				*/ 
+				
 				 
 				//Destroy
-				PhantomFactory.getInstance().removeDriver();		
+				 PhantomFactoryWithProxy.getInstance().removeDriver();		
 				Thread.sleep(1000);
 				return linksList;
 			}  catch (Exception e) {
 				//System.out.println("Error en phantom" + e);
 				try {
 					   if (driver!=null) { //Check if driver exists, research another option for checking this.
-						   PhantomFactory.getInstance().removeDriver();
+						   PhantomFactoryWithProxy.getInstance().removeDriver();
 					   }
 					} catch (Exception e2) {
 						return null;
@@ -85,12 +87,14 @@ public class Sanborns extends AbstractCrawler{
 	@Override
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
         try {
-		    
-			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
+		    System.out.println("entro a escrapear");
+		    System.out.println("url: " + crawlInfo.getUrl());
+		    PageFetcherWithProxy pageFetcher = PageFetcherWithProxy.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContentWithProxy(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
 			
 			if (urlResponse == null){  //Task fatal error.		
+				System.out.println("si falla");
 				return null;
 	    	}
 			
@@ -99,7 +103,8 @@ public class Sanborns extends AbstractCrawler{
 	    	}
 		
 			String urlContent = urlResponse.getContent(); 
-
+			System.out.println("Server code: " + urlResponse.getResponse());
+			System.out.println("Tamaño de regresado: " + urlContent.length());
 			String id = ContentParser.parseContent(urlContent, Regex.SANBORNS_ID);
 			System.out.println(id);
 			if (id==null)
@@ -145,11 +150,9 @@ public class Sanborns extends AbstractCrawler{
 						
 			String sku = "";
 			
-			String brand = "";
+			String brand = "";			
 			
-			
-			String upc = id;
-			
+			String upc = id;			
 
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		

@@ -14,7 +14,9 @@ import com.dataprice.model.crawlers.utils.ContentParser;
 import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
+import com.dataprice.model.crawlers.utils.PageFetcherWithProxy;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
+import com.dataprice.model.crawlers.utils.PhantomFactoryWithProxy;
 import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
@@ -38,22 +40,25 @@ public class Amazon extends AbstractCrawler{
 				//Navigation
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]/div/div/div/div[1]/div/div/a"))) {
-					 System.out.println(we.getAttribute("href"));
+					System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
 				 
-	/**
+	             int con = 1;
 				 while (driver.findElements(By.cssSelector("span.srSprite.pagnNextArrow")).size()>0){	
-					driver.findElement(By.cssSelector("span.srSprite.pagnNextArrow")).click();						
+					driver.findElement(By.cssSelector("span.srSprite.pagnNextArrow")).click();	
+					con++;
+					System.out.println("pagina: " + con);
 					Thread.sleep(Configuration.DRIVERDELAY);
 					for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]/div/div/div/div[1]/div/div/a"))) {	
+						System.out.println(we.getAttribute("href"));
 						linksList.add(new CrawlInfo(we.getAttribute("href")));
 				    }
 				 }
-		*/
+		
 				 
 				//Destroy
-				PhantomFactory.getInstance().removeDriver();		
+				 PhantomFactory.getInstance().removeDriver();		
 				Thread.sleep(1000);
 				return linksList;
 			}  catch (Exception e) {
@@ -73,11 +78,11 @@ public class Amazon extends AbstractCrawler{
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
         try {
 		    
-			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
+			PageFetcherWithProxy pageFetcher = PageFetcherWithProxy.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContentWithProxy(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
 			
-			if (urlResponse == null){  //Task fatal error.		
+			if (urlResponse == null){  //Task fatal error.
 				return null;
 	    	}
 			
@@ -86,10 +91,7 @@ public class Amazon extends AbstractCrawler{
 	    	}
 		
 			String urlContent = urlResponse.getContent(); 
-			System.out.println("Url scrapiada: " + crawlInfo.getUrl());
-			System.out.println("content lenght: " + urlContent.length());
-			System.out.println("Server code:" + urlResponse.getServercode());
-		//	System.out.println("Content:" + urlContent);
+		
 			
 			String id = ContentParser.parseContent(crawlInfo.getUrl(), Regex.AMAZON_ID);
 			System.out.println(id);
@@ -113,7 +115,7 @@ public class Amazon extends AbstractCrawler{
 			*/
 			
 			String price = ContentParser.parseContent(urlContent, Regex.AMAZON_PRICE); 	
-			if (price == null) {  
+			if (price == null || price.contains("-")) {  //$941.84 - $3,437.65 Don't want this type of prices!!!.
 				return new Product();
 			}
 			System.out.println(price);
@@ -122,7 +124,7 @@ public class Amazon extends AbstractCrawler{
 			price = price.trim();
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.AMAZON_IMAGEURL);
-			System.out.println(imageUrl);
+			//System.out.println(imageUrl);
 			if (imageUrl == null) {  
 				return new Product();
 			}			
@@ -131,11 +133,12 @@ public class Amazon extends AbstractCrawler{
 			String brand = "";		
 			String upc = "";
 			
-		//	Thread.sleep(10*1000);
+		
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		
 			
 		} catch (Exception e) {
+			//System.out.println(e);
 			return null;
 		}
 	}

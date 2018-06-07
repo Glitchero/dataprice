@@ -168,23 +168,24 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 					
 					
 					Integer total = cheaper+expensive+equal;
-					competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
-					
-					Locale currentLocale = Locale.getDefault();
-					DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
-					otherSymbols.setDecimalSeparator('.'); 
-					NumberFormat df = new DecimalFormat("#.##",otherSymbols);
-					
-					
-					
-					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
-					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
-					equalList.add(Double.valueOf(df.format(equal/(double) total * 100)));
+					if (total!=0) {
 
-					cheaper = 0;
-					expensive = 0;
-					equal = 0;
-					total = 0;
+					    competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
+					
+					    Locale currentLocale = Locale.getDefault();
+					    DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+					    otherSymbols.setDecimalSeparator('.'); 
+					    NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+					
+				    	cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
+					    expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
+					    equalList.add(Double.valueOf(df.format(equal/(double) total * 100)));
+
+					    cheaper = 0;
+					    expensive = 0;
+					    equal = 0;
+					    total = 0;
+					}
 				}
 				
 				
@@ -204,7 +205,6 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 					
 					for (Product p: products) {
 						List<Product> productCompetition = reportsService.getProductsFromSellerNameAndUpc(competitorUsed, p.getUpc(),lastUpdate);
-					   
 				        if (productCompetition.size()!=0) {
 				        	
 				        	//Order product list
@@ -225,24 +225,26 @@ public class StackedChartDistributionByCompetition implements UIComponentBuilder
 					}
 						
 					System.out.println("competitorUsed: " + competitorUsed);
-					
 					Integer total = cheaper+expensive+equal;
-					competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
 					
-					Locale currentLocale = Locale.getDefault();
-					DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
-					otherSymbols.setDecimalSeparator('.'); 
-					NumberFormat df = new DecimalFormat("#.##",otherSymbols);
+					if (total!=0) {
+					     competitorsUsedWithTotal.add(competitorUsed + " (" + total + " productos)");
+					
+					     Locale currentLocale = Locale.getDefault();
+					     DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+					     otherSymbols.setDecimalSeparator('.'); 
+					     NumberFormat df = new DecimalFormat("#.##",otherSymbols);
 					
 					
-					cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
-					expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
-					equalList.add(Double.valueOf(df.format(equal/(double) total * 100)));
+					     cheaperList.add(Double.valueOf(df.format(cheaper/(double) total * 100)));				
+					     expensiveList.add(Double.valueOf(df.format(expensive/(double) total * 100)));				
+					     equalList.add(Double.valueOf(df.format(equal/(double) total * 100)));
 
-					cheaper = 0;
-					expensive = 0;
-					equal = 0;
-					total = 0;
+					     cheaper = 0;
+					     expensive = 0;
+					     equal = 0;
+					     total = 0;
+					}
 				}
 				
 				

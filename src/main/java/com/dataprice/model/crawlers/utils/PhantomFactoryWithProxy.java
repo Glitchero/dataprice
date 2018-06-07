@@ -12,17 +12,17 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class PhantomFactory
+public class PhantomFactoryWithProxy
 {
 	
-   private PhantomFactory()
+   private PhantomFactoryWithProxy()
    {
       //Constructor
    }
    
-   private static PhantomFactory instance = new PhantomFactory();
+   private static PhantomFactoryWithProxy instance = new PhantomFactoryWithProxy();
 
-   public static PhantomFactory getInstance()
+   public static PhantomFactoryWithProxy getInstance()
    {
       return instance;
    }
@@ -32,7 +32,14 @@ public class PhantomFactory
       @Override
       protected WebDriver initialValue()
       {
-       /**
+    	/**
+    //	String PROXY = "us-wa.proxymesh.com:31280";
+    	String PROXY = Configuration.ProxyHost +":" + Configuration.ProxyPort;
+    	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
+    	proxy.setHttpProxy(PROXY)
+    	       .setFtpProxy(PROXY)
+    	       .setSslProxy(PROXY);
+    
     	String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36";
   		
   		DesiredCapabilities desiredCaps = new DesiredCapabilities();
@@ -40,6 +47,7 @@ public class PhantomFactory
   		desiredCaps.setCapability("takesScreenshot", false);
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "/home/rene/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", USER_AGENT);
+  		desiredCaps.setCapability(CapabilityType.PROXY, proxy);   //proxy added
   		
   		ArrayList<String> cliArgsCap = new ArrayList();
   		cliArgsCap.add("--web-security=false");
@@ -52,19 +60,29 @@ public class PhantomFactory
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
   		*/
-    	
     	 
-  		WebDriver phantomDriver = null;
-  		try {
-			 phantomDriver = new RemoteWebDriver(new URL("http://172.17.0.3:8910"),DesiredCapabilities.phantomjs());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-  		
+    	  	  
+    	String PROXY = Configuration.ProxyHost +":" + Configuration.ProxyPort;
 
-  	    //phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
-  		  		
+    	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
+    	proxy.setHttpProxy(PROXY)
+    	     .setFtpProxy(PROXY)
+    	     .setSslProxy(PROXY);
+    	  
+    	DesiredCapabilities dc = DesiredCapabilities.phantomjs();
+    	dc.setCapability(CapabilityType.PROXY, proxy);
+    	  
+        WebDriver phantomDriver = null;
+    		try {
+  			      phantomDriver = new RemoteWebDriver(new URL("http://172.17.0.3:8910"),dc);
+  		} catch (MalformedURLException e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		} 
+    	 
+  	 
+  		//phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
+  		 		
   		return phantomDriver; 
     	  
       }
