@@ -91,11 +91,16 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	 */
 	
 	//**********Important***************
+	
 	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.upc <> '' and p.upc in (select p.upc from Product p where DATE(p.updateDay) >= :lastDate and p.checked=1 and p.seller IN (:competition,:sellerName) group by p.upc having count(p.upc)> 1) and p.checked=1")
 	List<Product> getProductsForPriceMatrixByUpc(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
 	
-	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1) and p.checked=1")
+	//@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1) and p.checked=1")
+	//List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
+	
+	
+	@Query("select p from Product p where p.seller=:sellerName and DATE(p.updateDay) >= :lastDate and p.sku <> '' and p.sku in (select p.sku from Product p where DATE(p.updateDay) >= :lastDate and p.checked=1 and p.seller IN (:competition,:sellerName) group by p.sku having count(p.sku)> 1) and p.checked=1")
 	List<Product> getProductsForPriceMatrixBySku(@Param("sellerName") String sellerName, @Param("lastDate") Date lastDate, @Param("competition") Set<String> competition );
 		
 	
