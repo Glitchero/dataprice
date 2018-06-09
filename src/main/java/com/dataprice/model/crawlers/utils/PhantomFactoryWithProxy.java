@@ -59,9 +59,9 @@ public class PhantomFactoryWithProxy
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
-  		*/
-    	 
-    	  	  
+  		
+    	*/ 
+  		 	  
     	String PROXY = Configuration.ProxyHost +":" + Configuration.ProxyPort;
 
     	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
@@ -79,7 +79,7 @@ public class PhantomFactoryWithProxy
   			// TODO Auto-generated catch block
   			e.printStackTrace();
   		} 
-    	 
+    	
   	 
   		//phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		 		

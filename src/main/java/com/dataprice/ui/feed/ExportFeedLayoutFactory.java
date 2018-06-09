@@ -13,6 +13,7 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.ReportSettings;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.User;
+import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.service.reports.ReportsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.ui.VaadinHybridMenuUI;
@@ -277,13 +278,25 @@ public class ExportFeedLayoutFactory {
 			settings = user.getSettings();
 			
 			java.util.Date lastUpdate = java.sql.Date.valueOf(feedSettings.getLastUpdate());
-			competitors = reportsService.getCompetitorsList(feedSettings.getSeller());
-			Set<String> competitorsSet = new HashSet<String>(competitors);
+		//	competitors = reportsService.getCompetitorsList(feedSettings.getSeller());
+			System.out.println("El vendedor seleccionado es: " + feedSettings.getSeller());
+		//	Set<String> competitorsSet = new HashSet<String>(competitors);
 			if (settings.getKeyType().equals("sku")) {
-				products = reportsService.getProductsForPriceMatrixBySku(feedSettings.getSeller(), lastUpdate,competitorsSet);
+				competitors = dashboardService.getCompetitorsBySku(feedSettings.getSeller());
+				Set<String> competitorsUsedSet = new HashSet<String>(competitors);
+				if (competitorsUsedSet.size()!=0) {	
+					products = reportsService.getProductsForPriceMatrixBySku(feedSettings.getSeller(), lastUpdate,competitorsUsedSet);
+				}
 			}else {
-				products = reportsService.getProductsForPriceMatrixByUpc(settings.getMainSeller(), lastUpdate,competitorsSet);
+				competitors = dashboardService.getCompetitorsByUpc(feedSettings.getSeller());
+				Set<String> competitorsUsedSet = new HashSet<String>(competitors);
+				if (competitorsUsedSet.size()!=0) {	
+					products = reportsService.getProductsForPriceMatrixByUpc(feedSettings.getSeller(), lastUpdate,competitorsUsedSet);
+				}
+				
 			}
+			
+			System.out.println("El tamaño es de: " + products.size());
 			return this;
 		}
 
@@ -292,6 +305,9 @@ public class ExportFeedLayoutFactory {
        
 		
 	}
+	
+	@Autowired
+    private DashboardService dashboardService;
 	
 	@Autowired
 	private VaadinHybridMenuUI vaadinHybridMenuUI;
