@@ -140,7 +140,8 @@ public class ExportFeedLayoutFactory {
 					            });
 					        	
 					        	csvExport = new CsvExport(tableHolder);
-					        	csvExport.setExportFileName("CSV-Report.csv");
+					        	String csvName =feedSettings.getSeller() + ".csv";
+					        	csvExport.setExportFileName(csvName);
 					        	csvExport.setDisplayTotals(false);
 				                csvExport.setRowHeaders(false);
 				                csvExport.export(); 

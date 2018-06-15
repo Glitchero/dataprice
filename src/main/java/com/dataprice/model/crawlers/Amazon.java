@@ -40,18 +40,18 @@ public class Amazon extends AbstractCrawler{
 				//Navigation
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]/div/div/div/div[1]/div/div/a"))) {
-					System.out.println(we.getAttribute("href"));
+				//	System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
 				 
-	             int con = 1;
+	          //   int con = 1;
 				 while (driver.findElements(By.cssSelector("span.srSprite.pagnNextArrow")).size()>0){	
 					driver.findElement(By.cssSelector("span.srSprite.pagnNextArrow")).click();	
-					con++;
-					System.out.println("pagina: " + con);
+				//	con++;
+				//	System.out.println("pagina: " + con);
 					Thread.sleep(Configuration.DRIVERDELAY);
 					for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]/div/div/div/div[1]/div/div/a"))) {	
-						System.out.println(we.getAttribute("href"));
+					//	System.out.println(we.getAttribute("href"));
 						linksList.add(new CrawlInfo(we.getAttribute("href")));
 				    }
 				 }
@@ -94,7 +94,7 @@ public class Amazon extends AbstractCrawler{
 		
 			
 			String id = ContentParser.parseContent(crawlInfo.getUrl(), Regex.AMAZON_ID);
-			System.out.println(id);
+			//System.out.println(id);
 			if (id==null)
 				return new Product();
 			
@@ -103,7 +103,7 @@ public class Amazon extends AbstractCrawler{
 				return new Product();
 			name = name.trim();
 			name = Jsoup.parse(name).text();
-			System.out.println(name);
+			//System.out.println(name);
 			
 			String description = "";
 			/**
@@ -118,7 +118,7 @@ public class Amazon extends AbstractCrawler{
 			if (price == null || price.contains("-")) {  //$941.84 - $3,437.65 Don't want this type of prices!!!.
 				return new Product();
 			}
-			System.out.println(price);
+			//System.out.println(price);
 			price = price.replace(",", "");
 			price = price.replace("$", "");
 			price = price.trim();

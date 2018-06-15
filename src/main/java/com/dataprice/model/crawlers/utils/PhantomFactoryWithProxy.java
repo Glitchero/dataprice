@@ -32,7 +32,7 @@ public class PhantomFactoryWithProxy
       @Override
       protected WebDriver initialValue()
       {
-    	/**
+    	
     //	String PROXY = "us-wa.proxymesh.com:31280";
     	String PROXY = Configuration.ProxyHost +":" + Configuration.ProxyPort;
     	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
@@ -49,9 +49,14 @@ public class PhantomFactoryWithProxy
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", USER_AGENT);
   		desiredCaps.setCapability(CapabilityType.PROXY, proxy);   //proxy added
   		
+  		//desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX,"Y");
+  		//desiredCaps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0"); 		
+  		
   		ArrayList<String> cliArgsCap = new ArrayList();
   		cliArgsCap.add("--web-security=false");
-  		cliArgsCap.add("--ssl-protocol=any");
+  	//	cliArgsCap.add("--ssl-protocol=any");
+  		cliArgsCap.add("--ssl-protocol=tlsv1");
+  		
   		cliArgsCap.add("--ignore-ssl-errors=true");
   		//cliArgsCap.add("--webdriver-loglevel=ERROR");
   		cliArgsCap.add("--webdriver-loglevel=NONE");
@@ -60,8 +65,8 @@ public class PhantomFactoryWithProxy
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
   		
-    	*/ 
-  		 	  
+    	
+  		/** 	  
     	String PROXY = Configuration.ProxyHost +":" + Configuration.ProxyPort;
 
     	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
@@ -79,7 +84,7 @@ public class PhantomFactoryWithProxy
   			// TODO Auto-generated catch block
   			e.printStackTrace();
   		} 
-    	
+    	*/
   	 
   		//phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		 		

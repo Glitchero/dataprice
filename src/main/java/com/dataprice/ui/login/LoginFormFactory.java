@@ -52,10 +52,10 @@ public class LoginFormFactory {
 		//	signupButton = new Button("Sign up");
 		//	signupButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			
-			username = new TextField("Usuario(Usuario de Prueba)");
-			username.setValue("Usuario de Prueba");
-			passwordField = new PasswordField("Contraseña(12345)");
-			passwordField.setValue("12345");
+			username = new TextField("Usuario");
+		//	username.setValue("Usuario de Prueba");
+			passwordField = new PasswordField("Contraseña");
+		//	passwordField.setValue("12345");
 			
 			return this;
 		}

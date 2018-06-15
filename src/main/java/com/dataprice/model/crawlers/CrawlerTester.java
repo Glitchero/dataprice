@@ -26,17 +26,21 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+import org.slf4j.Logger;
+
+
 public class CrawlerTester {
 
 		
 	public static void main(String[] args) {
 
 		Task task = new Task();
-		task.setSeed("https://www.amazon.com.mx/s/ref=nb_sb_noss_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords=perfumes+hombre&lo=fashion&rh=i%3Aaps%2Ck%3Aperfumes+hombre");
+	//	task.setSeed("https://www.coppel.com");
+		task.setSeed("https://www.sanborns.com.mx/categoria/130101/ella/");
 		
 		task.setTaskName("perfumes");
 		
-		Crawler crawler = new Amazon();
+		Crawler crawler = new Sanborns();
 		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
 	
 		for (CrawlInfo crawlInfo : productsInfo) {

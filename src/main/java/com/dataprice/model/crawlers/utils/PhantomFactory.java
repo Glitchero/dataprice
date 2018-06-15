@@ -32,28 +32,29 @@ public class PhantomFactory
       @Override
       protected WebDriver initialValue()
       {
-       /**
+       
     	String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36";
   		
   		DesiredCapabilities desiredCaps = new DesiredCapabilities();
   		desiredCaps.setJavascriptEnabled(true);
   		desiredCaps.setCapability("takesScreenshot", false);
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "/home/rene/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
-  		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", USER_AGENT);
-  		
+    	desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", USER_AGENT);
+  //	desiredCaps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0");
   		ArrayList<String> cliArgsCap = new ArrayList();
   		cliArgsCap.add("--web-security=false");
   		cliArgsCap.add("--ssl-protocol=any");
   		cliArgsCap.add("--ignore-ssl-errors=true");
   		//cliArgsCap.add("--webdriver-loglevel=ERROR");
   		cliArgsCap.add("--webdriver-loglevel=NONE");
+
   		
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
 
   		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
-  		*/
-    	
   		
+    	
+  		/**
   		WebDriver phantomDriver = null;
   		try {
 			 phantomDriver = new RemoteWebDriver(new URL("http://172.17.0.3:8910"),DesiredCapabilities.phantomjs());
@@ -61,7 +62,7 @@ public class PhantomFactory
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-  		
+  		*/
 
   	    //phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		  		

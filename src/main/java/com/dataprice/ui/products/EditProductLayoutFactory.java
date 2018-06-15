@@ -501,7 +501,8 @@ public class EditProductLayoutFactory {
 			    
 		//	}
 			con++;
-			if (con>settings.getNumRetrieved()) {
+			if (con>settings.getNumRetrieved() && settings.getNumRetrieved()!=100) {
+				System.out.println("con" + con);
 			    break;	
 			}
 		}

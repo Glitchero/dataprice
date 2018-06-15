@@ -29,7 +29,7 @@ public class Configuration {
 	public final static int LONGDRIVERDELAY = 20000; //20 seconds for 
 
 	public final static int POLITENESSDELAY = 1000; // 1 second for politeness within the same host!.
-	public final static int LONGPOLITENESSDELAY = 9000; // 9 second for politeness within the same host!.
+	public final static int LONGPOLITENESSDELAY = 5000; // 9 second for politeness within the same host!.
 
 	public final static int LIMIT_NUMBER_OF_URLS_PER_TASK = 5000;
 	public final static boolean USER_AGENT_ROTATION = false;
@@ -60,6 +60,9 @@ public class Configuration {
 	
 	public final static String ProxyHost = "us-wa.proxymesh.com";
 	public final static int ProxyPort = 31280;
+
+//	public final static String ProxyHost = "open.proxymesh.com";
+//	public final static int ProxyPort = 31280;
 	public final static String ProxyUsername = "Glitchero";
 	public final static String ProxyPassword = "Harbinger1989?";
 }

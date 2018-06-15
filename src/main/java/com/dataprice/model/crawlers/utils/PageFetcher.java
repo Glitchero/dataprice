@@ -51,7 +51,7 @@ public class PageFetcher {
 			URL url = new URL(urlStr);
 	        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			connection.setRequestProperty("User-Agent", USER_AGENT);
-			HttpURLConnection.setFollowRedirects(false); 
+			HttpURLConnection.setFollowRedirects(true); //In case we have 300 code, we follow the redirect!!!.
 			
 			// Applying Politeness delay
             synchronized (mutex) {

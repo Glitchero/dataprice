@@ -32,7 +32,7 @@ public class Sanborns extends AbstractCrawler{
 			try {
 			
 				//Initialization Phase
-				driver = PhantomFactoryWithProxy.getInstance().getDriver();
+				driver = PhantomFactory.getInstance().getDriver();
 				driver.get(taskDAO.getSeed());
 				System.out.println("Inicializando Phantom");
 				LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
@@ -41,7 +41,7 @@ public class Sanborns extends AbstractCrawler{
 				
 				//Navigation
 
-				
+				System.out.println("La página actual es: " + driver.getCurrentUrl());
 				for (WebElement we : driver.findElements(By.xpath("/html/body/main/section[2]/div/div/div/div[2]/div[3]/ul/li/a"))) {	   
 				    if (we.getAttribute("href")!=null){
 				    	linksSet.add(we.getAttribute("href"));
@@ -68,14 +68,14 @@ public class Sanborns extends AbstractCrawler{
 				
 				 
 				//Destroy
-				 PhantomFactoryWithProxy.getInstance().removeDriver();		
+				 PhantomFactory.getInstance().removeDriver();		
 				Thread.sleep(1000);
 				return linksList;
 			}  catch (Exception e) {
 				//System.out.println("Error en phantom" + e);
 				try {
 					   if (driver!=null) { //Check if driver exists, research another option for checking this.
-						   PhantomFactoryWithProxy.getInstance().removeDriver();
+						   PhantomFactory.getInstance().removeDriver();
 					   }
 					} catch (Exception e2) {
 						return null;
@@ -89,7 +89,7 @@ public class Sanborns extends AbstractCrawler{
         try {
 		    System.out.println("entro a escrapear");
 		    System.out.println("url: " + crawlInfo.getUrl());
-		    PageFetcherWithProxy pageFetcher = PageFetcherWithProxy.getInstance(getCrawlingStrategy());
+		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
 			

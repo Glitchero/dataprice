@@ -49,26 +49,31 @@ public class Walmart extends AbstractCrawler{
 			
 			//Navigation
 			Thread.sleep(Configuration.DRIVERDELAY); 
-			 
+			int con = 0;
 	        while (driver.findElements(By.xpath("//*[contains(text(), 'Ver más artículos')]")).get(0).isDisplayed()){
-	        	   WebElement el = driver.findElements(By.xpath("//*[contains(text(), 'Ver más artículos')]")).get(0);
+	        	
+	        	WebElement el = driver.findElements(By.xpath("//*[contains(text(), 'Ver más artículos')]")).get(0);
 				   Actions builder = new Actions(driver); 
 				   builder.moveToElement(el, el.getLocation().x, el.getLocation().y);
 				   Locatable hoverItem = (Locatable) el;
 				   Mouse mouse = ((HasInputDevices) driver).getMouse();
 				   mouse.mouseMove(hoverItem.getCoordinates());
 				   el.click();	
-				
+				   System.out.println("Doy click: " + con); 
+				   con++;
 				   Thread.sleep(Configuration.DRIVERDELAY); 
+				   if (con==20) {
+					   break;
+				   }
 			}
 
 	        for (WebElement we : driver.findElements(By.xpath("//*[@id=\"productsContainer\"]/div"))) {	
 	      
 	        	   if (we.getLocation().getX()!=0) {
 
-				 //  System.out.println("Direeccion : " + we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href"));
-				 //  System.out.println("Precio: " + we.findElement(By.cssSelector("div.price")).getText());
-				 //  System.out.println("titulo: " + we.findElement(By.cssSelector("span.test")).getText());
+				   System.out.println("Direeccion : " + we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href"));
+				   System.out.println("Precio: " + we.findElement(By.cssSelector("div.price")).getText());
+				   System.out.println("titulo: " + we.findElement(By.cssSelector("span.test")).getText());
 	        	  String url = we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href");
 	        	  
 	        	  String name = we.findElement(By.cssSelector("span.test")).getText();

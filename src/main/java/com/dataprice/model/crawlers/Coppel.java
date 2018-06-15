@@ -20,6 +20,7 @@ import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.crawlers.utils.FetchResults;
 import com.dataprice.model.crawlers.utils.PageFetcher;
 import com.dataprice.model.crawlers.utils.PhantomFactory;
+import com.dataprice.model.crawlers.utils.PhantomFactoryWithProxy;
 import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
@@ -27,7 +28,9 @@ import com.dataprice.model.entity.Task;
 @Component
 public class Coppel extends AbstractCrawler{
 	
-	
+	/**
+	 * The error is because there is a redirection in the phantomjs. Check for a solution!!.
+	 */
 
 	@Override
 	public String getCrawlingStrategy() {
@@ -41,29 +44,36 @@ public class Coppel extends AbstractCrawler{
 		
 		try {
 			//Initialization Phase
-			driver = PhantomFactory.getInstance().getDriver();
+			driver = PhantomFactoryWithProxy.getInstance().getDriver();
 			driver.get(taskDAO.getSeed());
 			System.out.println("Inicializando Phantom");
 			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
 			Thread.sleep(1000);
 			//Navigation
-
-			for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'dijit__WidgetBase_')]/li/div"))) {				
+			
+		    driver.get(taskDAO.getSeed()); //We need another get, because there is redirect
+		   		
+			System.out.println("semilla" +taskDAO.getSeed());
+			System.out.println("current url" + driver.getCurrentUrl());
+			
+			 
+			for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'dijit__WidgetBase_')]/li/div"))) {
+				
 				String price = we.findElement(By.cssSelector("div.pcontado")).getText(); 						
 				price = price.replace(",", "");
 	  			price = price.replace("$", "");
 	  			price = price.replaceAll("[^\\d.]", "");
 	  			price = price.trim();				
 				String url = we.findElement(By.tagName("a")).getAttribute("href");	
-			//	System.out.println("Url: " + url);
-			//	System.out.println("Price: " + price);
+				System.out.println("Url: " + url);
+				System.out.println("Price: " + price);
 				linksList.add(new CrawlInfo(url,Double.valueOf(price)));
 	        }
 		
 			
 
 			Thread.sleep(Configuration.DRIVERDELAY);
-			
+			/**
 			while (driver.findElements(By.cssSelector("i.fa.fa-angle-right")).size()>0){	
 			
 			
@@ -94,9 +104,9 @@ public class Coppel extends AbstractCrawler{
 			   }
 				
 			}
-			
+			*/
 			//Destroy
-			PhantomFactory.getInstance().removeDriver();		
+			PhantomFactoryWithProxy.getInstance().removeDriver();		
 			Thread.sleep(1000);
 			return linksList;
 			
@@ -104,7 +114,7 @@ public class Coppel extends AbstractCrawler{
 			System.out.println("Error en phantom" + e);
 			try {
 				   if (driver!=null) { //Check if driver exists, research another option for checking this.
-					   PhantomFactory.getInstance().removeDriver();
+					   PhantomFactoryWithProxy.getInstance().removeDriver();
 				   }
 				} catch (Exception e2) {
 					return null;
@@ -120,6 +130,9 @@ public class Coppel extends AbstractCrawler{
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			
+			//System.out.println(crawlInfo.getUrl());
+			//System.out.println("tamaño" + urlResponse.getContent().length());
 			
 			if (urlResponse == null){  //Task fatal error.
 				return null;

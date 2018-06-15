@@ -100,10 +100,12 @@ public class Chedraui extends AbstractCrawler{
 			
 			String id = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_ID);
 			
+			
 			if (id==null)
 				return new Product();
 			
 			String name = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_NAME);
+			
 			if (name==null)
 				return new Product();
 			name = name.trim();
@@ -116,6 +118,7 @@ public class Chedraui extends AbstractCrawler{
 			description = Jsoup.parse(description).text();
 			 		 
 			String price = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_PRICE); 
+			
 			if (price == null) {  
 				return new Product();
 			}
