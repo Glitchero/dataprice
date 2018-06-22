@@ -140,14 +140,16 @@ public class Regex {
 	public final static String LIVERPOOL_SKU ="Modelo</span> <span>(.*?)</span>";
 	
 	
-	public final static String SORIANA_ID = "";
-	public final static String SORIANA_NAME = "";
+	public final static String SORIANA_ID = "<span class=\"sku\">ID</span><span class=\"code\">(.*?)</span>";
+	public final static String SORIANA_NAME = "<div class=\"description\">(.*?)</div>";
 	public final static String SORIANA_DESCRIPTION = "";
 	public final static String SORIANA_BRAND ="";
 	public final static String SORIANA_OLDPRICE = "";
-	public final static String SORIANA_PRICE = "";
+	public final static String SORIANA_PRICE = "<p class=\"price\">(.*?)</p>";
 	public final static String SORIANA_PROMOTION = "";  
-	public final static String SORIANA_IMAGEURL = "";
+	public final static String SORIANA_IMAGEURL = "<img id=\"prodDetailsImgZoom\" src=\"(.*?)\" alt";
+	
+	
 	
 	public final static String COPPEL_ID = "<span class=\"sku\">sku: (.*?)</span>";
 	public final static String COPPEL_NAME = "<h1 id=\"main_header_name\" class=\"main_header\">(.*?)</h1>";
@@ -172,4 +174,67 @@ public class Regex {
 
 
 	
+	
+	public final static String PERFUMESMEXICO_ID = "name=\"id_product\" value=\"(.*?)\" id=\"product_page_product_id\"";
+	public final static String PERFUMESMEXICO_NAME = "<h1 itemprop=\"name\">(.*?)</h1>";
+	public final static String PERFUMESMEXICO_DESCRIPTION = "";
+	public final static String PERFUMESMEXICO_BRAND ="<span itemprop=\"brand\" class=\"editable\">(.*?)</span>";
+	public final static String PERFUMESMEXICO_PRICE = "<span id=\"our_price_display\" itemprop=\"price\">(.*?)</span>";
+	public final static String PERFUMESMEXICO_IMAGEURL = "<img id=\"bigpic\" itemprop=\"image\" src=\"(.*?)\" title";
+	public final static String PERFUMESMEXICO_SKU = "";
+	public final static String PERFUMESMEXICO_PRESENTATION = "<td>Presentación</td>.*?<td>(.*?)</td>";
+
+    public final static String PERFUMESONLINE_ID = "<strong  itemprop=\"sku\">(.*?)</strong>";
+    public final static String PERFUMESONLINE_NAME = "<h1 itemprop=\"name\">(.*?)</h1>";
+    public final static String PERFUMESONLINE_DESCRIPTION = "";
+    public final static String PERFUMESONLINE_BRAND = "";
+    public final static String PERFUMESONLINE_PRICE = "<span class=\"regular-price\" id=\"product-price-.*?<span class=\"price\">(.*?)</span>";
+    public final static String PERFUMESONLINE_IMAGEURL = "<div class=\"main-image\" >.*?href=\"(.*?)\" itemprop=\"image\">";
+    public final static String PERFUMESONLINE_SKU = "";
+    
+    
+    public final static String EXPOPERFUMES_ID = "product_id=(.*?)&";
+	public final static String EXPOPERFUMES_NAME = "<span style=\"font-size:30px;line-height:35px;\">(.*?)</span>";
+	public final static String EXPOPERFUMES_DESCRIPTION = "";
+	public final static String EXPOPERFUMES_BRAND ="<span style=\"font-size:16px;\">.*?ml by (.*?)-.*?</span>";
+	public final static String EXPOPERFUMES_PRICE = "<span class=\"productPrice\">(.*?)</span>";
+	public final static String EXPOPERFUMES_IMAGEURL = "<td width=\"500\" align=\"center\">.*?<img src=\"(.*?)\" border=\"0\" />.*?</td>";
+	public final static String EXPOPERFUMES_SKU = "";
+	
+	
+	public final static String LINIO_ID = "<td itemprop=\"sku\">(.*?)</td>";
+	public final static String LINIO_NAME = "<h1 class=\"col-xs-12 col-md-9 col-lg-10\">.*?<span itemprop=\"name\">(.*?)</span>.*?</h1>";
+	public final static String LINIO_DESCRIPTION = "";
+	public final static String LINIO_BRAND ="";
+	public final static String LINIO_PRICE = "<div class=\"price price-main\">(.*?)</div>";
+	public final static String LINIO_IMAGEURL = "<div id=\"image-product\" class=\"swiper-slide\">.*?<img src=\".*?\" data-lazy=\"(.*?)\" alt";
+	public final static String LINIO_SKU = "";
+	public final static String LINIO_SELLER = "<h4>Enviado y Vendido por:</h4>.*?<a class=\"link-lower\" href=.*?>(.*?)</a>";    
+	
+	
+	public final static String OSOM_ID = "-([0-9]{6}).html";
+	public final static String OSOM_NAME = "<h1 id=\"prd-name\" class=\"h3 txtLight\">(.*?)</h1>";
+	public final static String OSOM_DESCRIPTION = "";
+	public final static String OSOM_BRAND ="<h2 id=\"prd-brand\" class=\"h2\">(.*?)</h2>";
+	public final static String OSOM_OLDPRICE = "<span class=\"strong.*?id=\"prd-price\">(.*?)</span>";
+	public final static String OSOM_PRICE = "<span itemprop=\"price\" id=\"prd-special-price\" class=\"mts\">.*?<strong>(.*?)</strong>"; 
+	public final static String OSOM_IMAGEURL = "<a class=\"prd-imageBox\" id=\"prdZoomBox\">.*?src=\"(.*?)\" width";
+	public final static String OSOM_SKU = "";
+	
+	
+	
+	public final static String SEARS_ID = "data-flix-ean=\"(.*?)\"";
+	public final static String SEARS_NAME = "<h1>(.*?)</h1>";
+	public final static String SEARS_DESCRIPTION = "";
+	public final static String SEARS_BRAND ="data-flix-brand=\"(.*?)\"";
+	public final static String SEARS_OLDPRICE = "";
+	public final static String SEARS_PRICE = "<div class=\"precio\">Precio Internet:(.*?)</div>";
+	public final static String SEARS_IMAGEURL = "<a class=\"foto_enlace\" href=\"(.*?)\">";
+	public final static String SEARS_SKU = "";
+	
+	                     
+	//     "<strong>SKU#:</strong>(.*?)&nbsp;";          
+	                    
+	               
+			
 }

@@ -20,55 +20,54 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
 @Component
-public class Soriana extends AbstractCrawler{
+public class PerfumesOnline extends AbstractCrawler{
 
 	@Override
 	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
-		  WebDriver driver = null;
+          WebDriver driver = null;
+		
+		try {
+		
+			//Initialization Phase
+			driver = PhantomFactory.getInstance().getDriver();
+			driver.get(taskDAO.getSeed());
+			System.out.println("Inicializando Phantom");
+			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
+			Thread.sleep(1000);
 			
-			try {
+			//Navigation
 			
-				//Initialization Phase
-				driver = PhantomFactory.getInstance().getDriver();
-				driver.get(taskDAO.getSeed());
-				System.out.println("Inicializando Phantom");
-				LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
-				Thread.sleep(1000);
-				
-				//Navigation
-				
-				 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
-					System.out.println(we.getAttribute("href"));
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
-			        }
-				
-				int con = 1;
-				 while (!(driver.findElements(By.cssSelector("li.pagination-next.disabled")).size()>0)){		
-						driver.findElement(By.cssSelector("li.pagination-next a")).click();	
-						con++;
-						System.out.println("pagina: " + con);
-						Thread.sleep(Configuration.DRIVERDELAY);
-						 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
-								System.out.println(we.getAttribute("href"));
-								linksList.add(new CrawlInfo(we.getAttribute("href")));
-						  }							
-				 }		
+			 for (WebElement we : driver.findElements(By.cssSelector("a.product-image"))) {	
+				System.out.println(we.getAttribute("href"));
+				linksList.add(new CrawlInfo(we.getAttribute("href")));
+		        }
+			int con = 1;
+			 while (driver.findElements(By.cssSelector("a.next.i-next")).size()>0){
+				    driver.findElement(By.cssSelector("a.next.i-next")).click();
+					con++;
+					System.out.println("pagina: " + con);
+				    Thread.sleep(Configuration.DRIVERDELAY);
 					
-				//Destroy
-				 PhantomFactory.getInstance().removeDriver();		
-				Thread.sleep(1000);
-				return linksList;
-			}  catch (Exception e) {
-				//System.out.println("Error en phantom" + e);
-				try {
-					   if (driver!=null) { //Check if driver exists, research another option for checking this.
-						   PhantomFactory.getInstance().removeDriver();
-					   }
-					} catch (Exception e2) {
-						return null;
-					}
-				return null;
-			}
+				    for (WebElement we : driver.findElements(By.cssSelector("a.product-image"))) {	
+						System.out.println(we.getAttribute("href"));
+						linksList.add(new CrawlInfo(we.getAttribute("href")));
+				    }
+				}
+			//Destroy
+			 PhantomFactory.getInstance().removeDriver();		
+			Thread.sleep(1000);
+			return linksList;
+		}  catch (Exception e) {
+			//System.out.println("Error en phantom" + e);
+			try {
+				   if (driver!=null) { //Check if driver exists, research another option for checking this.
+					   PhantomFactory.getInstance().removeDriver();
+				   }
+				} catch (Exception e2) {
+					return null;
+				}
+			return null;
+		}
 	}
 
 	@Override
@@ -90,12 +89,12 @@ public class Soriana extends AbstractCrawler{
 		
 			String urlContent = urlResponse.getContent(); 
 
-			String id = ContentParser.parseContent(urlContent, Regex.SORIANA_ID);
+			String id = ContentParser.parseContent(urlContent, Regex.PERFUMESONLINE_ID);
 			 System.out.println(id);
 			if (id==null)
 				return new Product();
 			
-			String name = ContentParser.parseContent(urlContent, Regex.SORIANA_NAME);
+			String name = ContentParser.parseContent(urlContent, Regex.PERFUMESONLINE_NAME);
 			 System.out.println(name);
 			if (name==null)
 				return new Product();
@@ -105,7 +104,7 @@ public class Soriana extends AbstractCrawler{
 			
 			String description = "";
 			
-			String price = ContentParser.parseContent(urlContent, Regex.SORIANA_PRICE); 	
+			String price = ContentParser.parseContent(urlContent, Regex.PERFUMESONLINE_PRICE); 	
 			 System.out.println(price);
 			if (price == null) {  
 				return new Product();
@@ -115,20 +114,18 @@ public class Soriana extends AbstractCrawler{
 			price = price.replace("$", "");
 			price = price.trim();
 			
-			String imageUrl = ContentParser.parseContent(urlContent, Regex.SORIANA_IMAGEURL);
-			 
-			 
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.PERFUMESONLINE_IMAGEURL);
+			 System.out.println(imageUrl);
 			if (imageUrl == null) {  
 				return new Product();
 			}
-			
-			imageUrl = "https://www.soriana.com" + imageUrl;
-			System.out.println(imageUrl);			
+		
+						
 			String sku = "";
 			
 			String brand = "";			
 			
-			String upc = "";			
+			String upc = "";		
 
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		
@@ -140,7 +137,7 @@ public class Soriana extends AbstractCrawler{
 
 	@Override
 	public String getCrawlingStrategy() {
-		return "Soriana";
+		return "PerfumesOnline";
 	}
 
 }

@@ -35,12 +35,11 @@ public class CrawlerTester {
 	public static void main(String[] args) {
 
 		Task task = new Task();
-	//	task.setSeed("https://www.coppel.com");
-		task.setSeed("https://www.sanborns.com.mx/categoria/130101/ella/");
+		task.setSeed("https://www.eleperfumes.com/productos");
 		
 		task.setTaskName("perfumes");
 		
-		Crawler crawler = new Sanborns();
+		Crawler crawler = new ElePerfumes();
 		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
 	
 		for (CrawlInfo crawlInfo : productsInfo) {

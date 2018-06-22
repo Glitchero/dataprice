@@ -101,6 +101,9 @@ public class Product {
 	@Column(name = "checked")
 	private boolean checked = false;
 	
+	@Column(name = "affiliate")
+	private String affiliate = null;
+	
 	//@Temporal(TemporalType.DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_day", nullable = false)
@@ -128,6 +131,14 @@ public class Product {
 	}
 
 	
+	public String getAffiliate() {
+		return affiliate;
+	}
+
+	public void setAffiliate(String affiliate) {
+		this.affiliate = affiliate;
+	}
+
 	public Date getUpdateDay() {
 		return updateDay;
 	}

@@ -1,5 +1,6 @@
 package com.dataprice.model.crawlers;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,11 +21,16 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
 @Component
-public class Soriana extends AbstractCrawler{
+public class ExpoPerfumes extends AbstractCrawler{
 
+	/**
+	 * **IMPORTANT**, THE PAGE MUST BE LOADED WTH THE MAXIMUM NUMBER OF PRODUCTS!!.
+	 */
+	
+	
 	@Override
 	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
-		  WebDriver driver = null;
+		 WebDriver driver = null;
 			
 			try {
 			
@@ -33,26 +39,34 @@ public class Soriana extends AbstractCrawler{
 				driver.get(taskDAO.getSeed());
 				System.out.println("Inicializando Phantom");
 				LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
+				HashSet<String> linksSet = new HashSet<String>();
 				Thread.sleep(1000);
 				
 				//Navigation
 				
-				 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
+				for (WebElement we : driver.findElements(By.cssSelector("a.pagenav"))) {	   
+				    if (we.getAttribute("href")!=null){
+				    	linksSet.add(we.getAttribute("href"));
+					}
+		        }
+				
+				 for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'row_')]/table/tbody/tr[1]/td/a"))) {	
 					System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
-				
+				 
 				int con = 1;
-				 while (!(driver.findElements(By.cssSelector("li.pagination-next.disabled")).size()>0)){		
-						driver.findElement(By.cssSelector("li.pagination-next a")).click();	
+				for (String taskLink : linksSet) { //In case we have pagination.
+					    driver.get(taskLink);
 						con++;
 						System.out.println("pagina: " + con);
-						Thread.sleep(Configuration.DRIVERDELAY);
-						 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
-								System.out.println(we.getAttribute("href"));
-								linksList.add(new CrawlInfo(we.getAttribute("href")));
-						  }							
-				 }		
+					    Thread.sleep(Configuration.DRIVERDELAY);
+						
+					    for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'row_')]/table/tbody/tr[1]/td/a"))) {	
+							System.out.println(we.getAttribute("href"));
+							linksList.add(new CrawlInfo(we.getAttribute("href")));
+					     }
+					}
 					
 				//Destroy
 				 PhantomFactory.getInstance().removeDriver();		
@@ -90,13 +104,12 @@ public class Soriana extends AbstractCrawler{
 		
 			String urlContent = urlResponse.getContent(); 
 
-			String id = ContentParser.parseContent(urlContent, Regex.SORIANA_ID);
+			String id = ContentParser.parseContent(crawlInfo.getUrl(), Regex.EXPOPERFUMES_ID);
 			 System.out.println(id);
 			if (id==null)
 				return new Product();
 			
-			String name = ContentParser.parseContent(urlContent, Regex.SORIANA_NAME);
-			 System.out.println(name);
+			String name = ContentParser.parseContent(urlContent, Regex.EXPOPERFUMES_NAME);
 			if (name==null)
 				return new Product();
 			name = name.trim();
@@ -105,29 +118,36 @@ public class Soriana extends AbstractCrawler{
 			
 			String description = "";
 			
-			String price = ContentParser.parseContent(urlContent, Regex.SORIANA_PRICE); 	
-			 System.out.println(price);
+			String price = ContentParser.parseContent(urlContent, Regex.EXPOPERFUMES_PRICE); 	
+			 
 			if (price == null) {  
 				return new Product();
 			}
 		
 			price = price.replace(",", "");
 			price = price.replace("$", "");
+			price = price.replace(" ", "");
 			price = price.trim();
+			System.out.println(price);
 			
-			String imageUrl = ContentParser.parseContent(urlContent, Regex.SORIANA_IMAGEURL);
-			 
-			 
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.EXPOPERFUMES_IMAGEURL);
 			if (imageUrl == null) {  
 				return new Product();
 			}
-			
-			imageUrl = "https://www.soriana.com" + imageUrl;
-			System.out.println(imageUrl);			
+			imageUrl = "http://expoperfumes.com.mx" + imageUrl;
+			 System.out.println(imageUrl);
+
 			String sku = "";
 			
-			String brand = "";			
-			
+			String brand = ContentParser.parseContent(urlContent, Regex.EXPOPERFUMES_BRAND);	
+			if (brand == null) {  
+				brand = ""; //Unlike name, sometimes we don't have a brand.
+			}else	{ ///We add brand in the name variable!! for better search results 
+				brand.trim();
+				name = name + " " + brand;
+			}
+			 System.out.println(brand);
+			 System.out.println("Con marca..... " + name);
 			String upc = "";			
 
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
@@ -140,7 +160,7 @@ public class Soriana extends AbstractCrawler{
 
 	@Override
 	public String getCrawlingStrategy() {
-		return "Soriana";
+		return "ExpoPerfumes";
 	}
 
 }

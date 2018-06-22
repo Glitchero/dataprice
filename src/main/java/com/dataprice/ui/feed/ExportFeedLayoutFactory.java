@@ -93,7 +93,12 @@ public class ExportFeedLayoutFactory {
 			 
 			 productsTable.addColumn(p -> "").setCaption("Short_desc").setId("Myshort");
 
-			 productsTable.addColumn(p -> p.getProductUrl()).setCaption("Url").setId("Myurl");
+			 if (feedSettings.getSeller().equals("Amazon")) {
+				 productsTable.addColumn(p -> p.getAffiliate()).setCaption("Url").setId("Myurl");
+			 }else {
+				 productsTable.addColumn(p -> p.getProductUrl()).setCaption("Url").setId("Myurl");
+			 }
+			
 
 			 productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
 
