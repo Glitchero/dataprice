@@ -38,7 +38,7 @@ public class Sears extends AbstractCrawler{
 			//Navigation
 			
 			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"col_der\"]/div[4]/div/div[3]/a"))) {	
-				System.out.println(we.getAttribute("href"));
+				//System.out.println(we.getAttribute("href"));
 				linksList.add(new CrawlInfo(we.getAttribute("href")));
 		        }
 			
@@ -63,7 +63,7 @@ public class Sears extends AbstractCrawler{
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
 			   
-		    System.out.println("url: " + crawlInfo.getUrl());
+		//    System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
@@ -79,12 +79,12 @@ public class Sears extends AbstractCrawler{
 			String urlContent = urlResponse.getContent(); 
 
 			String id = ContentParser.parseContent(urlContent, Regex.SEARS_ID);
-			System.out.println(id);
+		//	System.out.println(id);
 			if (id==null)
 				return new Product();
 			
 			String name = ContentParser.parseContent(urlContent, Regex.SEARS_NAME);
-			System.out.println(name);
+		//	System.out.println(name);
 			if (name==null)
 				return new Product();
 			name = name.trim();
@@ -93,7 +93,7 @@ public class Sears extends AbstractCrawler{
 			String description = "";
 			
 			String price = ContentParser.parseContent(urlContent, Regex.SEARS_PRICE); 
-			System.out.println(price);
+		//	System.out.println(price);
 			if (price == null) {  
 				return new Product();
 			}
@@ -103,7 +103,7 @@ public class Sears extends AbstractCrawler{
 			price = price.trim();
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.SEARS_IMAGEURL);
-			System.out.println(imageUrl);
+		//	System.out.println(imageUrl);
 			if (imageUrl == null) {  
 				return new Product();
 			}
@@ -111,12 +111,15 @@ public class Sears extends AbstractCrawler{
 						
 			String sku = "";
 			
-			String brand = "";			
+			String brand = ContentParser.parseContent(urlContent, Regex.SEARS_BRAND);	
+			if (brand == null) {  
+				brand = ""; //Unlike name, sometimes we don't have a brand.
+			}			
 			
-			String upc = id;			
-
+		//	String upc = id;			
+			String upc = "";
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
-		
+		//	return new Product(id+"Catalogue",id,"Catalogue",null,name,description,0.00,imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			
 		} catch (Exception e) {
 			return null;

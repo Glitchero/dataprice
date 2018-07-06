@@ -128,11 +128,11 @@ public class Arome extends AbstractCrawler{
 				brand = ""; //Unlike name, sometimes we don't have a brand.
 			}
 			
-			String upc = id;
-			
+		//	String upc = id;
+			String upc = "";
 
-		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
-		
+		      return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+		  //	return new Product(id+"Catalogue",id,"Catalogue",null,name,description,0.00,imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			
 		} catch (Exception e) {
 			return null;

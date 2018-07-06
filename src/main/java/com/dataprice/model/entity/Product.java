@@ -263,7 +263,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return productKey + "-" + name + "-" + price;	
+		return productKey + "-" + name + "-" + price + "-" +brand + "-" + imageUrl;	
 	}
 	
 	

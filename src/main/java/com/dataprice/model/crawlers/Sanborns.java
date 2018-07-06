@@ -41,7 +41,7 @@ public class Sanborns extends AbstractCrawler{
 				
 				//Navigation
 
-				System.out.println("La página actual es: " + driver.getCurrentUrl());
+			//	System.out.println("La página actual es: " + driver.getCurrentUrl());
 				for (WebElement we : driver.findElements(By.xpath("/html/body/main/section[2]/div/div/div/div[2]/div[3]/ul/li/a"))) {	   
 				    if (we.getAttribute("href")!=null){
 				    	linksSet.add(we.getAttribute("href"));
@@ -50,7 +50,7 @@ public class Sanborns extends AbstractCrawler{
 				
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'promocion')]/div[2]/a"))) {	
-					System.out.println(we.getAttribute("href"));
+				//	System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
              
@@ -61,7 +61,7 @@ public class Sanborns extends AbstractCrawler{
 						Thread.sleep(Configuration.DRIVERDELAY);
 						
 						 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'promocion')]/div[2]/a"))) {	
-								System.out.println(we.getAttribute("href"));
+							//	System.out.println(we.getAttribute("href"));
 								linksList.add(new CrawlInfo(we.getAttribute("href")));
 						 }
 					}
@@ -87,8 +87,8 @@ public class Sanborns extends AbstractCrawler{
 	@Override
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
         try {
-		    System.out.println("entro a escrapear");
-		    System.out.println("url: " + crawlInfo.getUrl());
+		  //  System.out.println("entro a escrapear");
+		  //  System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
@@ -103,15 +103,15 @@ public class Sanborns extends AbstractCrawler{
 	    	}
 		
 			String urlContent = urlResponse.getContent(); 
-			System.out.println("Server code: " + urlResponse.getResponse());
-			System.out.println("Tamaño de regresado: " + urlContent.length());
+		//	System.out.println("Server code: " + urlResponse.getResponse());
+		//	System.out.println("Tamaño de regresado: " + urlContent.length());
 			String id = ContentParser.parseContent(urlContent, Regex.SANBORNS_ID);
-			System.out.println(id);
+		//	System.out.println(id);
 			if (id==null)
 				return new Product();
 			
 			String name = ContentParser.parseContent(urlContent, Regex.SANBORNS_NAME);
-			System.out.println(name);
+		//	System.out.println(name);
 			if (name==null)
 				return new Product();
 			name = name.trim();
@@ -152,10 +152,10 @@ public class Sanborns extends AbstractCrawler{
 			
 			String brand = "";			
 			
-			String upc = id;			
-
+		//	String upc = id;			
+			String upc = "";
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
-		
+		//	return new Product(id+"Catalogue",id,"Catalogue",null,name,description,0.00,imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			
 		} catch (Exception e) {
 			return null;

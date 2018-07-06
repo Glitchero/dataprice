@@ -10,11 +10,19 @@ import org.hibernate.search.annotations.Resolution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.dataprice.model.crawlers.Arome;
+import com.dataprice.model.crawlers.Catalogue;
+import com.dataprice.model.crawlers.Sanborns;
+import com.dataprice.model.crawlers.Sears;
+import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.entity.Country;
+import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Retail;
 import com.dataprice.model.entity.Settings;
+import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
 import com.dataprice.service.addcountryservice.AddCountryService;
+import com.dataprice.service.addproductservice.AddProductService;
 import com.dataprice.service.addretailservice.AddRetailService;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.modifysettings.ModifySettingsService;
@@ -77,6 +85,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		private Label subTittle;
 		private Binder<Settings> binder;
 		private Button loadRetailsButton;
+		private Button loadCatalogueButton;
 		
 		private RadioButtonGroup<Integer> daysGroup;
 		
@@ -145,6 +154,13 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			loadRetailsButton.addClickListener(this);
 			loadRetailsButton.setWidth("100%");
 			
+		
+			
+			loadCatalogueButton = new Button("Load Catalogue");
+			loadCatalogueButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			loadCatalogueButton.addClickListener(this);
+			loadCatalogueButton.setWidth("100%");
+			
 		//	defaultSetingsButton = new Button("Restore default values");
 		//	defaultSetingsButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		//	defaultSetingsButton.addClickListener(this);
@@ -197,7 +213,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		    	date.setResolution(DateTimeResolution.MINUTE);
 		    	date.setStyleName("mytheme");
 		   		*/    	
-		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,loadRetailsButton);
+		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,loadRetailsButton);//,loadCatalogueButton);
 		    	hbuttons.setWidth("50%");
 		    	
 		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,daysGroup,coresGroup);//,f);//,selector);
@@ -216,11 +232,48 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			     if (event.getSource()==saveButton) {
 	                	 edit();
 			     } else  {
-			    	     loadRetails();
+			    	 if (event.getSource()==loadRetailsButton) {
+			    		 loadRetails();
+			         } else  {
+			    	     loadCatalogue();
+			         }	     
 			     }
 			}
 		 
-		 private void loadRetails() {
+		 private void loadCatalogue() {
+				Task task = new Task();
+				task.setSeed("https://www.sanborns.com.mx/categoria/130101/ella/");
+				
+				task.setTaskName("DAMA");
+				
+				Sanborns crawler = new Sanborns();
+				List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
+			
+				/**
+				System.out.println("Tamaño total de productos base descargados: " + productsInfo.size());
+				int con = 1;
+				for (CrawlInfo crawlInfo : productsInfo) {
+					System.out.println("------------------------      " + con );
+					List<Product> products = crawler.parseProductsFromUrl(crawlInfo, task);
+					for (int i = 0; i<products.size();i++){	 
+						 System.out.println(products.get(i));
+		  			     addProductService.saveProduct(products.get(i));
+			      	}
+					con++;
+				}
+				*/
+				
+				for (CrawlInfo crawlInfo : productsInfo) {
+				    Product p = crawler.parseProductFromURL(crawlInfo, task);
+					System.out.println(p);
+					addProductService.saveProduct(p);
+				}
+				
+			
+		}
+
+
+		private void loadRetails() {
 			 
 			Country country = new Country();
 			country.setCountryId(1);
@@ -312,6 +365,52 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			retail11.setCountry(country);		
 			addRetailService.saveRetail(retail11);
 			
+			
+			Retail retail12 = new Retail();
+			retail12.setRetailId(12);
+			retail12.setRetailName("ExpoPerfumes");
+			retail12.setCrawlerName("ExpoPerfumes");
+			retail12.setCountry(country);		
+			addRetailService.saveRetail(retail12);	
+			
+			Retail retail13 = new Retail();
+			retail13.setRetailId(13);
+			retail13.setRetailName("Osom");
+			retail13.setCrawlerName("Osom");
+			retail13.setCountry(country);		
+			addRetailService.saveRetail(retail13);
+			
+			
+			Retail retail14 = new Retail();
+			retail14.setRetailId(14);
+			retail14.setRetailName("Sears");
+			retail14.setCrawlerName("Sears");
+			retail14.setCountry(country);		
+			addRetailService.saveRetail(retail14);
+			
+			
+			Retail retail15 = new Retail();
+			retail15.setRetailId(15);
+			retail15.setRetailName("Soriana");
+			retail15.setCrawlerName("Soriana");
+			retail15.setCountry(country);		
+			addRetailService.saveRetail(retail15);
+			
+			
+			Retail retail16 = new Retail();
+			retail16.setRetailId(16);
+			retail16.setRetailName("PerfumesOnline");
+			retail16.setCrawlerName("PerfumesOnline");
+			retail16.setCountry(country);		
+			addRetailService.saveRetail(retail16);
+			
+			Retail retail17 = new Retail();
+			retail17.setRetailId(17);
+			retail17.setRetailName("PerfumesMexico");
+			retail17.setCrawlerName("PerfumesMexico");
+			retail17.setCountry(country);		
+			addRetailService.saveRetail(retail17);
+			
 			Notification.show("RETAILS","Loaded of Retails Complete",Type.WARNING_MESSAGE);
 			
 		}
@@ -358,6 +457,10 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			 
 		 
 	}
+	
+	@Autowired
+	private AddProductService addProductService;
+	
 	
 	@Autowired 
 	private AddCountryService addCountryService;

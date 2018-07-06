@@ -136,7 +136,8 @@ public class Chedraui extends AbstractCrawler{
 			imageUrl = "https://www.chedraui.com.mx" + imageUrl;
 			
 			String sku = "";
-			String upc = id;
+		//	String upc = id;
+			String upc = "";
 			
 			String brand = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_BRAND);
 			if (brand==null)

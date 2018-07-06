@@ -7,6 +7,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.internal.Conventions;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.dataprice.ui.dashboard.DashboardLayoutFactory;
+import com.dataprice.ui.tasks.TaskLayoutFactory;
 import com.dataprice.ui.util.SpringViewUtil;
 import com.dataprice.ui.view.HomePage;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,7 @@ public class NavigationManager extends SpringNavigator {
 		}
 
 		// Change default view here
-		navigateTo(DashboardLayoutFactory.class);
+		navigateTo(TaskLayoutFactory.class);
 	}
 
 	/**

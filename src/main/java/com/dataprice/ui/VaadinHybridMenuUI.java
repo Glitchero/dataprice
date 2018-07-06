@@ -309,6 +309,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		if(!hasRole(Role.Retailer.name())) {
 		//If is admin user
+			/**
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.DASHBOARD)
@@ -316,7 +317,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(homeButton);
-
+           */
         
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
 				.withCaption("Administrar Bots")

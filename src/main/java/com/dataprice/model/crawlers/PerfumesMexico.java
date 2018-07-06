@@ -20,6 +20,13 @@ import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
+
+
+/**
+ * Looks that i get some extras products, check this later.
+ * @author rene
+ *
+ */
 @Component
 public class PerfumesMexico extends AbstractCrawler{
 
@@ -39,7 +46,7 @@ public class PerfumesMexico extends AbstractCrawler{
 			//Navigation
 			
 			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"center_column\"]/div/div[3]/div/div/div[2]/h5/a"))) {	
-				System.out.println(we.getAttribute("href"));
+			//	System.out.println(we.getAttribute("href"));
 				linksList.add(new CrawlInfo(we.getAttribute("href")));
 		        }
 			
@@ -48,7 +55,7 @@ public class PerfumesMexico extends AbstractCrawler{
 					driver.findElement(By.cssSelector("li#pagination_next_bottom.pagination_next a")).click();	
 					Thread.sleep(Configuration.DRIVERDELAY);
 					 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"center_column\"]/div/div[3]/div/div/div[2]/h5/a"))) {	
-							System.out.println(we.getAttribute("href"));
+						//	System.out.println(we.getAttribute("href"));
 							linksList.add(new CrawlInfo(we.getAttribute("href")));
 					 }							
 			 }		 
@@ -74,13 +81,12 @@ public class PerfumesMexico extends AbstractCrawler{
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
 		   
-		    System.out.println("url: " + crawlInfo.getUrl());
+		  //  System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
 			
 			if (urlResponse == null){  //Task fatal error.		
-				System.out.println("si falla");
 				return null;
 	    	}
 			
@@ -128,7 +134,13 @@ public class PerfumesMexico extends AbstractCrawler{
 						
 			String sku = "";
 			
-			String brand = "";			
+			String brand = ContentParser.parseContent(urlContent, Regex.PERFUMESMEXICO_BRAND);	
+			if (brand == null) {  
+				brand = ""; //Unlike name, sometimes we don't have a brand.
+			}else{
+				name = name + " " + brand;
+				name.trim();
+			}
 			
 			String upc = "";			
 

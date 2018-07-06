@@ -1,5 +1,9 @@
 package com.dataprice.model.crawlers.utils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Configuration {
 
 	public final static String LOGPATH = "";
@@ -65,4 +69,15 @@ public class Configuration {
 //	public final static int ProxyPort = 31280;
 	public final static String ProxyUsername = "Glitchero";
 	public final static String ProxyPassword = "Harbinger1989?";
+	
+	
+	
+	
+	public final static String[] StopWords = {"100ML", "50ML", "200ML", "400ML", "600ML", "75ML", "115ML", "240ML", "100", "50", "200", 
+			  "400", "600", "75", "115", "240", "236", "MILILITROS", "ML", "EAU", "DE", "EDT", "PARFUM", 
+			  "PERFUME", "PERFUMES", "TOILETTE", "BY", "HOMBRE", "MUJER", "WOMAN", "MEN", "PARFUM","WOMEN","MAN","FOR","PARA","90ML","90"
+			  ,"80ML","80","CABALLERO","DAMA","3.4OZ","OZ","125ML","125"};   
+	
+	public final static  Set<String> stopWordsSet = new HashSet<String>(Arrays.asList(StopWords)); 
+	
 }

@@ -63,11 +63,11 @@ public class Osom extends AbstractCrawler{
 			for (String taskLink : linksSet) { //In case we have pagination.
 				    driver.get(taskLink);
 					con++;
-					System.out.println("pagina: " + con);
+				//	System.out.println("pagina: " + con);
 				    Thread.sleep(Configuration.DRIVERDELAY);
 					
 				    for (WebElement we : driver.findElements(By.cssSelector("a.itm-link"))) {	
-						System.out.println(we.getAttribute("href"));
+					//	System.out.println(we.getAttribute("href"));
 						linksList.add(new CrawlInfo(we.getAttribute("href")));
 				    }
 				}
@@ -93,7 +93,7 @@ public class Osom extends AbstractCrawler{
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
 			   
-		    System.out.println("url: " + crawlInfo.getUrl());
+		 //   System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());

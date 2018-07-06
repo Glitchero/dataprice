@@ -62,7 +62,7 @@ public class Liverpool extends AbstractCrawler{
 					   driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).get(1).click();
 				   }
 				  
-				   System.out.println("tamaño: " + driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).size());
+				 //  System.out.println("tamaño: " + driver.findElements(By.cssSelector("i.iconmoon.gid-icon2-liv-right-06")).size());
 				   Thread.sleep(Configuration.DRIVERDELAY);
 			      
 				   for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {	   
@@ -115,11 +115,14 @@ public class Liverpool extends AbstractCrawler{
 			name = name.trim();
 			name = Jsoup.parse(name).text();
 			
+			/**
 			String description = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_DESCRIPTION);
 			if (description==null)
 				description = "No disponible";  //Unlike name, sometimes we don't have a description.
 			description = description.trim();
 			description = Jsoup.parse(description).text();
+			*/
+			String description = "";
 			
 			String price = ContentParser.parseContent(urlContent, Regex.LIVERPOOL_PRICE); 			
 			if (price == null) {  

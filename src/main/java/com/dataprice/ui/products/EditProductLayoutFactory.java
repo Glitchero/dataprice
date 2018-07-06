@@ -3,10 +3,12 @@ package com.dataprice.ui.products;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.ProductEquivalences;
 import com.dataprice.model.entity.Settings;
@@ -472,7 +474,12 @@ public class EditProductLayoutFactory {
 		} 
 
 		//Set topProductsTable
-		String searchQuery = product.getName() + product.getBrand() + product.getSku();
+	//	String searchQuery = product.getName() + product.getBrand() + product.getSku();
+		String searchQuery = product.getName();
+		
+	//	searchQuery = searchQuery.replace(product.getBrand(), " ");
+		searchQuery = preprocessAndStopWords(searchQuery, Configuration.stopWordsSet);
+		System.out.println("El search query es: " + searchQuery);
 		//Get all sellers except for the main seller.
 		List <String> wantedSellers = showAllProductsService.getSellersListExceptForSeller(settings.getMainSeller());
 		List<Product> retrieveList = searchProductService.search(searchQuery,wantedSellers);
@@ -526,10 +533,12 @@ public class EditProductLayoutFactory {
 		textFieldPrice.setValue(product.getPrice().toString());
 				
 		//Set product precio
-		textFieldRetail.setValue(product.getTask().getRetail().getRetailName());
+		if (product.getTask()!=null)
+		    textFieldRetail.setValue(product.getTask().getRetail().getRetailName());
 		
 		//Set product TaskName
-		 textFieldTaskName.setValue(product.getTask().getTaskName());
+		if (product.getTask()!=null)
+		    textFieldTaskName.setValue(product.getTask().getTaskName());
 		
 		//Set product Brand
 		textFieldBrand.setValue(product.getBrand());
@@ -559,6 +568,29 @@ public class EditProductLayoutFactory {
 
 	}
 	
+	
+	
+	private String preprocessAndStopWords(String descripcion,Set<String> stopwordsset) {
+	  //  descripcion = descripcion.replaceAll("[^A-Za-z0-9]"," ").trim();
+	      descripcion = descripcion.trim().replaceAll(" +", " ");
+	  //  descripcion = descripcion.trim().replaceAll(brand, "");
+	    String[] words = descripcion.split(" ");
+        ArrayList<String> wordsList = new ArrayList<String>();
+       
+        for(String word : words)
+        {
+            String wordCompare = word.toUpperCase();
+            if(!stopwordsset.contains(wordCompare))
+            {
+                wordsList.add(word);
+            }
+        }
+        String output = "";
+        for (String str : wordsList){
+           output +=str + " ";
+        }
+	return output.trim();
+   }
 	
 		
 }

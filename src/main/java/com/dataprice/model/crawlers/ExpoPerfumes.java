@@ -51,7 +51,7 @@ public class ExpoPerfumes extends AbstractCrawler{
 		        }
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'row_')]/table/tbody/tr[1]/td/a"))) {	
-					System.out.println(we.getAttribute("href"));
+				//	System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
 				 
@@ -59,11 +59,11 @@ public class ExpoPerfumes extends AbstractCrawler{
 				for (String taskLink : linksSet) { //In case we have pagination.
 					    driver.get(taskLink);
 						con++;
-						System.out.println("pagina: " + con);
+					//	System.out.println("pagina: " + con);
 					    Thread.sleep(Configuration.DRIVERDELAY);
 						
 					    for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'row_')]/table/tbody/tr[1]/td/a"))) {	
-							System.out.println(we.getAttribute("href"));
+						//	System.out.println(we.getAttribute("href"));
 							linksList.add(new CrawlInfo(we.getAttribute("href")));
 					     }
 					}
@@ -89,7 +89,7 @@ public class ExpoPerfumes extends AbstractCrawler{
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
 			   
-		    System.out.println("url: " + crawlInfo.getUrl());
+		//    System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
@@ -105,7 +105,7 @@ public class ExpoPerfumes extends AbstractCrawler{
 			String urlContent = urlResponse.getContent(); 
 
 			String id = ContentParser.parseContent(crawlInfo.getUrl(), Regex.EXPOPERFUMES_ID);
-			 System.out.println(id);
+		//	 System.out.println(id);
 			if (id==null)
 				return new Product();
 			
@@ -128,14 +128,14 @@ public class ExpoPerfumes extends AbstractCrawler{
 			price = price.replace("$", "");
 			price = price.replace(" ", "");
 			price = price.trim();
-			System.out.println(price);
+		//	System.out.println(price);
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.EXPOPERFUMES_IMAGEURL);
 			if (imageUrl == null) {  
 				return new Product();
 			}
 			imageUrl = "http://expoperfumes.com.mx" + imageUrl;
-			 System.out.println(imageUrl);
+		//	 System.out.println(imageUrl);
 
 			String sku = "";
 			
@@ -146,8 +146,8 @@ public class ExpoPerfumes extends AbstractCrawler{
 				brand.trim();
 				name = name + " " + brand;
 			}
-			 System.out.println(brand);
-			 System.out.println("Con marca..... " + name);
+		//	 System.out.println(brand);
+		//	 System.out.println("Con marca..... " + name);
 			String upc = "";			
 
 		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());

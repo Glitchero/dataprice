@@ -232,9 +232,16 @@ public class Regex {
 	public final static String SEARS_IMAGEURL = "<a class=\"foto_enlace\" href=\"(.*?)\">";
 	public final static String SEARS_SKU = "";
 	
-	                     
-	//     "<strong>SKU#:</strong>(.*?)&nbsp;";          
-	                    
-	               
+	                
+	public final static String SEPHORA_NAME = "<li class=\"product\">\\s+<strong>(.*?)</strong>\\s+</li>";
+    public final static String SEPHORA_BOXES= "<label for=\"super_group.*?>(.*?)</label>";
+	public final static String SEPHORA_PRESENTATION= "<p class=\"reference info.*?\">(.*?)</p>";
+	public final static String SEPHORA_ID = "<p class=\"reference\">REF:#(.*?)</p>";
+	public final static String SEPHORA_IMAGESRC ="<img id=\"image-main\".*?src=\"(.*?)\".*?>";
+//	public final static String SEPHORA_BRAND ="onclick=\"sephora.achorAnimate('#brand','html, body')\">(.*?)</a>";
+	public final static String SEPHORA_BOXIMAGESRC ="<img class=\"img\".*?src=\"(.*?)\" alt";
+	
+	
+            
 			
 }

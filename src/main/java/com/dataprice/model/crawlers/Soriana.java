@@ -38,7 +38,7 @@ public class Soriana extends AbstractCrawler{
 				//Navigation
 				
 				 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
-					System.out.println(we.getAttribute("href"));
+					//System.out.println(we.getAttribute("href"));
 					linksList.add(new CrawlInfo(we.getAttribute("href")));
 			        }
 				
@@ -46,10 +46,10 @@ public class Soriana extends AbstractCrawler{
 				 while (!(driver.findElements(By.cssSelector("li.pagination-next.disabled")).size()>0)){		
 						driver.findElement(By.cssSelector("li.pagination-next a")).click();	
 						con++;
-						System.out.println("pagina: " + con);
+						//System.out.println("pagina: " + con);
 						Thread.sleep(Configuration.DRIVERDELAY);
 						 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
-								System.out.println(we.getAttribute("href"));
+								//System.out.println(we.getAttribute("href"));
 								linksList.add(new CrawlInfo(we.getAttribute("href")));
 						  }							
 				 }		
@@ -75,7 +75,7 @@ public class Soriana extends AbstractCrawler{
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
 			   
-		    System.out.println("url: " + crawlInfo.getUrl());
+		//    System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
@@ -91,12 +91,12 @@ public class Soriana extends AbstractCrawler{
 			String urlContent = urlResponse.getContent(); 
 
 			String id = ContentParser.parseContent(urlContent, Regex.SORIANA_ID);
-			 System.out.println(id);
+			// System.out.println(id);
 			if (id==null)
 				return new Product();
 			
 			String name = ContentParser.parseContent(urlContent, Regex.SORIANA_NAME);
-			 System.out.println(name);
+			// System.out.println(name);
 			if (name==null)
 				return new Product();
 			name = name.trim();
@@ -106,7 +106,7 @@ public class Soriana extends AbstractCrawler{
 			String description = "";
 			
 			String price = ContentParser.parseContent(urlContent, Regex.SORIANA_PRICE); 	
-			 System.out.println(price);
+			// System.out.println(price);
 			if (price == null) {  
 				return new Product();
 			}
@@ -123,7 +123,7 @@ public class Soriana extends AbstractCrawler{
 			}
 			
 			imageUrl = "https://www.soriana.com" + imageUrl;
-			System.out.println(imageUrl);			
+		//	System.out.println(imageUrl);			
 			String sku = "";
 			
 			String brand = "";			

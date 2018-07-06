@@ -59,10 +59,10 @@ public class Walmart extends AbstractCrawler{
 				   Mouse mouse = ((HasInputDevices) driver).getMouse();
 				   mouse.mouseMove(hoverItem.getCoordinates());
 				   el.click();	
-				   System.out.println("Doy click: " + con); 
+				 //  System.out.println("Doy click: " + con); 
 				   con++;
 				   Thread.sleep(Configuration.DRIVERDELAY); 
-				   if (con==20) {
+				   if (con==35) { //Before it was 20
 					   break;
 				   }
 			}
@@ -71,9 +71,9 @@ public class Walmart extends AbstractCrawler{
 	      
 	        	   if (we.getLocation().getX()!=0) {
 
-				   System.out.println("Direeccion : " + we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href"));
-				   System.out.println("Precio: " + we.findElement(By.cssSelector("div.price")).getText());
-				   System.out.println("titulo: " + we.findElement(By.cssSelector("span.test")).getText());
+				 //  System.out.println("Direeccion : " + we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href"));
+				 //  System.out.println("Precio: " + we.findElement(By.cssSelector("div.price")).getText());
+				 //  System.out.println("titulo: " + we.findElement(By.cssSelector("span.test")).getText());
 	        	  String url = we.findElement(By.cssSelector("a.prvntClck")).getAttribute("href");
 	        	  
 	        	  String name = we.findElement(By.cssSelector("span.test")).getText();
@@ -153,9 +153,9 @@ public class Walmart extends AbstractCrawler{
 			String sku = "";
 			String upc = "";
 			//Consider other cases!!
-			if (id.length() == 14) {
-				upc = id.substring(2);
-			}
+		//	if (id.length() == 14) {
+		//		upc = id.substring(2);
+		//	}
 			
 			String brand = "";
 			

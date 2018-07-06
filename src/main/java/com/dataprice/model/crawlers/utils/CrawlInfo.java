@@ -8,6 +8,14 @@ public class CrawlInfo {
 	private String seller;
 	private String id;
 	private String imageURl;
+	private String brand;
+	
+	
+	public CrawlInfo(String url, String brand) {
+		this.url = url;
+		this.brand = brand;
+	}
+	
 	
 	public CrawlInfo(String url,String id, String productName, double price, String imageUrl) {
 		this.url = url;	
@@ -95,6 +103,16 @@ public class CrawlInfo {
 
 	public void setImageURl(String imageURl) {
 		this.imageURl = imageURl;
+	}
+
+
+	public String getBrand() {
+		return brand;
+	}
+
+
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 	
 	
