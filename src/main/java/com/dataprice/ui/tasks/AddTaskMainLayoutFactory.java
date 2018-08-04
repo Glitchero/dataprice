@@ -69,14 +69,17 @@ public class AddTaskMainLayoutFactory {
 	    	
 	    	task = new Task();
 	    	
-	    	taskName = new TextField("Categoría");
-	    	taskName.setWidth("100%");
+	    	taskName = new TextField("Nombre del Bot:");
+	    	taskName.setPlaceholder("Escribe el nombre que mejor represente a tu bot");
+	    	taskName.setWidth("35%");
 	    	
-	    	retail = new ComboBox("Retail");
-	    	retail.setWidth("100%");
+	    	retail = new ComboBox("Retail/Marketplace:");
+	    	retail.setPlaceholder("Selecciona el retail o marketplace");
+	    	retail.setWidth("35%");
 	    	
-	    	seed = new TextField("Seed");
-	    	seed.setWidth("100%");
+	    	seed = new TextField("Semilla del Bot:");
+	    	seed.setPlaceholder("Copia y pega la url donde se encuentran los productos que deseas descargar");
+	    	seed.setWidth("70%");
 	    	
 	    	
 		//	status = new TextField("Status");
@@ -126,7 +129,7 @@ public class AddTaskMainLayoutFactory {
 		
 	    public Component layout() {		
  	
-	    	
+	    	/**
 	    	HorizontalLayout h2 = new HorizontalLayout(taskName,retail);
 	    	h2.setWidth("100%");
 	    	h2.setMargin(false);
@@ -151,12 +154,12 @@ public class AddTaskMainLayoutFactory {
             v1.setMargin(false);
             
 	    	return v1;
-            
+            */
             
 	    	
-	    	/**
+	    	
 	    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,clearButton);
-	    	hbuttons.setWidth("25%");
+	    	hbuttons.setWidth("40%");
 	    	
 	    	FormLayout form = new FormLayout(taskName,retail,seed);
 	    	form.setWidth("100%");
@@ -165,8 +168,10 @@ public class AddTaskMainLayoutFactory {
 	    	vl.setMargin(false);
 	    	vl.setSizeFull();
 
+	    
+	    	
 	    	return vl;
-	    	*/
+	    	
 	    }
 
 		@Override
@@ -182,14 +187,14 @@ public class AddTaskMainLayoutFactory {
 			try {
 				binder.writeBean(task);
 			} catch (ValidationException e) {
-				Notification.show("ERROR","Task is not saved",Type.ERROR_MESSAGE);
+				Notification.show("ERROR","El bot no se guardó",Type.ERROR_MESSAGE);
 				return;
 			}
 			//System.out.println(task);
 			addtaskService.saveTask(task);
 			taskSavedListener.taskSaved();
 			clearField();
-			Notification.show("SAVE","Task is saved",Type.WARNING_MESSAGE);
+			Notification.show("GUARDADO","Bot guardado con éxito",Type.WARNING_MESSAGE);
 		}
 
 		private void clearField() {

@@ -71,6 +71,12 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 	public List<String> getSellersListExceptForSeller(String seller) {
 		return productRepository.getSellersListExceptForSeller(seller);
 	}
+
+
+	@Override
+	public List<Product> getMatchedProducts(String seller, String sku) {
+		return productRepository.getMatchedProducts(seller, sku);
+	}
 	
 	
 	

@@ -1,6 +1,8 @@
 package com.dataprice.ui.products;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +58,8 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.components.grid.MultiSelectionModel;
+import com.vaadin.ui.components.grid.SingleSelectionModel;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.TextField;
@@ -88,8 +92,13 @@ public class EditProductLayoutFactory {
    
    private TextField textFieldKey;
    private CheckBox productChecked;
+
    //Buttons 
    private Button editButton;
+   
+   //Buttons 
+   private Button uneditButton;
+   
    
    private Product product;
  
@@ -110,7 +119,7 @@ public class EditProductLayoutFactory {
 			textFieldName.setWidth("100%");
 			textFieldName.setEnabled(false);
 			
-			textFieldId = new TextField("Id:");
+			textFieldId = new TextField("Clave:");
 			textFieldId.setWidth("100%");
 			textFieldId.setEnabled(false);
 			
@@ -118,7 +127,7 @@ public class EditProductLayoutFactory {
 			textFieldRetail.setWidth("100%");
 			textFieldRetail.setEnabled(false);
 			
-			textFieldPrice = new TextField("Price:");
+			textFieldPrice = new TextField("Precio:");
 			textFieldPrice.setWidth("100%");
 			textFieldPrice.setEnabled(false);
 			
@@ -127,7 +136,7 @@ public class EditProductLayoutFactory {
 			textFieldUpdateDate.setWidth("100%");
 			textFieldUpdateDate.setEnabled(false);
 			
-			textFieldTaskName = new TextField("Nombre del Task:");
+			textFieldTaskName = new TextField("Nombre del Bot:");
 			textFieldTaskName.setWidth("100%");
 			textFieldTaskName.setEnabled(false);
 			
@@ -151,12 +160,18 @@ public class EditProductLayoutFactory {
 			
 		   	binder = new Binder<>(Product.class);		   	
 		
-			editButton = new Button("Actualizar la Base de Datos");
+			editButton = new Button("Emparejar");
 			editButton.setIcon(VaadinIcons.EDIT);
 			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			editButton.addClickListener(this);
-			editButton.setWidth("100%");
+			editButton.setWidth("40%");
 					
+			uneditButton = new Button("Desemparejar");
+			uneditButton.setIcon(VaadinIcons.EDIT);
+			uneditButton.setStyleName(ValoTheme.BUTTON_DANGER);
+			uneditButton.addClickListener(this);
+			uneditButton.setWidth("40%");
+							
 			productImage = new Image();
 			productImage.setWidth("100%");
 			productImage.setHeight("100%");
@@ -167,7 +182,7 @@ public class EditProductLayoutFactory {
 			description.setEnabled(false);
 			
 			productLink =  new Link();
-			productLink.setCaption("Go to website.");
+			productLink.setCaption("Ver en sitio web");
 		
 			topProductsTable = new Grid<>(Product.class);
 			
@@ -179,14 +194,15 @@ public class EditProductLayoutFactory {
 			    image.setHeight(100,Unit.PIXELS);
 
 			    return image;
-			}).setCaption("Imagen");
+			}).setId("Image").setCaption("Imagen");
 			
 			topProductsTable.addColumn(p ->
-		      p.getSeller()).setCaption("Competencia");
+		      p.getSeller()).setId("Competence").setCaption("Competencia");
 			
 			topProductsTable.addColumn(p ->
-		      p.getName()).setCaption("Nombre");
+		      p.getName()).setId("RetrievedName").setCaption("Nombre");
 			
+			/**
 			//Key condition
 			if (settings.getKeyType().equals("sku")) {
 				topProductsTable.addColumn(p ->
@@ -195,13 +211,16 @@ public class EditProductLayoutFactory {
 				topProductsTable.addColumn(p ->
 			      p.getUpc()).setCaption("UPC");
 			} 
-	
+	        */
+			
+			
 			topProductsTable.addColumn(p ->
-		      p.getPrice()).setCaption("Precio");
+		      p.getPrice()).setId("Price").setCaption("Precio");
 				
 			topProductsTable.addColumn(p ->
-		      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>check me!</a>",
-		      new HtmlRenderer()).setCaption("Links");
+		      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>ver link!</a>",
+		      new HtmlRenderer()).setId("Links").setCaption("Links");
+			
 			
 			topProductsTable.setSelectionMode(SelectionMode.MULTI);
 			
@@ -224,15 +243,30 @@ public class EditProductLayoutFactory {
 			topProductsTable.setWidth("100%");
 
 			
+
 			return this;
 			
 		}
 
-		 private void clearField() {
-
-			textFieldKey.setValue("");
-			
+		 private void editClearField() {
+			 
+		 //  Set<Product> productsSelectedMemory = topProductsTable.getSelectedItems();
+		 //  topProductsTable.setSelectionMode(SelectionMode.SINGLE);
+		 //  for (Product p : productsSelectedMemory) {
+		 //	   topProductsTable.select(p);
+		 //  } 
+			 editData(product);	  
+		   
 		 }
+		 
+		 
+		 private void uneditClearField() {
+
+		 //((MultiSelectionModel) topProductsTable.getSelectionModel()).setUserSelectionAllowed(true);
+			 editData(product);	
+		 }
+		 
+		 
 			
 		public EditProductLayout load() {
 			product = null;
@@ -296,7 +330,6 @@ public class EditProductLayoutFactory {
 			formLayout.setWidth("100%");
 			formLayout.setMargin(false);
 			
-			editButton.setWidth("100%");
 			
 			VerticalLayout v3 = new VerticalLayout(topProductsTable);
 			v3.setSizeFull();
@@ -307,18 +340,20 @@ public class EditProductLayoutFactory {
 		//	formLayoutKey.setWidth("100%");
 		//	formLayoutKey.setMargin(false);
 			
-			
+			/**
 			HorizontalLayout hKey = new HorizontalLayout(textFieldKey,textFieldBrand,textFieldCategory,productChecked);	
 			hKey.setComponentAlignment(productChecked, Alignment.BOTTOM_CENTER);
 			hKey.setWidth("70%");
 			hKey.setMargin(new MarginInfo(true, false, false, false));
-									
-			HorizontalLayout h1 = new HorizontalLayout(editButton);
-			h1.setMargin(false);
-			h1.setWidth("25%");
+			*/
 			
-			VerticalLayout vl = new VerticalLayout(formLayout,hl,v3,hKey,h1);
-			vl.setComponentAlignment(h1, Alignment.TOP_LEFT);
+			HorizontalLayout h1 = new HorizontalLayout(editButton,uneditButton);
+			h1.setComponentAlignment(editButton, Alignment.TOP_RIGHT);
+			h1.setMargin(false);
+			h1.setWidth("100%");
+			
+			VerticalLayout vl = new VerticalLayout(formLayout,hl,v3,h1);
+			vl.setComponentAlignment(h1, Alignment.TOP_CENTER);
 			vl.setWidth("100%");
 			vl.setMargin(false);
 			return vl;
@@ -327,16 +362,27 @@ public class EditProductLayoutFactory {
 		
 		@Override
 		public void buttonClick(ClickEvent event) {
-		     edit();
+			 if (event.getSource()==editButton)	{
+				 edit();
+             }else {
+            	 unedit();
+             }
+		     
         }	
 				
-		private void edit() {
-	
+		private void unedit() {
+			
 			if (product==null){
-				Notification.show("ERROR","Please select a product first",Type.ERROR_MESSAGE);
+				Notification.show("ERROR","Favor de seleccionar un producto",Type.ERROR_MESSAGE);
 				return;
 			}
-										
+			
+			if (product.isChecked()==false){
+				Notification.show("ERROR","El producto ya está desemparejado",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			/**
 			BinderValidationStatus<Product> status = binder.validate();
 
 			if (status.hasErrors()) {
@@ -350,7 +396,106 @@ public class EditProductLayoutFactory {
 				Notification.show(NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_TITLE.getString(),NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_DESCRIPTION.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
+			*/
 			
+			//In case we edit or match
+			
+			product.setChecked(false);
+            product.setSku("");
+            product.setUpc("");
+            
+            
+			modifyProductService.modifyProduct(product);
+			
+			ProductEquivalences pe = new ProductEquivalences();
+			pe.setProductKey(product.getProductKey());
+			pe.setSku(product.getSku());
+			pe.setUpc(product.getUpc());
+			pe.setBrand(product.getBrand());
+			pe.setCategory(product.getCategory());
+			if (product.isChecked()) {
+				addProductEquivService.saveEquivalency(pe);
+			}else {
+				removeProductEquivalencyService.removeEquivalency(pe);
+			}
+			
+		
+			//Propagate the profile
+			if (topProductsTable.getSelectedItems().size()!=0) {
+				for (Product p : topProductsTable.getSelectedItems()) {
+					p.setSku(product.getSku());
+					p.setUpc(product.getUpc());
+					p.setBrand(product.getBrand());
+					p.setCategory(product.getCategory());
+					p.setChecked(product.isChecked());
+					
+					modifyProductService.modifyProduct(p);
+					
+					ProductEquivalences pe2 = new ProductEquivalences();
+					pe2.setProductKey(p.getProductKey());
+					pe2.setSku(p.getSku());
+					pe2.setUpc(p.getUpc());
+					pe2.setBrand(p.getBrand());
+					pe2.setCategory(p.getCategory());
+					if (product.isChecked()) {
+						addProductEquivService.saveEquivalency(pe2);
+					}else {
+						removeProductEquivalencyService.removeEquivalency(pe2);
+					}
+					
+				}
+			}
+			
+			
+			productSaveListener.productSaved();
+		//	editData(product); //In order to refreh the topProductsTable
+			uneditClearField();
+			Notification.show("DESEMPAREJADO","El producto fue desemparejado con éxito",Type.WARNING_MESSAGE);
+		}
+		
+		
+		
+		private void edit() {
+	
+			if (product==null){
+				Notification.show("ERROR","Favor de seleccionar un producto",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			if (product.isChecked()==true){
+				Notification.show("ERROR","El producto ya está emparejado",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			//At least one selected in top table
+			if (topProductsTable.getSelectedItems().size()==0) {
+				Notification.show("ERROR","Debe seleccionar al menos un producto",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			/**
+			BinderValidationStatus<Product> status = binder.validate();
+
+			if (status.hasErrors()) {
+				Notification.show(NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_TITLE.getString(),NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_DESCRIPTION.getString(),Type.ERROR_MESSAGE);
+			   return;
+			}
+			
+			try {
+				binder.writeBean(product);
+			} catch (ValidationException e) {
+				Notification.show(NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_TITLE.getString(),NotificationsMessages.STUDENT_SAVE_VALIDATION_ERROR_DESCRIPTION.getString(),Type.ERROR_MESSAGE);
+				return;
+			}
+			*/
+			
+			//In case we edit or match
+			
+			product.setChecked(true);
+            product.setSku(product.getProductId());
+            product.setUpc(product.getProductId());
+            
+            
 			modifyProductService.modifyProduct(product);
 			
 			ProductEquivalences pe = new ProductEquivalences();
@@ -394,8 +539,8 @@ public class EditProductLayoutFactory {
 			
 			productSaveListener.productSaved();
 		//	editData(product); //In order to refreh the topProductsTable
-			clearField();
-			Notification.show("EDIT","Product profile editted",Type.WARNING_MESSAGE);
+			editClearField();
+			Notification.show("EMPAREJADO","El producto fue emparejado con éxito",Type.WARNING_MESSAGE);
 			
 		}
 
@@ -451,13 +596,14 @@ public class EditProductLayoutFactory {
 
    
    public Component createComponent(ProductSaveListener productSaveListener) {
-    		return new EditProductLayout(productSaveListener).load().init().bind().layout();
+    		return new EditProductLayout(productSaveListener).load().init().layout();
     }
     	
     	
 	public void editData(Object item) {
 		product = (Product) item;
 		
+		/**
 		//Key condition		
 		if (settings.getKeyType().equals("sku")) {
 			if (product.getSku()!=null) {
@@ -472,57 +618,111 @@ public class EditProductLayoutFactory {
 				textFieldKey.setValue("");
 			}
 		} 
-
-		//Set topProductsTable
-	//	String searchQuery = product.getName() + product.getBrand() + product.getSku();
-		String searchQuery = product.getName();
+		*/
 		
-	//	searchQuery = searchQuery.replace(product.getBrand(), " ");
-		searchQuery = preprocessAndStopWords(searchQuery, Configuration.stopWordsSet);
-		System.out.println("El search query es: " + searchQuery);
-		//Get all sellers except for the main seller.
-		List <String> wantedSellers = showAllProductsService.getSellersListExceptForSeller(settings.getMainSeller());
-		List<Product> retrieveList = searchProductService.search(searchQuery,wantedSellers);
 		
-		if (retrieveList.size()!=0) { //Do this only if products related are found
-		boolean remove = retrieveList.remove(product);
-		String sellerSelected = product.getSeller();
-		List<Product> retrieveFilteredList = new LinkedList<Product>();
-		List<Product> retrieveFilteredAndMatchedList = new LinkedList<Product>();
-		int con = 0;
-		
-		for (Product p : retrieveList) {
-		  //	if (!p.getSeller().equals(sellerSelected)) { //From different store
-			    retrieveFilteredList.add(p);
-			    //Store those with same key!!   
-			    if (settings.getKeyType().equals("sku")) {
-					if (p.getSku().equals(product.getSku()) && !p.getSku().equals("")) { //Not consider those with blanks spaces as key
-				    	retrieveFilteredAndMatchedList.add(p);
-				    }
-				}else {
-					if (p.getUpc().equals(product.getUpc()) && !p.getUpc().equals("")) { 
-				    	retrieveFilteredAndMatchedList.add(p);
-				    }	
-				} 
-			    
-			    
-		//	}
-			con++;
-			if (con>settings.getNumRetrieved() && settings.getNumRetrieved()!=100) {
-				System.out.println("con" + con);
-			    break;	
+		  //Only show those products selected
+		if (product.isChecked()==true) {
+			
+		//	((MultiSelectionModel) topProductsTable.getSelectionModel()).setUserSelectionAllowed(false);
+		//	topProductsTable.setItems(retrieveFilteredAndMatchedList);
+			
+		//Work it with Sql query	
+			
+			List<Product> retrieveList = showAllProductsService.getMatchedProducts(product.getSeller(), product.getSku());
+            ((MultiSelectionModel) topProductsTable.getSelectionModel()).setUserSelectionAllowed(false);
+			topProductsTable.setItems(retrieveList);
+			
+			for (Product p : retrieveList) {
+				   topProductsTable.select(p);
 			}
+			
+		} else {
+			
+			
+			
+			
+			//Set topProductsTable
+			//	String searchQuery = product.getName() + product.getBrand() + product.getSku();
+				String searchQuery = product.getName();
+				
+			//	searchQuery = searchQuery.replace(product.getBrand(), " ");
+				
+				//Small trick to transform the comma separated stop words to a set in capital letters
+				List<String> stopWordsList = Arrays.asList(settings.getStopWords().split(","));
+				stopWordsList.replaceAll(String::toUpperCase);
+				Set<String> stopWordsSet= new HashSet<String>(stopWordsList);
+			
+				for (String s:stopWordsSet) {
+					System.out.println(s);
+				}
+				
+				searchQuery = preprocessAndStopWords(searchQuery, stopWordsSet);
+				System.out.println("El search query es: " + searchQuery);
+				//Get all sellers except for the main seller.
+				List <String> wantedSellers = showAllProductsService.getSellersListExceptForSeller(settings.getMainSeller());
+				List<Product> retrieveList = searchProductService.search(searchQuery,wantedSellers);
+				
+				
+				
+						
+				if (retrieveList.size()!=0) { //Do this only if products related are found
+				   boolean remove = retrieveList.remove(product);
+				   String sellerSelected = product.getSeller();
+				   List<Product> retrieveFilteredList = new LinkedList<Product>();
+				   List<Product> retrieveFilteredAndMatchedList = new LinkedList<Product>();
+				   int con = 0;
+				
+				   for (Product p : retrieveList) {
+				   	if (p.isChecked()==false) { //Consider only those available for checked
+					    retrieveFilteredList.add(p);
+					    //Store those with same key!!   
+					    if (settings.getKeyType().equals("sku")) {
+							if (p.getSku().equals(product.getSku()) && !p.getSku().equals("")) { //Not consider those with blanks spaces as key
+						    	retrieveFilteredAndMatchedList.add(p);
+						    }
+						}else {
+							if (p.getUpc().equals(product.getUpc()) && !p.getUpc().equals("")) { 
+						    	retrieveFilteredAndMatchedList.add(p);
+						    }	
+						} 
+					    
+					    
+					}
+					   con++;
+					   if (con>settings.getNumRetrieved() && settings.getNumRetrieved()!=100) {
+						  System.out.println("con" + con);
+					      break;	
+					  }
+				   }
+			
+				   ((MultiSelectionModel) topProductsTable.getSelectionModel()).setUserSelectionAllowed(true);
+					topProductsTable.setItems(retrieveFilteredList);
+				
+				   //Select all with coincidences
+				   for (Product p : retrieveFilteredAndMatchedList) {
+					   topProductsTable.select(p);
+				   }
+				
+				} 
+			
+			
+			
+			
+			
+			
 		}
-	
-		topProductsTable.setItems(retrieveFilteredList);
 		
-		//Select all with coincidences
-		for (Product p : retrieveFilteredAndMatchedList) {
-			topProductsTable.select(p);
-		}
 		
-		}   
-		   
+		
+		//Disable sorting for all columns, in fact the order is very importance, it has to only ordered by search relevance
+		
+		topProductsTable.getColumn("Image").setSortable(false);
+		topProductsTable.getColumn("Competence").setSortable(false);
+		topProductsTable.getColumn("RetrievedName").setSortable(false);
+		topProductsTable.getColumn("Price").setSortable(false);
+		topProductsTable.getColumn("Links").setSortable(false);
+		
 		//Set product name
 		textFieldName.setValue(product.getName());
 		

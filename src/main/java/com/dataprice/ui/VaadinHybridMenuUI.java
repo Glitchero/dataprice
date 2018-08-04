@@ -327,7 +327,7 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(tasksButton);
 		
-		
+		/**
 		MenuButton exportButton = LeftMenuButtonBuilder.get()
 				.withCaption("Exportar/Importar")
 				.withIcon(VaadinIcons.REFRESH)
@@ -335,7 +335,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(exportButton);
-		
+		*/
 		
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
 		.withCaption("Products")
@@ -363,7 +363,7 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(reportsButton);
 		
-		
+		/**
 		MenuButton feedsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Feeds")
 				.withIcon(VaadinIcons.DATABASE)
@@ -380,7 +380,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(userButton);
-		
+		*/
 		
 		}else {
 			//If is retailer

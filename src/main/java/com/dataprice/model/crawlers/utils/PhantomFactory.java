@@ -38,8 +38,13 @@ public class PhantomFactory
   		DesiredCapabilities desiredCaps = new DesiredCapabilities();
   		desiredCaps.setJavascriptEnabled(true);
   		desiredCaps.setCapability("takesScreenshot", false);
-  		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "/home/rene/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
-    	desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", USER_AGENT);
+  		//desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "/home/rene/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
+    	
+  		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\tatua\\phantomjs-2.1.1-windows\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+  		
+  		
+  		
+  		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", USER_AGENT);
   //	desiredCaps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0");
   		ArrayList<String> cliArgsCap = new ArrayList();
   		cliArgsCap.add("--web-security=false");

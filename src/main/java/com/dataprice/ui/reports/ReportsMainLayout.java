@@ -31,6 +31,9 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	@Autowired
 	private RawMatrixReportLayoutFactory rawMatrixReportLayoutFactory;
 	
+	@Autowired
+	private PriceDistributionLayoutFactory priceDistributionLayoutFactory;
+	
 	
 	@PostConstruct
 	void init() {
@@ -64,8 +67,8 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 				Component priceMatrixReport = perMatrixReportLayoutFactory.createComponent(reportSettings);
 				addComponent(priceMatrixReport);
 			}else {
-				Component rawMatrixReport = rawMatrixReportLayoutFactory.createComponent(reportSettings);
-				addComponent(rawMatrixReport);
+				Component priceDistribution = priceDistributionLayoutFactory.createComponent(reportSettings);
+				addComponent(priceDistribution);
 			}
 		}
 		

@@ -124,9 +124,9 @@ public class PerMatrixReportLayoutFactory {
 			
 		//	productsTable.addColumn(p -> p.getName()).setCaption("Nombre").setId("Myname");
 			
-	        productsTable.addColumn(p -> p.getBrand()).setCaption("Marca").setId("Mybrand");
+	    //    productsTable.addColumn(p -> p.getBrand()).setCaption("Marca").setId("Mybrand");
 			
-			productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría").setId("Mycategory");
+		//	productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría").setId("Mycategory");
 				
 			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio (en MXN)").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
 					
@@ -170,8 +170,8 @@ public class PerMatrixReportLayoutFactory {
 			}else {
 					filter.setTextFilter("Myupc", true, true);
 			}
-			filter.setTextFilter("Mybrand", true, true);
-			filter.setTextFilter("Mycategory", true, true);				
+		//	filter.setTextFilter("Mybrand", true, true);
+		//	filter.setTextFilter("Mycategory", true, true);				
 			filter.setNumberFilter("Myprice", Double.class,"invalid input", "inferior", "superior");		
 					
 			for (String seller : reportSettings.getCompetitors()) {
@@ -191,7 +191,7 @@ public class PerMatrixReportLayoutFactory {
 	                .setHtml("Total:");
 			}
 
-			 final FooterCell footerCell = footerRow.join("Myname", "Mybrand", "Mycategory", "Myprice");
+			 final FooterCell footerCell = footerRow.join("Myname", "Myprice");
 			 // inital total count
 			 footerCell.setHtml("<b>" + products.size() + "</b>");
 			 // filter change count recalculate
@@ -206,6 +206,8 @@ public class PerMatrixReportLayoutFactory {
 		public PerMatrixReportLayout header() {
 			
 			 HeaderRow fistHeaderRow = productsTable.prependHeaderRow();
+			 
+			 /**
 		        if (settings.getKeyType().equals("sku")) {
 		        	  fistHeaderRow.join("Mysku", "Myname");
 				        fistHeaderRow.getCell("Mysku")
@@ -215,9 +217,9 @@ public class PerMatrixReportLayoutFactory {
 				        fistHeaderRow.getCell("Myupc")
 				                .setHtml("");
 				}
-		        
+		     **/   
 		      
-		        HeaderCell join = fistHeaderRow.join("Mybrand","Mycategory","Myprice");
+		        HeaderCell join = fistHeaderRow.join("Myname","Myprice");
 		        HorizontalLayout buttonLayout = new HorizontalLayout();
 		        buttonLayout.setSpacing(true);
 		        join.setComponent(buttonLayout);

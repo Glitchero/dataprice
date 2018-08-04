@@ -51,6 +51,11 @@ public class Settings {
 	@Column(name = "cores")
 	private Integer cores = 1;
 	
+	@Column(name = "stop_words")
+	private String stopWords = "";
+	
+	
+	
     public Settings() {
     	
     }
@@ -110,6 +115,16 @@ public class Settings {
 
 	public void setCores(Integer cores) {
 		this.cores = cores;
+	}
+
+
+	public String getStopWords() {
+		return stopWords;
+	}
+
+
+	public void setStopWords(String stopWords) {
+		this.stopWords = stopWords;
 	}
 	 
 	 

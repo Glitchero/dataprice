@@ -6,6 +6,8 @@ import com.dataprice.model.entity.Product;
 
 public interface ShowAllProductsService {
 
+	public List<Product> getMatchedProducts(String seller,String sku);
+	
 	public List<Product> getAllProducts();
 	
 	public List<Product> getAllProductsFromSku(String sku);

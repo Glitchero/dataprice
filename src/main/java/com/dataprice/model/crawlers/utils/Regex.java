@@ -210,6 +210,7 @@ public class Regex {
 	public final static String LINIO_IMAGEURL = "<div id=\"image-product\" class=\"swiper-slide\">.*?<img src=\".*?\" data-lazy=\"(.*?)\" alt";
 	public final static String LINIO_SKU = "";
 	public final static String LINIO_SELLER = "<h4>Enviado y Vendido por:</h4>.*?<a class=\"link-lower\" href=.*?>(.*?)</a>";    
+ 
 	
 	
 	public final static String OSOM_ID = "-([0-9]{6}).html";

@@ -39,6 +39,8 @@ import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
@@ -46,6 +48,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.components.grid.MultiSelectionModel;
 import com.vaadin.ui.components.grid.SingleSelectionModel;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
@@ -83,7 +86,7 @@ public class ShowAllProductsLayoutFactory {
 			
 			textFieldWithTwoButtons = new TextFieldWithTwoButtons(VaadinIcons.SEARCH, VaadinIcons.REFRESH, onClick -> searchProduct(), onClick -> refresh());
 			textFieldWithTwoButtons.setWidth("97%");
-			textFieldWithTwoButtons.getTextfield().setPlaceholder("Busca por nombre, sku, upc, etc.");
+			textFieldWithTwoButtons.getTextfield().setPlaceholder("Busca por nombre");
 			
 			if (settings.getMainSeller()==null || products.size()==0) {
 				currentSeller = new Label("<b><font size=\"3\">" + "Seleccione Vendedor en Ajustes" + "</font></b>",ContentMode.HTML);	
@@ -99,15 +102,24 @@ public class ShowAllProductsLayoutFactory {
 
 			productsTable.removeAllColumns();
 			
-			productsTable.addColumn(p -> p.getName()).setCaption("Nombre");
-			productsTable.addColumn(p -> p.getBrand()).setCaption("Marca");
-			productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría");
+			/**
 			if (settings.getKeyType().equals("sku")) {
 				productsTable.addColumn(p -> p.getSku()).setCaption("SKU");
 			}else {
 				productsTable.addColumn(p -> p.getUpc()).setCaption("UPC");
-			} 
+			}
+			*/
 			
+			productsTable.addColumn(p -> products.indexOf(p) + 1).setId("num").setCaption(" # ").setWidth(90);
+
+	        
+			productsTable.addColumn(p -> p.getName()).setId("name").setCaption("Nombre");
+			
+			/**
+			productsTable.addColumn(p -> p.getBrand()).setCaption("Marca");
+			productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría");
+			 
+			*/
 			productsTable.addComponentColumn(p -> {
 				Icon icon = null;
 				if (p.isChecked()) {
@@ -116,12 +128,23 @@ public class ShowAllProductsLayoutFactory {
 				icon = new Icon(VaadinIcons.THIN_SQUARE);
 				}
 				return icon;
-			}).setCaption("").setWidth(50);
+			}).setId("icon").setCaption("").setWidth(50);
+			
+			
+			
 			
 			productsTable.setItems(products);
 		    productsTable.addSelectionListener(this);		    	
-			productsTable.setSizeFull();
-		
+			productsTable.setWidth("100%");
+			productsTable.setHeight("200px");
+			
+			
+	
+			productsTable.getColumn("icon").setSortable(false);
+			
+			
+			
+			((SingleSelectionModel) productsTable.getSelectionModel()).setDeselectAllowed(false);
 			return this;
 		}
 		
@@ -196,8 +219,21 @@ public class ShowAllProductsLayoutFactory {
            		  }
         	  
 		        productsTable.setItems(retrieveFilteredList);
-             }
-		}
+		        
+				productsTable.getColumn("icon").setSortable(false);
+				
+			//Notification.show("SAVE","Se encontraron " + retrieveFilteredList.size() + " resultados en la búsqueda.",Type.HUMANIZED_MESSAGE);
+             }else {
+     			//In case we retrieve nothing
+     		//	Notification.show("SAVE","No se encontraron resultados en la búsqueda.",Type.HUMANIZED_MESSAGE);
+            	 productsTable.setItems(new LinkedList<Product>());
+            	 productsTable.getColumn("icon").setSortable(false);
+     		     }
+		  }else {
+				//In case we retrieve nothing
+			//	Notification.show("SAVE","Por favor, ingrese el nombre del producto.",Type.WARNING_MESSAGE);
+			//	productsTable.setItems(new LinkedList<Product>());
+			    }
 	   }
 
 		@Override
@@ -244,6 +280,11 @@ public class ShowAllProductsLayoutFactory {
 		productsTable.setItems(products);
 		if (currentSelection!=null)
 		    productsTable.select(currentSelection);
+		
+		textFieldWithTwoButtons.getTextfield().setValue("");
+		
+		productsTable.getColumn("icon").setSortable(false);
+		
 	}
 
 

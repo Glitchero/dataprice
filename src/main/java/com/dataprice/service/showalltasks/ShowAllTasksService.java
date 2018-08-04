@@ -11,4 +11,7 @@ public interface ShowAllTasksService {
 	public List<Task> getAllTasksByStatus(String status);
 	
 	public List<Task> getAllTasksFromRetailId(Integer retailId);
+	
+	public Integer getNumOfTasks();
+	
 }

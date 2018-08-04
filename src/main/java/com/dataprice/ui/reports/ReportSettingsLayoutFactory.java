@@ -13,6 +13,8 @@ import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.service.reports.ReportsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
+import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.ui.reports.exporter.CsvExport;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -34,6 +36,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -42,6 +45,9 @@ import com.vaadin.ui.themes.ValoTheme;
 @UIScope
 @org.springframework.stereotype.Component
 public class ReportSettingsLayoutFactory {
+	
+	private ProgressBar progressBar;
+	
 	
 	private Label mainTittle;	
 	
@@ -86,13 +92,18 @@ public class ReportSettingsLayoutFactory {
 			competitorsSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
 			
 			typeOfReport = new ComboBox("Seleccione el tipo de reporte:");
-			typeOfReport.setItems("Matriz de Precios con Indicadores","Matriz de Precios en Porcentajes","Matriz de Precios");
-			typeOfReport.setWidth("50%");
+			typeOfReport.setItems("Distribución de Precios","Matriz de Precios con Indicadores","Matriz de Precios en Porcentajes");
+			typeOfReport.setWidth("36%");
 			
 			generateReport = new Button("Generar Reporte");
 			generateReport.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			generateReport.addClickListener(this);
 			generateReport.setWidth("100%");
+			
+			progressBar = new ProgressBar();
+			progressBar.setCaption("Procesando...");
+			progressBar.setIndeterminate(true);
+			progressBar.setVisible(false);
 			
 			return this;
 		}
@@ -119,7 +130,7 @@ public class ReportSettingsLayoutFactory {
 		
 		public Component layout() {
 	
-			HorizontalLayout h4 = new HorizontalLayout(generateReport);
+			HorizontalLayout h4 = new HorizontalLayout(generateReport,progressBar);
 			h4.setWidth("20%");
 			h4.setMargin(false);
 			
@@ -160,11 +171,30 @@ public class ReportSettingsLayoutFactory {
 			} catch (ValidationException e) {
 				Notification.show("ERROR","Error en los ajustes del reporte",Type.ERROR_MESSAGE);
 				return;
-			}			
+			}	
+			
+		//	generateReportInNewThread(); 
+			
+		//	progressBar.setVisible(true);
+		//	System.out.println("paso por aqui 2");
+		//	generateReport.setVisible(false);
+			
+			
 			generateReportListener.generateReport(reportSettings);
 		}
 
-	
+		
+		private void generateReportInNewThread() {
+			   new Thread(() -> {
+		        	vaadinHybridMenuUI.access(() -> {
+		        		progressBar.setVisible(true);
+		        		generateReport.setVisible(false);
+		            });     
+		        }).start();	
+			   
+		}
+		
+		
 	}
 	
     @Autowired
@@ -178,6 +208,9 @@ public class ReportSettingsLayoutFactory {
 	
 	@Autowired
 	private ShowAllProductsService showAllProductsService;
+	
+	@Autowired
+	private VaadinHybridMenuUI vaadinHybridMenuUI;
 	
 	
 	public Component createComponent(GenerateReportListener generateReportListener,ExportToExcelListener exportToExcelListener) {

@@ -60,6 +60,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.Slider.ValueOutOfBoundsException;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -74,23 +75,18 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 	private class AddSettingsMainLayout extends VerticalLayout implements Button.ClickListener, Upload.Receiver{
 		
 		private Label mainTittle;	
-	//	private ComboBoxWithButton sellersComboBoxWithUpload;
 		private ComboBox sellersComboBox;
-		private RadioButtonGroup<String> keyGroup;	
+			
 		private Slider slider;
 		private Label vertvalue;	
-	//	private TextField postalCode;
 		private Button saveButton;
-		//private Button defaultSetingsButton; 
 		private Label subTittle;
 		private Binder<Settings> binder;
 		private Button loadRetailsButton;
 		private Button loadCatalogueButton;
+		private TextArea stopWords;
 		
 		private RadioButtonGroup<Integer> daysGroup;
-		
-		private RadioButtonGroup<Integer> coresGroup;
-		
 		
 		 public AddSettingsMainLayout init() {
 
@@ -98,26 +94,13 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 
 			subTittle = new Label("<font size=\"2\">Selecciona los ajustes del sistema deseados. </font>",ContentMode.HTML);	
 			
-		//	sellersComboBoxWithUpload = new ComboBoxWithButton("Vendedores disponibles: ", VaadinIcons.CLOUD_UPLOAD,
-	    //            onClick -> openSubWindow("Upload"));
-			
 			sellersComboBox = new ComboBox("Vendedores disponibles:");
 			sellersComboBox.setWidth("50%");
-			sellersComboBox.setItems(sellers);
- 
-			keyGroup = new RadioButtonGroup<>("Seleccione el tipo de clave: ");
-			keyGroup.setItems("sku", "upc");
-			keyGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-			
+			sellersComboBox.setItems(sellers);		
      
 			daysGroup = new RadioButtonGroup<>("Seleccione la última actualización (en días): ");
 			daysGroup.setItems(1, 2,3,4,5,6,7);
 			daysGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-			
-			
-			coresGroup = new RadioButtonGroup<>("Seleccione el número de nucleos: ");
-			coresGroup.setItems(1, 2,3,4,5,6,7);
-			coresGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 			
 	
 			slider =  new Slider(1, 100);
@@ -140,31 +123,27 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			    */
 			});
 			
-	//		postalCode = new TextField("Código postal: ");
-	//		postalCode.setWidth("20%");
-				
-			saveButton = new Button("Save Settings");
+			stopWords = new TextArea("Palabras excluidas en búsqueda de similares:");
+			stopWords.setPlaceholder("Escribe las palabras separadas por comma(,)");
+			stopWords.setWidth("50%");
+			stopWords.setHeight("100%");
+			stopWords.setEnabled(true);			
+			
+			
+			saveButton = new Button("Gurdar Ajustes");
 			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			saveButton.addClickListener(this);
-			saveButton.setWidth("100%");
+			saveButton.setWidth("100%");			
 			
-			
-			loadRetailsButton = new Button("Load Retails");
-			loadRetailsButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+			loadRetailsButton = new Button("Cargar Ajustes Predefinidos");
+			loadRetailsButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			loadRetailsButton.addClickListener(this);
 			loadRetailsButton.setWidth("100%");
-			
-		
-			
+						
 			loadCatalogueButton = new Button("Load Catalogue");
 			loadCatalogueButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			loadCatalogueButton.addClickListener(this);
 			loadCatalogueButton.setWidth("100%");
-			
-		//	defaultSetingsButton = new Button("Restore default values");
-		//	defaultSetingsButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
-		//	defaultSetingsButton.addClickListener(this);
-		//	defaultSetingsButton.setWidth("100%");
 			
 			binder = new Binder<>(Settings.class);
 			return this;
@@ -186,14 +165,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				binder.forField(slider)
 				  .bind("numRetrieved");
 				
-				binder.forField(keyGroup)
-				  .bind("keyType");
-				
 				binder.forField(daysGroup)
 				  .bind("lastUpdateInDays");
 				
-				binder.forField(coresGroup)
-				  .bind("cores");
+				binder.forField(stopWords)
+				  .bind("stopWords");
 				
 				binder.readBean(settings);
 			
@@ -214,9 +190,9 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		    	date.setStyleName("mytheme");
 		   		*/    	
 		    	HorizontalLayout hbuttons= new HorizontalLayout(saveButton,loadRetailsButton);//,loadCatalogueButton);
-		    	hbuttons.setWidth("50%");
+		    	hbuttons.setWidth("40%");
 		    	
-		    	FormLayout form = new FormLayout(sellersComboBox,keyGroup,slider,daysGroup,coresGroup);//,f);//,selector);
+		    	FormLayout form = new FormLayout(sellersComboBox,daysGroup,slider,stopWords);//,f);//,selector);
 		    	form.setWidth("100%");
 		    	
 		    	VerticalLayout vl = new VerticalLayout(mainTittle,subTittle,form,hbuttons);
@@ -275,6 +251,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 
 		private void loadRetails() {
 			 
+			/**
 			Country country = new Country();
 			country.setCountryId(1);
 			country.setCountryName("México");
@@ -412,6 +389,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			addRetailService.saveRetail(retail17);
 			
 			Notification.show("RETAILS","Loaded of Retails Complete",Type.WARNING_MESSAGE);
+			*/
+			
+			daysGroup.setValue(1);
+			slider.setValue(10.0);
+			stopWords.setValue("");
 			
 		}
 
@@ -421,11 +403,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				try {
 					binder.writeBean(settings);
 				} catch (ValidationException e) {
-					Notification.show("ERROR","Gender is not saved",Type.ERROR_MESSAGE);
+					Notification.show("ERROR","Los ajustes no se guardaron",Type.ERROR_MESSAGE);
 					return;
 				}
 				modifySettingsService.modifySettings(settings);
-				Notification.show("SAVE","Settings is saved",Type.WARNING_MESSAGE);
+				Notification.show("GUARDAR","Ajustes guardados satisfactoriamente",Type.WARNING_MESSAGE);
 			
 			}
 		

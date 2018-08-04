@@ -32,6 +32,7 @@ import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
 import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
 import com.vaadin.annotations.Push;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -69,6 +70,7 @@ public class ShowAllTasksLayoutFactory{
 		private Button removeTasksButton;
 		private Button runTasksButton;
 		private Button stopTasksButton;
+		private Button updateTasksButton;
 		
 	//	private ProgressBar cancelProgressBar;  //Tell us to wait for cancell!
 		private ProgressBar removeProgressBar;  //Tell us to wait for cancell!
@@ -89,6 +91,12 @@ public class ShowAllTasksLayoutFactory{
 		//	cancelProgressBar.setCaption("Cancelling...");
 		//	cancelProgressBar.setIndeterminate(true);
 		//	cancelProgressBar.setVisible(false);
+			
+			updateTasksButton = new Button("Actualizar");
+			updateTasksButton.setWidth("100%");
+			updateTasksButton.setIcon(VaadinIcons.REFRESH);
+			updateTasksButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+			updateTasksButton.addClickListener(this);
 			
 			
 			removeProgressBar = new ProgressBar();
@@ -119,7 +127,7 @@ public class ShowAllTasksLayoutFactory{
 			tasksTable.removeAllColumns();
 			tasksTable.setWidth("100%");
 			
-			tasksTable.addColumn(p -> p.getTaskName()).setCaption("Categoría").setId("Mytaskname");
+			tasksTable.addColumn(p -> p.getTaskName()).setCaption("Nombre").setId("Mytaskname");
 			tasksTable.addColumn(p -> p.getRetail().getRetailName()).setCaption("Retail").setId("Myretailname");
 
 			tasksTable.addColumn(t ->
@@ -157,11 +165,11 @@ public class ShowAllTasksLayoutFactory{
 			
 			
 			tasksTable.addColumn(t ->
-		       t.getDownloadedProducts()).setCaption("Num. de Productos").setWidth(162);
+		       t.getDownloadedProducts()).setCaption("Núm.").setWidth(90);
 			
 			tasksTable.addColumn(t ->
 		      t.getRunDateTime(),
-		      new DateRenderer()).setCaption("Tiempo");
+		      new DateRenderer()).setCaption("Fecha y Tiempo de Descarga");
 
 			tasksTable.addColumn(t ->
 		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>Semilla</a>",
@@ -185,31 +193,39 @@ public class ShowAllTasksLayoutFactory{
 			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 			settings = user.getSettings();
 			tasks = showAllTasksService.getAllTasks();    
-			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
-				System.out.println("Los tasks no se están ejecutando");
-				Notification.show("ESTATUS","Los Tasks no se están ejecutando", Type.WARNING_MESSAGE);
-			}else {
-				System.out.println("Los tasks se están ejecutando");
-				Notification.show("ESTATUS","Los Tasks se están ejecutando", Type.WARNING_MESSAGE);
-			}
+			
 			return this;
 		}
 		
 		
+		public void updateBotsInfo() {
+			
+			refreshTable();
+			
+			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
+				System.out.println("Los tasks no se están ejecutando");
+				Notification.show("ESTATUS","Los Bots no se están ejecutando", Type.WARNING_MESSAGE);
+			}else {
+				System.out.println("Los tasks se están ejecutando");
+				Notification.show("ESTATUS","Los Bots se están ejecutando", Type.WARNING_MESSAGE);
+			}
+			
+		}
 		
 		public Component layout() {
 	
 
 			//Remove all buttons when progress bar is activated.
-			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,removeTasksButton,removeProgressBar);
+			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,removeTasksButton,removeProgressBar,updateTasksButton);
 			hbutton.setMargin(false);
+		//	hbutton.setMargin(new MarginInfo(true, false, false, false));
 			hbutton.setWidth("50%");
 
 			VerticalLayout v1 = new VerticalLayout(hbutton,tasksTable);
-			v1.setComponentAlignment(hbutton, Alignment.TOP_RIGHT);
+			v1.setComponentAlignment(hbutton, Alignment.TOP_CENTER);
             v1.setWidth("100%");
-            v1.setMargin(false);
-
+          //  v1.setMargin(false);
+            v1.setMargin(new MarginInfo(true, false, false, false));
 			return v1;
 		}
 	
@@ -223,7 +239,11 @@ public class ShowAllTasksLayoutFactory{
             	if (event.getSource()==this.runTasksButton)	{
             		runTasks();
             	}else {
-            		stopTasks();
+            		if (event.getSource()==this.stopTasksButton)	{
+            			stopTasks();
+            		}else {
+            			updateBotsInfo();
+            		}	           		
             	}
             }			
 		}
@@ -237,7 +257,7 @@ public class ShowAllTasksLayoutFactory{
 			 //   cancelProgressBar.setVisible(true);
 			    vaadinHybridMenuUI.stopTasksExecution();
 			}else {
-				Notification.show("CUIDADO","Los tasks no se están ejecutando", Type.ERROR_MESSAGE);
+				Notification.show("ERROR","No se puede cancelar ya que no hay bots en ejecución", Type.ERROR_MESSAGE);
 			}
 	     }
 		
@@ -285,18 +305,18 @@ public class ShowAllTasksLayoutFactory{
    			    	vaadinHybridMenuUI.access(() -> {
    			    		removeProgressBar.setVisible(false);
    			    		removeTasksButton.setVisible(true);
-   			    		Notification.show("REMOVE","Tasks have been removed", Type.WARNING_MESSAGE);
+   			    		Notification.show("ELIMINAR","Los bots fueron eliminados con éxito", Type.WARNING_MESSAGE);
    		            });
    			    	 
    			     }else {
    			    	vaadinHybridMenuUI.access(() -> {
-   			    		Notification.show("CUIDADO","Seleccione al menos un task para borrar", Type.ERROR_MESSAGE);
+   			    		Notification.show("ERROR","Seleccione al menos un bot para borrar", Type.ERROR_MESSAGE);
    		             });	 
    			     }
    				     
    			}else {
 			    	vaadinHybridMenuUI.access(() -> {
-		   				Notification.show("CUIDADO","No se permite eliminar durante la ejecución", Type.ERROR_MESSAGE);
+		   				Notification.show("ERROR","No se permite eliminar bots durante la ejecución", Type.ERROR_MESSAGE);
    		             });	
    			}   
     	  }).start();	
@@ -306,6 +326,8 @@ public class ShowAllTasksLayoutFactory{
 
 
 		private void runTasks() {
+			
+         if (showAllTasksService.getNumOfTasks()!=0) {
 
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
       		    
@@ -319,8 +341,8 @@ public class ShowAllTasksLayoutFactory{
 					// Send notification
  
 					 NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-						.withCaption("Test")
-						.withDescription(tasksTable.getSelectedItems().size() + " tasks have been submitted")
+						.withCaption("Notificacíon")
+						.withDescription(tasksTable.getSelectedItems().size() + " bots se van a ejecutar")
 						.withPriority(ENotificationPriority.MEDIUM)
 						.withIcon(VaadinIcons.INFO)
 						.withCloseButton()
@@ -332,8 +354,8 @@ public class ShowAllTasksLayoutFactory{
     					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);  
     					
     					NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
- 						.withCaption("Test")
- 						.withDescription("All Tasks have been submitted")
+ 						.withCaption("Notificacíon")
+ 						.withDescription("Todos los bots se van a ejecutar")
  						.withPriority(ENotificationPriority.MEDIUM)
  						.withIcon(VaadinIcons.INFO)
  						.withCloseButton()
@@ -341,8 +363,13 @@ public class ShowAllTasksLayoutFactory{
                 }	
 				
 			}else {
-				Notification.show("CUIDADO","Los tasks se están ejecutando", Type.ERROR_MESSAGE);
-			}	     
+				Notification.show("ERROR","Los bots se están ejecutando", Type.ERROR_MESSAGE);
+			}
+         }else {
+				Notification.show("ERROR","No hay bots ingresados", Type.ERROR_MESSAGE);
+			}
+         
+         
 		}
 
         
@@ -438,8 +465,8 @@ public class ShowAllTasksLayoutFactory{
 	            	//	cancelProgressBar.setVisible(false);
               		//  stopTasksButton.setVisible(true);
               		    NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-              	    	  .withCaption("Test")
-    				      .withDescription("Tasks stopped")
+              	    	  .withCaption("Notificación")
+    				      .withDescription("Los bots fueron interrumpidos")
     				      .withPriority(ENotificationPriority.HIGH)
     				      .withIcon(VaadinIcons.INFO)
     				      .withCloseButton()

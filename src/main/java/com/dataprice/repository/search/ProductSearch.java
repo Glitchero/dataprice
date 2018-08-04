@@ -14,9 +14,11 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.util.NumericUtils;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -106,6 +108,8 @@ public class ProductSearch {
 			Query query1 = new TermQuery(new Term("seller", wantedSeller));	
 			booleanQueryfil.add(query1, Occur.SHOULD); //If we have one wantedSeller it has to be must!!
 		}
+		
+		//
 		Filter filterQuery = new QueryWrapperFilter(booleanQueryfil.build());	
 
 		finalQuery.add(filterQuery, Occur.FILTER);//Occur filter needed for setting the filter

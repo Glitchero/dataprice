@@ -20,6 +20,10 @@ import com.dataprice.model.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product,String>{
 
+	@Query("select p from Product p where p.seller<>:sellerName and p.checked=1 and p.sku=:skuKey")
+	List<Product> getMatchedProducts(@Param("sellerName") String sellerName,@Param("skuKey") String skuKey);
+	
+	
 	@Query("select p from Product p order by p.name")
 	List<Product> getAllProducts();	
 	

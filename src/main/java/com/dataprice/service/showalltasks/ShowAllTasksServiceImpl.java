@@ -30,5 +30,11 @@ public class ShowAllTasksServiceImpl implements ShowAllTasksService{
 	public List<Task> getAllTasksFromRetailId(Integer retailId) {
 		return taskRepository.getAllTasksFromRetailId(retailId);
 	}
+	
+	@Override
+	public Integer getNumOfTasks() {
+		return taskRepository.getNumOfTasks();
+	}
+	
 
 }

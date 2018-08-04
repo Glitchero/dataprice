@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
 
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.ContentParser;
@@ -19,12 +20,7 @@ import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
 
-/**
- * Esta Inconcluso, falta la parte de la paginación!!!. Además, linio no precisa.
- * @author rene
- *
- */
-
+@Component
 public class Linio extends AbstractCrawler{
 
 	@Override
@@ -41,19 +37,36 @@ public class Linio extends AbstractCrawler{
 			Thread.sleep(1000);
 			
 			//Navigation
+		
+			String seller = driver.findElement(By.cssSelector("h2.section-title")).getText();
 			
-			 for (WebElement we : driver.findElements(By.cssSelector("div.catalogue-product.row a"))) {	
-				System.out.println(we.getAttribute("href"));
-				linksList.add(new CrawlInfo(we.getAttribute("href")));
-		        }
-		//	 a.page-link.page-link-icon  One way to solve the proble could be finishing whene there are only two.
-			
-			 while (!(driver.findElements(By.cssSelector("li#pagination_next_bottom.disabled.pagination_next")).size()>0)){		
-					driver.findElement(By.cssSelector("li#pagination_next_bottom.pagination_next a")).click();	
-					Thread.sleep(Configuration.DRIVERDELAY);
-					for (WebElement we : driver.findElements(By.cssSelector("div.catalogue-product.row a"))) {	
-				        System.out.println(we.getAttribute("href"));
-				        linksList.add(new CrawlInfo(we.getAttribute("href")));
+		
+			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
+				//System.out.println(we.getAttribute("href"));
+				linksList.add(new CrawlInfo(we.getAttribute("href"),"",0.00,seller));
+		     }
+
+			 driver.findElement(By.cssSelector("a.page-link.page-link-icon")).click();	
+			 Thread.sleep(Configuration.DRIVERDELAY);
+			 
+			 
+			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
+				 linksList.add(new CrawlInfo(we.getAttribute("href"),"",0.00,seller));
+			  }
+			 
+			 
+			 while (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>0){	
+				    if (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>2) {
+				    	driver.findElements(By.cssSelector("a.page-link.page-link-icon")).get(2).click();	
+						Thread.sleep(Configuration.DRIVERDELAY);
+				    }else {
+				    	System.out.println("Break the loop");
+				    	break;
+				    }
+					
+				    for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {		
+				        //System.out.println(we.getAttribute("href"));
+				    	linksList.add(new CrawlInfo(we.getAttribute("href"),"",0.00,seller));
 		            }					
 			 }		 
 			
@@ -77,7 +90,7 @@ public class Linio extends AbstractCrawler{
 	@Override
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
-			   
+			System.out.println("-------------------------------------------------------"); 
 		    System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
@@ -116,24 +129,32 @@ public class Linio extends AbstractCrawler{
 		
 			price = price.replace(",", "");
 			price = price.replace("$", "");
+			price = price.replaceAll("[^\\d.]", "");
 			price = price.trim();
 			
 			
 			String imageUrl = ContentParser.parseContent(urlContent, Regex.LINIO_IMAGEURL);
-			 System.out.println(imageUrl);
+			 
 			if (imageUrl == null) {  
 				return new Product();
 			}
-			imageUrl = "http://expoperfumes.com.mx" + imageUrl;
+						
+			imageUrl = "https:" + imageUrl;
+			System.out.println(imageUrl);
 			
-
+	//		String seller = ContentParser.parseContent(urlContent, Regex.LINIO_SELLER);	
+	//		if (seller == null) {  
+	//			return new Product();
+	//		}
+			System.out.println(crawlInfo.getSeller());
+			
 			String sku = "";
 			
 			String brand = "";
 		
 			String upc = "";			
 
-		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+		    return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		
 			
 		} catch (Exception e) {
