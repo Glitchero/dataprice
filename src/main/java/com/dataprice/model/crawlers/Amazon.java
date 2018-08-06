@@ -21,6 +21,17 @@ import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
+/**
+ * Maybe the key should be:
+ * 
+ * SKU + Seller + getCrawlingStrategy() instead of id+getCrawlingStrategy() (only for cases where id is not unique like amazon)
+ * , in amazon for sure the key should be AmazonId + Seller + getCrawlingStrategy()
+ * 
+ * For seller: there are only two options: getCrawlingStrategy() or crawlInfo.getSeller(). The getseller is only for stores, the other one is for categories or search.
+ * @author tatua
+ *
+ */
+
 @Component
 public class Amazon extends AbstractCrawler{
 

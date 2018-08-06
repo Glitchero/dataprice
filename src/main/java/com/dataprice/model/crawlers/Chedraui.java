@@ -111,12 +111,17 @@ public class Chedraui extends AbstractCrawler{
 			name = name.trim();
 			name = Jsoup.parse(name).text();
 			
+			/**
 			String description = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_DESCRIPTION);
 			if (description==null)
 				description = "";  //Unlike name, sometimes we don't have a description.
 			description = description.trim();
 			description = Jsoup.parse(description).text();
-			 		 
+			*/ 		 
+			
+			String description = "";
+			
+			
 			String price = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_PRICE); 
 			
 			if (price == null) {  
@@ -138,10 +143,13 @@ public class Chedraui extends AbstractCrawler{
 			String sku = "";
 		//	String upc = id;
 			String upc = "";
-			
+		
+			/**
 			String brand = ContentParser.parseContent(urlContent, Regex.CHEDRAUI_BRAND);
 			if (brand==null)
 				brand = "";  //Unlike name, sometimes we don't have a description.
+            */
+			String brand = "";
 
 			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),task,name,description,Double.valueOf(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,task.getTaskName());
 		} catch (Exception e) {

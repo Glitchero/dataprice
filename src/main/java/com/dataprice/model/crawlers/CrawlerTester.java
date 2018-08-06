@@ -56,7 +56,7 @@ public class CrawlerTester {
 		}
 	    */
 		
-		
+	
 		Task task = new Task();
 		task.setSeed("https://www.linio.com.mx/s/perfume-nation");
 		

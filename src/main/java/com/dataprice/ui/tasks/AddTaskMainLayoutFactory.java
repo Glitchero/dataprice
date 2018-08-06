@@ -70,15 +70,15 @@ public class AddTaskMainLayoutFactory {
 	    	task = new Task();
 	    	
 	    	taskName = new TextField("Nombre del Bot:");
-	    	taskName.setPlaceholder("Escribe el nombre que mejor represente a tu bot");
+	    //	taskName.setPlaceholder("Escribe el nombre que mejor represente a tu bot");
 	    	taskName.setWidth("35%");
 	    	
 	    	retail = new ComboBox("Retail/Marketplace:");
-	    	retail.setPlaceholder("Selecciona el retail o marketplace");
+	    //	retail.setPlaceholder("Selecciona el retail o marketplace");
 	    	retail.setWidth("35%");
 	    	
 	    	seed = new TextField("Semilla del Bot:");
-	    	seed.setPlaceholder("Copia y pega la url donde se encuentran los productos que deseas descargar");
+	    //	seed.setPlaceholder("Copia y pega la url donde se encuentran los productos que deseas descargar");
 	    	seed.setWidth("70%");
 	    	
 	    	

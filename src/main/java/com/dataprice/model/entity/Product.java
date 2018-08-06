@@ -76,7 +76,7 @@ public class Product {
 	@Column(name = "image_url")
 	private String imageUrl="";
 	
-	@Column(name = "product_url")
+	@Column(name = "product_url",length = 512)
 	private String productUrl="";
 	
 	@Field(index=Index.YES, analyze=Analyze.NO)

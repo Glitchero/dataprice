@@ -35,9 +35,11 @@ public class Regex {
 	public final static String MERCADOLIBRE_IMAGEURL = "<figure class=\"gallery-image-container.*?<a href=\"(.*?)\" class=\"gallery-trigger";
 	public final static String MERCADOLIBRE_SKU = "<strong>Modelo</strong>.*?<span>(.*?)</span>";
 	public final static String MERCADOLIBRE_SELLER ="<p class=\"title\">(.*?)</p>";
+	public final static String MERCADOLIBRE_SPECIALSELLER ="<a href=\"https://perfil.mercadolibre.com.mx/(.*?)\"";
 	
 	
-	
+			
+			
 	public final static String AROME_ID = "id=\"product_code.*?\">(.*?)<";
 	public final static String AROME_NAME = "<h1 class=\"ty-mainbox-title\" ><label itemprop='name'>(.*?)</label></h1>";
 	public final static String AROME_DESCRIPTION = "";
@@ -210,6 +212,7 @@ public class Regex {
 	public final static String LINIO_IMAGEURL = "<div id=\"image-product\" class=\"swiper-slide\">.*?<img src=\".*?\" data-lazy=\"(.*?)\" alt";
 	public final static String LINIO_SKU = "";
 	public final static String LINIO_SELLER = "<h4>Enviado y Vendido por:</h4>.*?<a class=\"link-lower\" href=.*?>(.*?)</a>";    
+	public final static String LINIO_SPECIALSELLER = "<h4 class=\"seller-linio\">(.*?)</h4>";  
  
 	
 	

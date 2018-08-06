@@ -24,8 +24,10 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -115,29 +117,36 @@ public class TaskExportImportFactory {
 		}
 
 		private void importBots() {
+			if (!importArea.isEmpty()) {
 			
 			try {
 				importedTasks = new Gson().fromJson(importArea.getValue(), new TypeToken<List<TaskJson>>(){}.getType());
 				
 				NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-				.withCaption("Import success")
-				.withDescription("Bots imported")
-				.withPriority(ENotificationPriority.HIGH)
+				.withCaption("Notificación")
+				.withDescription("Importación exitosa")
+				.withPriority(ENotificationPriority.MEDIUM)
 				.withIcon(VaadinIcons.INFO)
 				.withCloseButton()
 				.build();	
+				
+				loadTasks();
+				
 			} catch (Exception e2) {
 				NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-					.withCaption("Import failed")
-					.withDescription("The entry was rejected")
-					.withPriority(ENotificationPriority.MEDIUM)
+					.withCaption("Notificación")
+					.withDescription("Importación rechazada")
+					.withPriority(ENotificationPriority.HIGH)
 					.withIcon(VaadinIcons.INFO)
 					.withCloseByHide() 
 					.build();
 			}
 			
-			loadTasks();
+			importArea.setValue("");
 			
+			}else {
+				Notification.show("ERROR","No hay entrada JSON", Type.ERROR_MESSAGE);
+			}
 		}
 
 		/**

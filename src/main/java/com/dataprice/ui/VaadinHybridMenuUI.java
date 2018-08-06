@@ -317,17 +317,17 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(homeButton);
-           */
+           
         
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
-				.withCaption("Administrar Bots")
+				.withCaption("Administrar de Bots")
 				.withIcon(VaadinIcons.BUG)
 				.withNavigateTo(TaskLayoutFactory.class)
 				.build();
 
 		hybridMenu.addLeftMenuButton(tasksButton);
 		
-		/**
+		
 		MenuButton exportButton = LeftMenuButtonBuilder.get()
 				.withCaption("Exportar/Importar")
 				.withIcon(VaadinIcons.REFRESH)
@@ -337,8 +337,28 @@ public class VaadinHybridMenuUI extends UI {
 		hybridMenu.addLeftMenuButton(exportButton);
 		*/
 		
+		MenuSubMenu bots = LeftMenuSubMenuBuilder.get()
+				.setCaption("Bots")
+				.setIcon(VaadinIcons.BUG)
+				.setConfig(hybridMenu.getConfig())
+				.build(hybridMenu);
+
+		bots.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Administrar de Bots")
+				.withIcon(VaadinIcons.AUTOMATION)
+				.withNavigateTo(TaskLayoutFactory.class)
+				.build());
+
+		bots.addLeftMenuButton(LeftMenuButtonBuilder.get()
+				.withCaption("Exportar/Importar Bots")
+				.withIcon(VaadinIcons.REFRESH)
+				.withNavigateTo(TaskExportImportLayoutFactory.class)
+				.build());
+		
+		
+		
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
-		.withCaption("Products")
+		.withCaption("Emparejar Productos")
 		.withIcon(VaadinIcons.CART)
 		.withNavigateTo(ProductLayoutFactory.class)
 		.build();
@@ -347,7 +367,7 @@ public class VaadinHybridMenuUI extends UI {
 
        
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Settings")
+				.withCaption("Ajustes del Sistema")
 				.withIcon(VaadinIcons.COGS)
 				.withNavigateTo(SettingsLayoutFactory.class)
 				.build();
@@ -356,7 +376,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		
 		MenuButton reportsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Reports")
+				.withCaption("Reportes")
 				.withIcon(VaadinIcons.CHART_GRID)
 				.withNavigateTo(ReportsMainLayout.class)
 				.build();

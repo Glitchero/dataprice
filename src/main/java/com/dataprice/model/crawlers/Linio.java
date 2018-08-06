@@ -19,6 +19,16 @@ import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
+/**
+ * Maybe the key should be:
+ * 
+ * SKU + Seller + getCrawlingStrategy() instead of id+getCrawlingStrategy() (only for cases where id is not unique like amazon)
+ * , in amazon for sure the key should be AmazonId + Seller + getCrawlingStrategy()
+ * 
+ * For seller: there are only two options: getCrawlingStrategy() or crawlInfo.getSeller(). The getseller is only for stores, the other one is for categories or search.
+ * @author tatua
+ *
+ */
 
 @Component
 public class Linio extends AbstractCrawler{
@@ -37,38 +47,54 @@ public class Linio extends AbstractCrawler{
 			Thread.sleep(1000);
 			
 			//Navigation
-		
-			String seller = driver.findElement(By.cssSelector("h2.section-title")).getText();
 			
-		
-			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
-				//System.out.println(we.getAttribute("href"));
-				linksList.add(new CrawlInfo(we.getAttribute("href"),"",0.00,seller));
-		     }
+			if (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>0) {
+				//In case we have pagination 
+				
+				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
+						linksList.add(new CrawlInfo(we.getAttribute("href")));
+				     }
 
-			 driver.findElement(By.cssSelector("a.page-link.page-link-icon")).click();	
-			 Thread.sleep(Configuration.DRIVERDELAY);
-			 
-			 
-			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
-				 linksList.add(new CrawlInfo(we.getAttribute("href"),"",0.00,seller));
-			  }
-			 
-			 
-			 while (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>0){	
-				    if (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>2) {
-				    	driver.findElements(By.cssSelector("a.page-link.page-link-icon")).get(2).click();	
-						Thread.sleep(Configuration.DRIVERDELAY);
-				    }else {
-				    	System.out.println("Break the loop");
-				    	break;
-				    }
-					
-				    for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {		
-				        //System.out.println(we.getAttribute("href"));
-				    	linksList.add(new CrawlInfo(we.getAttribute("href"),"",0.00,seller));
-		            }					
-			 }		 
+					 driver.findElement(By.cssSelector("a.page-link.page-link-icon")).click();	
+					 Thread.sleep(Configuration.DRIVERDELAY);
+					 
+					 
+					 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
+						 linksList.add(new CrawlInfo(we.getAttribute("href")));
+					  }
+					 
+					 int con = 0;
+					 while (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>0){	
+						    if (driver.findElements(By.cssSelector("a.page-link.page-link-icon")).size()>2) {
+						    	driver.findElements(By.cssSelector("a.page-link.page-link-icon")).get(2).click();	
+								Thread.sleep(Configuration.DRIVERDELAY);
+						    }else {
+						    	System.out.println("Break the loop");
+						    	break;
+						    }
+							
+						    for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {		
+						        //System.out.println(we.getAttribute("href"));
+						    	linksList.add(new CrawlInfo(we.getAttribute("href")));
+				            }
+						    con ++;
+						    if (con==30) {
+						    	break;
+						    }
+					 }	
+				
+			}else {
+				//In case we don't have pagination
+				
+				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
+						//System.out.println(we.getAttribute("href"));
+						linksList.add(new CrawlInfo(we.getAttribute("href")));
+				 }
+				 
+				
+			}
+		
+	 
 			
 			//Destroy
 			 PhantomFactory.getInstance().removeDriver();		
@@ -90,8 +116,8 @@ public class Linio extends AbstractCrawler{
 	@Override
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
 		try {
-			System.out.println("-------------------------------------------------------"); 
-		    System.out.println("url: " + crawlInfo.getUrl());
+		  //System.out.println("-------------------------------------------------------"); 
+		  //System.out.println("url: " + crawlInfo.getUrl());
 		    PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
@@ -107,22 +133,25 @@ public class Linio extends AbstractCrawler{
 			String urlContent = urlResponse.getContent(); 
 
 			String id = ContentParser.parseContent(urlContent, Regex.LINIO_ID);
-			System.out.println(id);
+			//System.out.println(id);
 			if (id==null)
 				return new Product();
 			
 			String name = ContentParser.parseContent(urlContent, Regex.LINIO_NAME);
-			System.out.println(name);
+			//System.out.println(name);
 			if (name==null)
 				return new Product();
 			name = name.trim();
 			name = Jsoup.parse(name).text();
 			
-			
+			if (name.length()>254) {
+				name = name.substring(0, 253);
+			}
+			   
 			String description = "";
 			
 			String price = ContentParser.parseContent(urlContent, Regex.LINIO_PRICE); 	
-			System.out.println(price);
+			//System.out.println(price);
 			if (price == null) {  
 				return new Product();
 			}
@@ -140,22 +169,29 @@ public class Linio extends AbstractCrawler{
 			}
 						
 			imageUrl = "https:" + imageUrl;
-			System.out.println(imageUrl);
+			//System.out.println(imageUrl);
 			
-	//		String seller = ContentParser.parseContent(urlContent, Regex.LINIO_SELLER);	
-	//		if (seller == null) {  
-	//			return new Product();
-	//		}
-			System.out.println(crawlInfo.getSeller());
+			String seller = ContentParser.parseContent(urlContent, Regex.LINIO_SELLER);
+			
+			if (seller == null) {  
+				seller = ContentParser.parseContent(urlContent, Regex.LINIO_SPECIALSELLER);	
+			}
+			
+			if (seller == null) { 
+				return new Product();
+			}
+			
+			seller = seller.replace("Enviado y Vendido por proveedor Marketplace", "Proveedor de Linio");	
+			seller = Jsoup.parse(seller).text();
+			//System.out.println(seller);
 			
 			String sku = "";
 			
 			String brand = "";
 		
 			String upc = "";			
-
-		    return new Product(id+getCrawlingStrategy(),id,crawlInfo.getSeller(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		
+		    return new Product(id+getCrawlingStrategy(),id,seller,taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());			
 			
 		} catch (Exception e) {
 			return null;

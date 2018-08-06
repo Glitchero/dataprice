@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -30,6 +32,7 @@ import com.dataprice.ui.reports.exporter.ExcelExport;
 import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
 import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
 import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.MarginInfo;
@@ -54,7 +57,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
-
 @Push
 @UIScope
 @org.springframework.stereotype.Component
@@ -64,6 +66,7 @@ public class ShowAllTasksLayoutFactory{
 	private GridCellFilter filter;
 	private Grid<Task> tasksTable;	
 	private Settings settings;
+	private AtomicInteger isCanceledComplete;
 	
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener{
 
@@ -72,7 +75,8 @@ public class ShowAllTasksLayoutFactory{
 		private Button stopTasksButton;
 		private Button updateTasksButton;
 		
-	//	private ProgressBar cancelProgressBar;  //Tell us to wait for cancell!
+		
+		private ProgressBar cancelProgressBar;  //Tell us to wait for cancell!
 		private ProgressBar removeProgressBar;  //Tell us to wait for cancell!
 
 		private TaskFinishedListener taskFinishedListener;
@@ -87,10 +91,10 @@ public class ShowAllTasksLayoutFactory{
 
 		public ShowAllTasksLayout init() {
 
-		//	cancelProgressBar = new ProgressBar();
-		//	cancelProgressBar.setCaption("Cancelling...");
-		//	cancelProgressBar.setIndeterminate(true);
-		//	cancelProgressBar.setVisible(false);
+			cancelProgressBar = new ProgressBar();
+			cancelProgressBar.setCaption("Cancelando...");
+			cancelProgressBar.setIndeterminate(true);
+			cancelProgressBar.setVisible(false);
 			
 			updateTasksButton = new Button("Actualizar");
 			updateTasksButton.setWidth("100%");
@@ -216,7 +220,7 @@ public class ShowAllTasksLayoutFactory{
 	
 
 			//Remove all buttons when progress bar is activated.
-			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,removeTasksButton,removeProgressBar,updateTasksButton);
+			HorizontalLayout hbutton = new HorizontalLayout(runTasksButton,stopTasksButton,cancelProgressBar,removeTasksButton,removeProgressBar,updateTasksButton);
 			hbutton.setMargin(false);
 		//	hbutton.setMargin(new MarginInfo(true, false, false, false));
 			hbutton.setWidth("50%");
@@ -255,32 +259,47 @@ public class ShowAllTasksLayoutFactory{
 			if (vaadinHybridMenuUI.isTaskSetRunning()) {
 			 //   stopTasksButton.setVisible(false);
 			 //   cancelProgressBar.setVisible(true);
-			    vaadinHybridMenuUI.stopTasksExecution();
+			 //   vaadinHybridMenuUI.stopTasksExecution();
+				  stopTasksInNewThread();
 			}else {
 				Notification.show("ERROR","No se puede cancelar ya que no hay bots en ejecución", Type.ERROR_MESSAGE);
 			}
 	     }
 		
 			
-/**
+
 		private void stopTasksInNewThread() {
 			new Thread(() -> {	
+				    isCanceledComplete = new AtomicInteger(0);
 				
-				if (vaadinHybridMenuUI.isTaskSetRunning()) {
 					vaadinHybridMenuUI.access(() -> {
 						 stopTasksButton.setVisible(false);
 						 cancelProgressBar.setVisible(true);
    		             });
+					
+					
 					 vaadinHybridMenuUI.stopTasksExecution();		 
-				}else {
-					vaadinHybridMenuUI.access(() -> {
-						Notification.show("CUIDADO","Los tasks no se están ejecutando", Type.ERROR_MESSAGE);
-   		             });	
-				}  				
+ 				/**
+					 try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				*/	 
+					 while (isCanceledComplete.get()==0) {
+						 //Do nothing
+					 }
+					 
+					 vaadinHybridMenuUI.access(() -> {
+						 stopTasksButton.setVisible(true);
+						 cancelProgressBar.setVisible(false);
+   		             });
+					 
 				
 			}).start();	
 		}
-*/
+
 
 
 		private void deleteTasks() {
@@ -454,7 +473,8 @@ public class ShowAllTasksLayoutFactory{
                	    System.out.println("Total time execution: " + totalTime);
 	                System.out.println("....run()::Extraction::ended");
 	                
-	            } catch (InterruptedException x) {	  
+	            } catch (InterruptedException x) {		            	
+	            	
 	            	executor.shutdownNow();
 	            	while (!executor.isTerminated())
 	        		  {
@@ -462,18 +482,19 @@ public class ShowAllTasksLayoutFactory{
 	        		  }
 	            	
 	            	vaadinHybridMenuUI.access(() -> {
-	            	//	cancelProgressBar.setVisible(false);
-              		//  stopTasksButton.setVisible(true);
-              		    NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
+          		           NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
               	    	  .withCaption("Notificación")
     				      .withDescription("Los bots fueron interrumpidos")
     				      .withPriority(ENotificationPriority.HIGH)
     				      .withIcon(VaadinIcons.INFO)
     				      .withCloseButton()
     				      .build();
+						 
   		             });
+	            	
 	            	refreshTable();
-	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");                
+	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");
+	                isCanceledComplete.incrementAndGet();
 	                return;
 	                
 	            } catch (Exception ex) {
