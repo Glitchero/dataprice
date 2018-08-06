@@ -31,7 +31,7 @@ public class Initializer {
 	private AddRetailService addRetailService;
 		
 	private String password = "Harbinger1945";
-    private String adminUsername = "admin";
+    private String adminUsername = "12345";
       
       @PostConstruct
       private void init()

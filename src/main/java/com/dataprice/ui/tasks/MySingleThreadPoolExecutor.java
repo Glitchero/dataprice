@@ -31,5 +31,8 @@ public class MySingleThreadPoolExecutor {
 		return job;
 	}
     
+	public void reStart() {
+		this.job = null;
+	}
 
 }

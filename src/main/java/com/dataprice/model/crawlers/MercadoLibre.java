@@ -1,8 +1,6 @@
 package com.dataprice.model.crawlers;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -116,7 +114,7 @@ public class MercadoLibre extends AbstractCrawler{
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
-		//	System.out.println(crawlInfo.getUrl());
+			System.out.println(crawlInfo.getUrl());
 			if (urlResponse == null){  //Task fatal error.		
 				return null;
 	    	}

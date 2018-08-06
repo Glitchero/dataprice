@@ -72,7 +72,7 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	 * @return
 	 */
 
-	@Query("select p.seller from Product p where p.seller<>:sellerName group by p.seller")
+	@Query("select p.seller from Product p where p.seller<>:sellerName and p.checked=1 group by p.seller")
 	List<String> getCompetitorsList(@Param("sellerName") String sellerName);
 	
 	

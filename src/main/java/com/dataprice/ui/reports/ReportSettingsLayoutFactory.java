@@ -114,14 +114,14 @@ public class ReportSettingsLayoutFactory {
 			User user = userServiceImpl.getUserByUsername("admin");
 			settings = user.getSettings();
 						
-			//competitors = reportsService.getCompetitorsList(settings.getMainSeller());
-			
+			competitors = reportsService.getCompetitorsList(settings.getMainSeller());
+		/**	
 			if (settings.getKeyType().equals("sku")) {
 				competitors = dashboardService.getCompetitorsBySku(settings.getMainSeller());
 			}else {
 				competitors = dashboardService.getCompetitorsByUpc(settings.getMainSeller());
 			}
-				
+		*/		
 				
 			return this;
 		}

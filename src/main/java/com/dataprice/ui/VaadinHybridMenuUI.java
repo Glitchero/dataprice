@@ -9,6 +9,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Alignment;
@@ -26,6 +27,7 @@ import com.dataprice.ui.tasks.TaskExportImportLayoutFactory;
 import com.dataprice.ui.tasks.TaskLayoutFactory;
 import com.dataprice.ui.user.UserLayoutFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -96,7 +98,9 @@ public class VaadinHybridMenuUI extends UI {
 
 	public static final String NAME = "/ui";
 	
-	private Future<?> job;  //before it was equal to null 
+//	private Future<?> job;  //before it was equal to null 
+
+	private MySingleThreadPoolExecutor mySingleThreadPoolExecutor;
 	
 	private final SpringViewProvider viewProvider;
 	private final NavigationManager navigationManager;
@@ -114,7 +118,12 @@ public class VaadinHybridMenuUI extends UI {
 	protected void init(VaadinRequest vaadinRequest) {
 		UI.getCurrent().setPollInterval(5000);
 
-		job = MySingleThreadPoolExecutor.getInstance().getCurrentJob();
+		mySingleThreadPoolExecutor = MySingleThreadPoolExecutor.getInstance();
+	//	Future<?> job = (Future<?>) UI.getCurrent().getSession().getAttribute("myJob");
+	//	if (job==null) {
+	//	   job = MySingleThreadPoolExecutor.getInstance().getCurrentJob();
+	//	   UI.getCurrent().getSession().setAttribute("myJob", job);
+	//	}
 		
 		MenuConfig menuConfig = new MenuConfig();
 		menuConfig.setDesignItem(DesignItem.getWhiteBlueDesign());
@@ -309,7 +318,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		if(!hasRole(Role.Retailer.name())) {
 		//If is admin user
-			/**
+		/**	
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.DASHBOARD)
@@ -317,10 +326,10 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(homeButton);
-           
+           */
         
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
-				.withCaption("Administrar de Bots")
+				.withCaption("Bots")
 				.withIcon(VaadinIcons.BUG)
 				.withNavigateTo(TaskLayoutFactory.class)
 				.build();
@@ -335,8 +344,8 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(exportButton);
-		*/
 		
+		/**
 		MenuSubMenu bots = LeftMenuSubMenuBuilder.get()
 				.setCaption("Bots")
 				.setIcon(VaadinIcons.BUG)
@@ -354,7 +363,7 @@ public class VaadinHybridMenuUI extends UI {
 				.withIcon(VaadinIcons.REFRESH)
 				.withNavigateTo(TaskExportImportLayoutFactory.class)
 				.build());
-		
+		*/
 		
 		
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
@@ -432,58 +441,37 @@ public class VaadinHybridMenuUI extends UI {
 	 *
 	 */
 	
-	/*
-	 * Hard Coded way to solve task execution from a button!
-	 * 
-	 
+	
 	public void startTasksExecution(Runnable run) {
 		
-	   if (job==null) {		   
-		   job = ThreadPoolInit.executorService.submit(run);			    
-	   }
-	   
-	   if (job.isDone()) {
-		   job = ThreadPoolInit.executorService.submit(run);		    
-	   }
-	 
-	}
-	*/
-	
-	
-	public void startTasksExecution(Runnable run) {
-		   //Happens only the first time 
-		   if (job==null) {		   
-			   job = MySingleThreadPoolExecutor.getInstance().runTask(run);			    
-		   }
-		   
-		   if (job.isDone()) {
-			   job = MySingleThreadPoolExecutor.getInstance().runTask(run);			    
+		Future<?> job = mySingleThreadPoolExecutor.getCurrentJob();
+		if (job==null) {
+			job = mySingleThreadPoolExecutor.runTask(run);	
 		   }
 		 
 		}
 	
 	
 	public void stopTasksExecution(){
-		if (job!=null) {
 		
-			if (!job.isDone()) {
-				job.cancel(true);	
-			}
+		Future<?> job = mySingleThreadPoolExecutor.getCurrentJob();
+		
+		if (job!=null) {
+				job.cancel(true);
 		}
     }
 	
 
 	public boolean isTaskSetRunning(){
-		if (job!=null) {
+		Future<?> job = mySingleThreadPoolExecutor.getCurrentJob();
 		
-			if (!job.isDone()) {
+		if (job!=null) {
 				return true;
-			}
 		}
 		
 		return false;
     }
-	
+
 	
 	//@WebServlet(urlPatterns = "/*")
     //@VaadinServletConfiguration(ui = VaadinHybridMenuUI.class, productionMode = false)

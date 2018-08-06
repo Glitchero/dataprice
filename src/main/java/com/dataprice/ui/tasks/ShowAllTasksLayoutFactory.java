@@ -35,6 +35,7 @@ import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
@@ -66,7 +67,8 @@ public class ShowAllTasksLayoutFactory{
 	private GridCellFilter filter;
 	private Grid<Task> tasksTable;	
 	private Settings settings;
-	private AtomicInteger isCanceledComplete;
+//	private AtomicInteger isCanceledComplete;
+	private MySingleThreadPoolExecutor mySingleThreadPoolExecutor;
 	
 	private class ShowAllTasksLayout extends VerticalLayout implements Button.ClickListener{
 
@@ -270,7 +272,7 @@ public class ShowAllTasksLayoutFactory{
 
 		private void stopTasksInNewThread() {
 			new Thread(() -> {	
-				    isCanceledComplete = new AtomicInteger(0);
+				  //  isCanceledComplete = new AtomicInteger(0);
 				
 					vaadinHybridMenuUI.access(() -> {
 						 stopTasksButton.setVisible(false);
@@ -279,16 +281,15 @@ public class ShowAllTasksLayoutFactory{
 					
 					
 					 vaadinHybridMenuUI.stopTasksExecution();		 
- 				/**
-					 try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				*/	 
-					 while (isCanceledComplete.get()==0) {
-						 //Do nothing
+ 						 
+					 while (vaadinHybridMenuUI.isTaskSetRunning()) {
+						 //Wait a second
+						 try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 					 }
 					 
 					 vaadinHybridMenuUI.access(() -> {
@@ -467,7 +468,8 @@ public class ShowAllTasksLayoutFactory{
       				    .build();
   		             });
 	        		*/
-	        		
+	        	
+	        		mySingleThreadPoolExecutor.getInstance().reStart();
 	                long endTime   = System.currentTimeMillis();
                	    long totalTime = endTime - startTime;
                	    System.out.println("Total time execution: " + totalTime);
@@ -494,13 +496,16 @@ public class ShowAllTasksLayoutFactory{
 	            	
 	            	refreshTable();
 	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");
-	                isCanceledComplete.incrementAndGet();
+	    	        
+	                mySingleThreadPoolExecutor.getInstance().reStart();
 	                return;
 	                
 	            } catch (Exception ex) {
 	            	ex.printStackTrace();
 	            	executor.shutdownNow();
 	                System.out.println("....run()::Extraction::ERROR::FATAL");
+	         
+	                mySingleThreadPoolExecutor.getInstance().reStart();
 	                return;
 	                
 	            }   
