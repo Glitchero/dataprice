@@ -87,7 +87,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 
-@PreserveOnRefresh
+//@PreserveOnRefresh
 @SpringUI(path=VaadinHybridMenuUI.NAME)
 @Theme("mytheme")
 @Viewport("width=device-width,initial-scale=1.0,user-scalable=no")

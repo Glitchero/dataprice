@@ -449,9 +449,10 @@ public class ShowAllTasksLayoutFactory{
 	        		while (!executor.isTerminated())
 	        		  {
 	        			
+	        			//Check well when i get here inside the interrupted.
 	        			if (Thread.currentThread().isInterrupted()) {
 	         			     System.out.println("....run()::Extraction::TasksExecutor::isInterrupted():" + Thread.currentThread().isInterrupted());
-	         			     Thread.sleep(500);
+	         			     Thread.sleep(500);	         			     
 	         			}
 	        			//wait for all experiments
 	        		  }
@@ -581,9 +582,9 @@ public class ShowAllTasksLayoutFactory{
 			public List<CrawlInfo> crawling(Task task) throws InterruptedException {
 			    
 			    setTaskStatus(task,"Escaneando");
-			    //System.out.println("Task nombreeee " + task.toString());
+			  //  System.out.println("Task nombreeee " + task.toString());
         	    List<CrawlInfo> productsInfo = CrawlTaskServiceImpl.getService(task.getRetail().getCrawlerName()).getUrlsFromTask(task);
-        	    //System.out.println("Tamaño del array " + productsUrl.size());
+        	   // System.out.println("Tamaño del array " + productsUrl.size());
         	    if (productsInfo==null)
         	    	Thread.currentThread().interrupt();
         	    

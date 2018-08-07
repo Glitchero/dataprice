@@ -30,8 +30,8 @@ public class Initializer {
 	@Autowired 
 	private AddRetailService addRetailService;
 		
-	private String password = "Harbinger1945";
-    private String adminUsername = "12345";
+	private String password = "12345";
+    private String adminUsername = "Harbinger1945";
       
       @PostConstruct
       private void init()
