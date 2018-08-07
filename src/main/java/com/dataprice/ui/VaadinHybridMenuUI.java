@@ -37,6 +37,7 @@ import com.dataprice.ui.feed.FeedLayoutFactory;
 import com.dataprice.ui.login.LoginUI;
 import com.dataprice.ui.manager.NavigationManager;
 import com.dataprice.ui.view.AddStudent;
+import com.dataprice.ui.view.ErrorPage;
 import com.dataprice.ui.view.GroupPage;
 import com.dataprice.ui.view.HomePage;
 import com.dataprice.ui.view.MemberPage;
@@ -91,7 +92,7 @@ import java.util.concurrent.TimeUnit;
 @SpringUI(path=VaadinHybridMenuUI.NAME)
 @Theme("mytheme")
 @Viewport("width=device-width,initial-scale=1.0,user-scalable=no")
-@Title("HybridMenu Spring Boot Test")
+@Title("Dataprice")
 @SuppressWarnings("serial")
 @org.springframework.stereotype.Component
 public class VaadinHybridMenuUI extends UI {
@@ -151,7 +152,7 @@ public class VaadinHybridMenuUI extends UI {
 
 		navigationManager.navigateToDefaultView();
 		
-		
+		navigationManager.setErrorView(ErrorPage.class);
 	
 	}
 	

@@ -8,12 +8,15 @@ import com.vaadin.ui.VerticalLayout;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.context.annotation.Scope;
+
 @SpringView
+@Scope("prototype")
 public class ErrorPage extends VerticalLayout implements View {
 
 	@PostConstruct
 	void init() {
-		addComponent(new Label("This is the error view"));
+		addComponent(new Label("Opps, es esta vista no hay contenido"));
 	}
 
 	@Override
