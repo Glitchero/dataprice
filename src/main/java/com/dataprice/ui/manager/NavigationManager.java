@@ -53,7 +53,7 @@ public class NavigationManager extends SpringNavigator {
 		}
 
 		// Change default view here
-		navigateTo(TaskLayoutFactory.class);
+		navigateTo(DashboardLayoutFactory.class);
 	}
 
 	/**

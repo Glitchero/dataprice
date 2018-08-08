@@ -36,8 +36,8 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	@Query("select p from Product p where p.seller=:sellerName")
 	List<Product> getProductsFromSellerName(@Param("sellerName") String sellerName);
 	
-	@Query("select count(p.productKey) from Product p")
-	Integer getNumOfProducts();
+	@Query("select count(p.productKey) from Product p where p.checked=1 and p.seller=:sellerName")
+	Integer getNumOfProducts(@Param("sellerName") String sellerName);
 	
 	
 	//Queries for reports for both squ and upc!!

@@ -29,7 +29,9 @@ import com.dataprice.service.modifysettings.ModifySettingsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.UIComponentBuilder;
+import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.products.ComboBoxWithButton;
+import com.dataprice.ui.tasks.ShowAllTasksLayoutFactory;
 import com.dataprice.ui.tasks.TaskSavedListener;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -394,7 +396,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			daysGroup.setValue(1);
 			slider.setValue(10.0);
 			stopWords.setValue("");
-			
+						
 		}
 
 

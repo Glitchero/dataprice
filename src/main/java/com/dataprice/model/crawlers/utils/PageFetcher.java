@@ -68,7 +68,7 @@ public class PageFetcher {
                 }
                 lastFetchTime = (new Date()).getTime();
             }
-
+                        
 			connection.connect();
 			int code = connection.getResponseCode();
 			BufferedReader r = new BufferedReader(new InputStreamReader(connection.getInputStream(),Charset.forName("UTF-8")));
@@ -80,7 +80,7 @@ public class PageFetcher {
 			fetchResults.setUrl(urlStr);
 			fetchResults.setContent(sb.toString());
 			fetchResults.setServercode(code);
-
+			
 			return fetchResults;
 
 		} catch (IOException e) {

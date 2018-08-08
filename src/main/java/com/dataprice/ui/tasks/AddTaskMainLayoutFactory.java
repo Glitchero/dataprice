@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.model.entity.*;
 import com.dataprice.service.addtask.AddTaskService;
+import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
 import com.dataprice.utils.Gender;
 import com.dataprice.utils.NotificationsMessages;
@@ -190,6 +191,14 @@ public class AddTaskMainLayoutFactory {
 				Notification.show("ERROR","El bot no se guardó",Type.ERROR_MESSAGE);
 				return;
 			}
+			
+			//Add the limits on the settings !!! DO LATER IS IMPORTANT
+			if(dashboardService.getNumOfTasks()>9) {
+				Notification.show("ERROR","Límite de bots alcanzado",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			
 			//System.out.println(task);
 			addtaskService.saveTask(task);
 			taskSavedListener.taskSaved();
@@ -217,6 +226,9 @@ public class AddTaskMainLayoutFactory {
 	
 	@Autowired
     private ShowAllRetailsService showAllRetailsService;
+	
+	@Autowired
+	private DashboardService dashboardService;
 	    
 	public Component createComponent(TaskSavedListener taskSavedListener) {
 		return new AddTaskMainLayout(taskSavedListener).load().init().bind().layout();

@@ -109,6 +109,12 @@ public class Product {
 	@Column(name = "update_day", nullable = false)
 	private Date updateDay = new Date();
 
+	
+//	@ManyToOne(fetch=FetchType.LAZY)
+//	@JoinColumn(name = "strategy_id")
+//	private PriceStrategy priceStrategy;
+	
+	
 	public Product() {
 		//Default Constructor
 	}
@@ -260,6 +266,16 @@ public class Product {
 	public void setTask(Task task) {
 		this.task = task;
 	}
+	
+	/**
+	public PriceStrategy getPriceStrategy() {
+		return priceStrategy;
+	}
+
+	public void setPriceStrategy(PriceStrategy priceStrategy) {
+		this.priceStrategy = priceStrategy;
+	}
+*/
 	
 	@Override
 	public String toString() {

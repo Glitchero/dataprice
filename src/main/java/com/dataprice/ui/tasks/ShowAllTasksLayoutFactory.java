@@ -274,6 +274,17 @@ public class ShowAllTasksLayoutFactory{
 			new Thread(() -> {	
 				  //  isCanceledComplete = new AtomicInteger(0);
 				
+            	vaadinHybridMenuUI.access(() -> {
+   		           NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
+       	    	  .withCaption("Notificación")
+				      .withDescription("Señal para cancelar enviada.")
+				      .withPriority(ENotificationPriority.HIGH)
+				      .withIcon(VaadinIcons.INFO)
+				      .withCloseButton()
+				      .build();
+					 
+	             });
+            	
 					vaadinHybridMenuUI.access(() -> {
 						 stopTasksButton.setVisible(false);
 						 cancelProgressBar.setVisible(true);
@@ -282,15 +293,15 @@ public class ShowAllTasksLayoutFactory{
 					
 					 vaadinHybridMenuUI.stopTasksExecution();		 
  						 
-					 while (vaadinHybridMenuUI.isTaskSetRunning()) {
+				//	 while (vaadinHybridMenuUI.isTaskSetRunning()) {
 						 //Wait a second
 						 try {
-								Thread.sleep(5000);
+								Thread.sleep(9000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-					 }
+				//	 }
 					 
 					 vaadinHybridMenuUI.access(() -> {
 						 stopTasksButton.setVisible(true);
@@ -451,26 +462,20 @@ public class ShowAllTasksLayoutFactory{
 	        			
 	        			//Check well when i get here inside the interrupted.
 	        			if (Thread.currentThread().isInterrupted()) {
-	         			     System.out.println("....run()::Extraction::TasksExecutor::isInterrupted():" + Thread.currentThread().isInterrupted());
-	         			     Thread.sleep(500);	         			     
+	         			    System.out.println("....run()::Extraction::TasksExecutor::isInterrupted():" + Thread.currentThread().isInterrupted());	     	         			     
+	         			    executor.shutdownNow();
+	    	            	while (!executor.isTerminated())
+	    	        		  {
+	    	            		//Wait for tasks to finished, again!!
+	    	        		  }
+	    	            //	refreshTable();
+	    	                System.out.println("....run()::Extraction::TasksExecutor::isInterrupted():Part2");
+	         			    Thread.sleep(500);	         			     
 	         			}
 	        			//wait for all experiments
 	        		  }
-	        		
-	        		/** 
-	                //taskSetFinishedListener.taskSetFinished();
-	        		vaadinHybridMenuUI.access(() -> {
-              		    NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-              		    .withCaption("Test")
-      				    .withDescription("Tasks finish succesfuly")
-      				    .withPriority(ENotificationPriority.MEDIUM)
-      			    	.withIcon(VaadinIcons.INFO)
-      				    .withCloseButton()
-      				    .build();
-  		             });
-	        		*/
 	        	
-	        		mySingleThreadPoolExecutor.getInstance().reStart();
+	        	//	mySingleThreadPoolExecutor.getInstance().reStart();
 	                long endTime   = System.currentTimeMillis();
                	    long totalTime = endTime - startTime;
                	    System.out.println("Total time execution: " + totalTime);
@@ -484,21 +489,10 @@ public class ShowAllTasksLayoutFactory{
 	            		//Wait for tasks to finished, again!!
 	        		  }
 	            	
-	            	vaadinHybridMenuUI.access(() -> {
-          		           NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-              	    	  .withCaption("Notificación")
-    				      .withDescription("Los bots fueron interrumpidos")
-    				      .withPriority(ENotificationPriority.HIGH)
-    				      .withIcon(VaadinIcons.INFO)
-    				      .withCloseButton()
-    				      .build();
-						 
-  		             });
-	            	
-	            	refreshTable();
+	          //  	refreshTable();
 	                System.out.println("....run()::TasksExecutor::CANCELED::INTERRUPTED::THREADS::READY::TO::DIE");
 	    	        
-	                mySingleThreadPoolExecutor.getInstance().reStart();
+	          //      mySingleThreadPoolExecutor.getInstance().reStart();
 	                return;
 	                
 	            } catch (Exception ex) {
@@ -506,7 +500,7 @@ public class ShowAllTasksLayoutFactory{
 	            	executor.shutdownNow();
 	                System.out.println("....run()::Extraction::ERROR::FATAL");
 	         
-	                mySingleThreadPoolExecutor.getInstance().reStart();
+	            //    mySingleThreadPoolExecutor.getInstance().reStart();
 	                return;
 	                
 	            }   

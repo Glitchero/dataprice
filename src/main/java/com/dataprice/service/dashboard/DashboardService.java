@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface DashboardService {
 
-    public Integer getNumOfProducts();
+    public Integer getNumOfProducts(String mainSeller);
 	
 	public Integer getNumOfTasks();
 	

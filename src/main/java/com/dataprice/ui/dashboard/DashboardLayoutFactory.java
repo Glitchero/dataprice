@@ -20,11 +20,13 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.themes.ValoTheme;
 
 @SpringView
 public class DashboardLayoutFactory extends VerticalLayout implements View{
@@ -39,11 +41,15 @@ public class DashboardLayoutFactory extends VerticalLayout implements View{
 
 	@Autowired
 	private PieChartGlobalPricingDistribution pieChartGlobalPricingDistribution;
+	
+	@Autowired
+	private PieChartBotsPerRetail PieChartBotsPerRetail;
 
 	@Autowired 
 	private UserServiceImpl userServiceImpl;
 	
-	
+	@Autowired 
+	private HeaderLayoutFactory headerLayoutFactory;
 	
 	@Autowired
 	private StackedChartDistributionByCompetition stackedChartDistributionByCompetition;
@@ -53,18 +59,22 @@ public class DashboardLayoutFactory extends VerticalLayout implements View{
 		User user = userServiceImpl.getUserByUsername("admin");
 		Settings settings = user.getSettings();
 	
-		Label mainTittle = new Label("<b><font size=\"5\">" + "Dashboard para " + settings.getMainSeller() + "</font></b>" ,ContentMode.HTML);
-		Label subTittle = new Label("<font size=\"2\">Obtenga un vistazo rápido de su posición en el mercado en cuanto a precios </font>",ContentMode.HTML);
+		Label mainTittle = new Label("<b><font size=\"5\">" + "Dashboard" + "</font></b>" ,ContentMode.HTML);
+		Label subTittle = new Label("<font size=\"2\">Este dashboard muestra información sobre el plan que ha contratado con Dataprice. </font>",ContentMode.HTML);
 	
-		Component pieChartGlobalDistribution = pieChartGlobalPricingDistribution.createComponent();
+		Component pieChartBotsPerRetail = PieChartBotsPerRetail.createComponent();
 		
 		Component barChartDistributionByRetail = stackedChartDistributionByCompetition.createComponent();
 
+		Button button = new Button("Revisa Nuestros Tutoriales");
+		button.setWidth("100%");
+		button.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		
+		VerticalLayout vl = new VerticalLayout(button,pieChartBotsPerRetail);
 		    HorizontalSplitPanel splitContentCode = new HorizontalSplitPanel();        
-	        splitContentCode.setFirstComponent(pieChartGlobalDistribution);
-	        splitContentCode.setSecondComponent(barChartDistributionByRetail);
-	        splitContentCode.setSplitPosition(35);
+	        splitContentCode.setFirstComponent(headerLayoutFactory.createComponent());
+	        splitContentCode.setSecondComponent(vl);
+	        splitContentCode.setSplitPosition(50);
 	        splitContentCode.setWidth("100%");
 
 	     //   VerticalLayout v2 = new VerticalLayout(lineChart); 

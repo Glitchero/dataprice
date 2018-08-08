@@ -18,6 +18,7 @@ import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
 import com.dataprice.service.addproductequivservice.AddProductEquivService;
 import com.dataprice.service.addtask.AddTaskService;
+import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.service.modifyproduct.ModifyProductService;
 import com.dataprice.service.removeproductequivalency.RemoveProductEquivalencyService;
 import com.dataprice.service.searchproduct.SearchProductService;
@@ -456,7 +457,13 @@ public class EditProductLayoutFactory {
 		
 		
 		private void edit() {
-	
+	      //Add the limits on the settings !!! DO LATER IS IMPORTANT
+			if (dashboardService.getNumOfProducts(settings.getMainSeller())>99){
+				Notification.show("ERROR","Límite de productos emparejados alcanazado.",Type.ERROR_MESSAGE);
+				return;
+			}
+			
+			
 			if (product==null){
 				Notification.show("ERROR","Favor de seleccionar un producto",Type.ERROR_MESSAGE);
 				return;
@@ -594,6 +601,9 @@ public class EditProductLayoutFactory {
 	@Autowired
 	private SearchProductService searchProductService;
 
+	
+	@Autowired
+	private DashboardService dashboardService;
    
    public Component createComponent(ProductSaveListener productSaveListener) {
     		return new EditProductLayout(productSaveListener).load().init().layout();

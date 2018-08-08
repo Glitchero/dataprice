@@ -319,7 +319,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		if(!hasRole(Role.Retailer.name())) {
 		//If is admin user
-		/**	
+		
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.DASHBOARD)
@@ -327,7 +327,7 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(homeButton);
-           */
+        
         
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
 				.withCaption("Bots")
@@ -449,8 +449,12 @@ public class VaadinHybridMenuUI extends UI {
 		if (job==null) {
 			job = mySingleThreadPoolExecutor.runTask(run);	
 		   }
-		 
+		
+		if (job.isDone()) {
+			job = mySingleThreadPoolExecutor.runTask(run);	
 		}
+		 
+	}
 	
 	
 	public void stopTasksExecution(){
@@ -458,7 +462,9 @@ public class VaadinHybridMenuUI extends UI {
 		Future<?> job = mySingleThreadPoolExecutor.getCurrentJob();
 		
 		if (job!=null) {
+			if (!job.isDone()) {	
 				job.cancel(true);
+			}
 		}
     }
 	
@@ -467,7 +473,9 @@ public class VaadinHybridMenuUI extends UI {
 		Future<?> job = mySingleThreadPoolExecutor.getCurrentJob();
 		
 		if (job!=null) {
+			if (!job.isDone()) {
 				return true;
+			}
 		}
 		
 		return false;

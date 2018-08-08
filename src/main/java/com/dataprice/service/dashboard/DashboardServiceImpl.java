@@ -21,8 +21,8 @@ public class DashboardServiceImpl implements DashboardService {
 	private TaskRepository taskRepository;
 	
 	@Override
-	public Integer getNumOfProducts() {
-		return productRepository.getNumOfProducts();
+	public Integer getNumOfProducts(String mainSeller) {
+		return productRepository.getNumOfProducts(mainSeller);
 	}
 
 	@Override
