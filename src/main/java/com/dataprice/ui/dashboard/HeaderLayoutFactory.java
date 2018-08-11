@@ -49,26 +49,26 @@ public class HeaderLayoutFactory implements UIComponentBuilder{
 			mainTittle = new Label("<b><font size=\"5\">Administrador de Bots </font></b>",ContentMode.HTML);	
 			subTittle = new Label("<font size=\"2\">Agregue, ejecute y elimine bots. </font>",ContentMode.HTML);
 			
-			float pbar =((float) numberOfProducts / (float) 100);
+			float pbar =((float) numberOfProducts / (float) 200);
 			productsBar = new ProgressBar(pbar); 
 			productsBar.setWidth("90%");
 			
 			
-			float bbar =((float) numberOfTasks / (float) 10);
+			float bbar =((float) numberOfTasks / (float) 20);
 			botBar = new ProgressBar(bbar); 
 			botBar.setWidth("90%");
 			
 			
 			header1 = new Label(
 				    "Total de Productos: \n" +
-				    "<center><b><font size=\"7\">" + numberOfProducts +"/100" + "</font></b></center>",
+				    "<center><b><font size=\"7\">" + numberOfProducts +"/200" + "</font></b></center>",
 				    ContentMode.HTML);
 			
 			
 			
 			header2 = new Label(
 				    "Total de Bots: \n" +
-				    "<center><b><font size=\"7\">" + numberOfTasks +"/10" + "</font></b></center>",
+				    "<center><b><font size=\"7\">" + numberOfTasks +"/20" + "</font></b></center>",
 				    ContentMode.HTML);
 			
 			header3 = new Label(

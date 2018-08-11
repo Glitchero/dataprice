@@ -458,7 +458,7 @@ public class EditProductLayoutFactory {
 		
 		private void edit() {
 	      //Add the limits on the settings !!! DO LATER IS IMPORTANT
-			if (dashboardService.getNumOfProducts(settings.getMainSeller())>99){
+			if (dashboardService.getNumOfProducts(settings.getMainSeller())>199){
 				Notification.show("ERROR","Límite de productos emparejados alcanazado.",Type.ERROR_MESSAGE);
 				return;
 			}
@@ -671,10 +671,13 @@ public class EditProductLayoutFactory {
 				System.out.println("El search query es: " + searchQuery);
 				//Get all sellers except for the main seller.
 				List <String> wantedSellers = showAllProductsService.getSellersListExceptForSeller(settings.getMainSeller());
-				List<Product> retrieveList = searchProductService.search(searchQuery,wantedSellers);
+				
+				List <String> unwantedSellers = new ArrayList<String>();
+				unwantedSellers.add(settings.getMainSeller());
+				List<Product> retrieveList = searchProductService.search(searchQuery,unwantedSellers);
 				
 				
-				
+				//Sometims there is an error because retieveList is null, think what do here!!!
 						
 				if (retrieveList.size()!=0) { //Do this only if products related are found
 				   boolean remove = retrieveList.remove(product);
@@ -713,7 +716,10 @@ public class EditProductLayoutFactory {
 				   for (Product p : retrieveFilteredAndMatchedList) {
 					   topProductsTable.select(p);
 				   }
-				
+				   
+				   //Lists handle by java collector
+				   retrieveList = null; 
+				   retrieveFilteredAndMatchedList = null;
 				} 
 			
 			

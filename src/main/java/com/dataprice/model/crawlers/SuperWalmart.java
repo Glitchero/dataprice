@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
@@ -31,30 +32,90 @@ public class SuperWalmart extends AbstractCrawler{
 			driver.get(taskDAO.getSeed());
 			System.out.println("Inicializando Phantom");
 			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
-			HashSet<String> linksSet = new HashSet<String>();
 			Thread.sleep(1000);
 			
-			//Navigation
-			for (WebElement we : driver.findElements(By.xpath("//*[@id='atg_store_pagination']/li/a"))) {	   
-			    if (we.getAttribute("href")!=null){
-			    	linksSet.add(we.getAttribute("href"));
+			String name = "";
+			String price = "";
+			String url = "";
+			String image = "";
+			int counter = 0;
+	   								
+			for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[3]"))) {	 	
+				name = we.findElements(By.xpath("//*[@id=\"root\"]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[2]/a/p")).get(counter).getAttribute("innerHTML"); 			
+				System.out.println(name);
+				
+				if (we.findElements(By.tagName("p")).size()>1) {
+					price = we.findElements(By.tagName("p")).get(1).getAttribute("innerHTML");
+				}else {
+					price = we.findElement(By.tagName("p")).getAttribute("innerHTML");
 				}
-	        }
-			
-			if (linksSet.size() == 0){   //In case we don't have pagination.
-				for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'container-listing_')]/div[1]/div[2]/div[1]/a"))) {	   
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
-		        }
+		
+				System.out.println(price);
+				price = price.replace(",", "");
+	  			price = price.replace("$", "");
+	  			price = price.trim();
+	  			
+				url = we.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[1]/a")).get(counter).getAttribute("href");
+				System.out.println(url);
+				
+				image = we.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[1]/a/div/img")).get(counter).getAttribute("src");
+				System.out.println(image);
+				
+				linksList.add(new CrawlInfo(url,name,image,Double.valueOf(price)));
+				counter++;				
 			}
+		
+			counter = 0;
+	//		int con = 0;			
 			
-			for (String taskLink : linksSet) { //In case we have pagination.
-				driver.get(taskLink);
+			Thread.sleep(Configuration.DRIVERDELAY);
+			while (driver.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[5]/div/span")).size()>0) { //In case we have pagination.
+				
+				Thread.sleep(Configuration.DRIVERDELAY);
+		//		con++;
+				WebElement el = driver.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[5]/div/span")).get(driver.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[5]/div/span")).size()-1);
+				JavascriptExecutor js = (JavascriptExecutor)driver; 
+				js.executeScript("arguments[0].click();", el); 
 				
 				Thread.sleep(Configuration.DRIVERDELAY);
 				
-				for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'container-listing_')]/div[1]/div[2]/div[1]/a"))) {	   
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
-		        }
+				
+				for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[3]"))) {	 	
+					name = we.findElements(By.xpath("//*[@id=\"root\"]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[2]/a/p")).get(counter).getAttribute("innerHTML"); 			
+					System.out.println(name);
+					
+					if (we.findElements(By.tagName("p")).size()>1) {
+						price = we.findElements(By.tagName("p")).get(1).getAttribute("innerHTML");
+					}else {
+						price = we.findElement(By.tagName("p")).getAttribute("innerHTML");
+					}
+			
+					System.out.println(price);
+					price = price.replace(",", "");
+		  			price = price.replace("$", "");
+		  			price = price.trim();
+		  			
+					url = we.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[1]/a")).get(counter).getAttribute("href");
+					System.out.println(url);
+					
+					image = we.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[1]/a/div/img")).get(counter).getAttribute("src");
+					System.out.println(image);
+					
+					linksList.add(new CrawlInfo(url,name,image,Double.valueOf(price)));
+					counter++;				
+				}
+				
+				
+				
+				counter = 0;
+				
+		//	if (con>10)
+		//		break;
+		
+				if (driver.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[5]/div/span")).size()==3)
+					break;
+				
+				
 			}
 			
 			//Destroy
@@ -80,11 +141,11 @@ public class SuperWalmart extends AbstractCrawler{
 	@Override
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
         try {
-		    
+		    /**
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
-			
+			System.out.println(crawlInfo.getUrl());
 			if (urlResponse == null){  //Task fatal error.
 				return null;
 	    	}
@@ -94,43 +155,24 @@ public class SuperWalmart extends AbstractCrawler{
 	    	}
 	    	
 			String urlContent = urlResponse.getContent(); 
-			
-			String id = ContentParser.parseContent(urlContent, Regex.SUPERWALMART_ID);
+			*/
+        	
+			String id = ContentParser.parseContent(crawlInfo.getUrl(), Regex.SUPERWALMART_ID);
+			System.out.println("el id es:" + id);
 			if (id==null)
 				return new Product();
 			
-			String name = ContentParser.parseContent(urlContent, Regex.SUPERWALMART_NAME);
-			if (name==null)
-				return new Product();
-			name = name.trim();
-			
-	 		 
-			String price = ContentParser.parseContent(urlContent, Regex.SUPERWALMART_PRICE); 
-			if (price == null) {  
-				return new Product();
-			}
-
-			price = price.replace(",", "");
-			price = price.replace("$", "");
-			price = price.replaceAll("[^\\d.]", "");
-			price = price.trim();
-			
-			String imageUrl = ContentParser.parseContent(urlContent, Regex.SUPERWALMART_IMAGEURL);
-			if (imageUrl == null) {  
-				return new Product();
-			}
-			imageUrl = imageUrl.trim();
-			imageUrl = "https://super.walmart.com.mx" + imageUrl;
-				
+			String name = crawlInfo.getProductName();	
+			System.out.println("El nombre es :" + name);
+			String imageUrl = crawlInfo.getImageURl();
+			if (imageUrl.length()>223)
+				imageUrl="";
+		//	System.out.println("La imagen es :" + imageUrl);
 			String sku = "";
 			String upc = "";
-			//Consider other cases!!
-			if (id.length() == 14) {
-				upc = id.substring(2);
-			}
 			String brand = "";
 			
-			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,"",Double.valueOf(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+			return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,"",crawlInfo.getPrice(),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 		} catch (Exception e) {
 			return null;
 		}

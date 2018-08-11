@@ -85,7 +85,7 @@ public class PriceDistributionLayoutFactory {
 		                .and()
 		            .scales()
 		            .add(Axis.X, new DefaultScale()
-		                    .stacked(true).display(true)) //Estaba en false
+		                    .stacked(true).display(false)) //Estaba en false
 		            .add(Axis.Y, new DefaultScale()
 		                    .stacked(true))
 		            .and()

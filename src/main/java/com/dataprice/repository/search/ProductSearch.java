@@ -14,6 +14,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
@@ -60,7 +61,7 @@ public class ProductSearch {
 		    //Add filter 
 		    if (wantedSellers!=null) {
 			    org.apache.lucene.search.Query query2 = applyWantedRetailFilter(query,wantedSellers);
-			    
+			    System.out.println("Tamaño de wanted sellers" + wantedSellers.size());
 			    // wrap Lucene query in an Hibernate Query object
 			    org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query2, Product.class);
 
@@ -105,10 +106,12 @@ public class ProductSearch {
 		
 		BooleanQuery.Builder booleanQueryfil = new BooleanQuery.Builder();
 		for (String wantedSeller : wantedSellers) {	
+			System.out.println("seller" + wantedSeller);
 			Query query1 = new TermQuery(new Term("seller", wantedSeller));	
-			booleanQueryfil.add(query1, Occur.SHOULD); //If we have one wantedSeller it has to be must!!
+			//booleanQueryfil.add(query1, Occur.SHOULD); //If we have one wantedSeller it has to be must!!
+			booleanQueryfil.add(query1, Occur.MUST_NOT);
 		}
-		
+		booleanQueryfil.add(new MatchAllDocsQuery(), Occur.SHOULD);
 		//
 		Filter filterQuery = new QueryWrapperFilter(booleanQueryfil.build());	
 

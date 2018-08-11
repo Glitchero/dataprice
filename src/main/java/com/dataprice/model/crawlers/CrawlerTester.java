@@ -58,11 +58,11 @@ public class CrawlerTester {
 		
 	
 		Task task = new Task();
-		task.setSeed("https://www.linio.com.mx/s/perfume-nation");
+		task.setSeed("https://super.walmart.com.mx/cerveza-vinos-y-licores/licores/ron/_/N-4hati4");
 		
 		task.setTaskName("perfumes");
 		
-		Crawler crawler = new Linio();
+		Crawler crawler = new SuperWalmart();
 		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
 	
 		for (CrawlInfo crawlInfo : productsInfo) {

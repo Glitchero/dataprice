@@ -193,7 +193,7 @@ public class AddTaskMainLayoutFactory {
 			}
 			
 			//Add the limits on the settings !!! DO LATER IS IMPORTANT
-			if(dashboardService.getNumOfTasks()>9) {
+			if(dashboardService.getNumOfTasks()>19) {
 				Notification.show("ERROR","Límite de bots alcanzado",Type.ERROR_MESSAGE);
 				return;
 			}

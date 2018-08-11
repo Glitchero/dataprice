@@ -98,7 +98,7 @@ public class Regex {
 	public final static String SORIANA_IMAGEURL = "class=\"artDetDi1\">.*?<IMG SRC=\"(.*?)\" alt";
 	*/
 	
-	
+	/**
 	public final static String SUPERWALMART_ID = "<span itemprop=\"productID\">(.*?)</span>";
 	public final static String SUPERWALMART_NAME = "<span itemprop=\"name\">(.*?)</span>";
 	public final static String SUPERWALMART_DESCRIPTION = "<meta property=\"og:description\" content=\"(.*?)\" />";
@@ -107,7 +107,8 @@ public class Regex {
 	public final static String SUPERWALMART_PRICE = "<span itemprop=\"price\" content=\"(.*?)\">";
 	public final static String SUPERWALMART_PROMOTION = "<div class=\"pdp-promotional-text\">(.*?)</div>";    
 	public final static String SUPERWALMART_IMAGEURL = "class=\"slider-img u-photo photo\" src=\"(.*?)\" onError";
-	
+	*/
+	public final static String SUPERWALMART_ID = "/([0-9]{8,15})";
 	
 	
 	public final static String LACOMER_ID = "id=\"artean\" value=\"(.*?)\"/>";
@@ -246,6 +247,20 @@ public class Regex {
 	public final static String SEPHORA_BOXIMAGESRC ="<img class=\"img\".*?src=\"(.*?)\" alt";
 	
 	
-            
+	public final static String LAEUROPEA_ID = "<div class=\"c-product-meta detailItem\" data-code=\"(.*?)\"";
+	public final static String LAEUROPEA_NAME = "<h3 class=\"c-font-bold\">(.*?)</h3>";
+	public final static String LAEUROPEA_PRICE = "<div class=\"c-product-price\">(.*?)<";
+	public final static String LAEUROPEA_IMAGEURL ="<div class=\"c-zoom\"><img src=\"(.*?)\"";
 			
+	
+	
+	public final static String PRISSA_ID = "name=\"id_product\" value=\"(.*?)\"";
+	public final static String PRISSA_NAME ="<title>(.*?)</title>";
+	public final static String PRISSA_PRICE ="<span itemprop=\"price\" content=\"(.*?)\">";
+	public final static String PRISSA_IMAGEURL ="<img data-image-large-src=\"(.*?)\"";
+	
+	
+			
+	
+	
 }

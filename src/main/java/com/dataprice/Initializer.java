@@ -90,6 +90,26 @@ public class Initializer {
 			addRetailService.saveRetail(retail3);
 			
 			
+			Retail retail4 = new Retail();
+			retail4.setRetailId(4);
+			retail4.setRetailName("SuperWalmart");
+			retail4.setCrawlerName("SuperWalmart");
+			retail4.setCountry(country);		
+			addRetailService.saveRetail(retail4);
+			
+			Retail retail5 = new Retail();
+			retail5.setRetailId(5);
+			retail5.setRetailName("La Europea");
+			retail5.setCrawlerName("Laeuropea");
+			retail5.setCountry(country);		
+			addRetailService.saveRetail(retail5);
+			
+			Retail retail6 = new Retail();
+			retail6.setRetailId(6);
+			retail6.setRetailName("Prissa");
+			retail6.setCrawlerName("Prissa");
+			retail6.setCountry(country);		
+			addRetailService.saveRetail(retail6);
              
           }
           catch (Exception e)
