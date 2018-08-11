@@ -56,10 +56,10 @@ public class PhantomFactory
   		
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
 
-  		WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
+  	//	WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
   		
     	
-  	/**	
+  		
   		WebDriver phantomDriver = null;
   		try {
 			 phantomDriver = new RemoteWebDriver(new URL("http://172.17.0.3:8910"),DesiredCapabilities.phantomjs());
@@ -67,7 +67,7 @@ public class PhantomFactory
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-  	*/	
+  		
      
   	    //phantomDriver.manage().timeouts().pageLoadTimeout(Configuration.MAXLOADPAGEDELAY, TimeUnit.SECONDS);
   		  		
