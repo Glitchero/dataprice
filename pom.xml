@@ -185,7 +185,7 @@
     <dependency>
       <groupId>com.byteowls</groupId>
       <artifactId>vaadin-chartjs</artifactId>
-      <version>LATEST</version>
+      <version>1.3.0</version>
     </dependency>
     
     

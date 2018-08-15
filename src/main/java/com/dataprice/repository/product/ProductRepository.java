@@ -27,8 +27,11 @@ public interface ProductRepository extends JpaRepository<Product,String>{
 	@Query("select p from Product p order by p.name")
 	List<Product> getAllProducts();	
 	
-	@Query("select p from Product p where p.sku=:skuId")
-	List<Product> getAllPrductsFromSku(@Param("skuId") String skuId);	
+	//Queries for TimePlot
+	@Query("select p from Product p where p.sku=:skuId and p.checked=1 and p.seller IN (:competition,:sellerName)")
+	List<Product> getAllPrductsForTimePlot(@Param("skuId") String skuId,@Param("competition") Set<String> competition,@Param("sellerName") String mainSeller);	
+	
+	////End Queries for Timeplot
 	
 	@Query("select p from Product p where p.productKey=:productMainKey")
 	Product getProductFromKey(@Param("productMainKey") String productKey);	

@@ -1,6 +1,7 @@
 package com.dataprice.service.reports;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -20,4 +21,8 @@ public interface ReportsService {
 	public List<Product> getProductsFromSellerNameAndSku(String seller,String sku,Date lastDate);
 	
 	public List<Product> getProductsFromSellerNameAndUpc(String seller,String upc,Date lastDate);
+	
+	public Double getHistoricalPriceFromKey(String key, Calendar date); 
+	
+	
 }

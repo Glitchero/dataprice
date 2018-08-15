@@ -4,7 +4,9 @@ package com.dataprice.ui.reports;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ import com.dataprice.ui.reports.exporter.TableHolder;
 import com.dataprice.ui.reports.gridutil.GridUtil;
 import com.dataprice.ui.reports.gridutil.cell.CellFilterChangedListener;
 import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
+import com.dataprice.ui.reports.pagination.Pagination;
+import com.dataprice.ui.reports.pagination.PaginationChangeListener;
+import com.dataprice.ui.reports.pagination.PaginationResource;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
@@ -49,10 +54,12 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.components.grid.FooterCell;
 import com.vaadin.ui.components.grid.FooterRow;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -70,6 +77,14 @@ public class MatrixReportLayoutFactory {
 	private ProgressBar excelProgressBar;
 	private ProgressBar csvProgressBar;
 	private java.util.Date lastUpdate;
+	private Window subWindow;
+	
+	//Some pagination variables
+	private Pagination pagination;
+	private List<Product> subProduct;
+	private long total;
+	private int limit;
+	private int page;
 	
 	
 	//private DecimalFormat df = new DecimalFormat("#0.00");
@@ -90,6 +105,15 @@ public class MatrixReportLayoutFactory {
 		}
 
 		public MatrixReportLayout init() {
+			
+			
+			subWindow = new Window("Historial de precios de hace 30 días");
+			subWindow.setHeight("600px");
+			subWindow.setWidth("1000px");
+			subWindow.setModal(true);
+			subWindow.setResizable(false); 
+			
+			
 			excelProgressBar = new ProgressBar();
 			excelProgressBar.setCaption("Procesando...");
 			excelProgressBar.setIndeterminate(true);
@@ -112,6 +136,11 @@ public class MatrixReportLayoutFactory {
 			productsTable = new Grid<>(Product.class);						  
 			productsTable.removeAllColumns();
 				
+			productsTable.addColumn(product -> "Historial de Precios",
+				      new ButtonRenderer(clickEvent -> {
+				          showTimePlot(clickEvent.getItem());   
+				    })).setId("Hist").setWidth(200);
+
 			if (settings.getKeyType().equals("sku")) {
 				productsTable.addColumn(p -> p.getSku()).setCaption("Sku").setId("Mysku");
 			}else {
@@ -162,7 +191,7 @@ public class MatrixReportLayoutFactory {
 			
 			productsTable.setWidth("100%");
 			productsTable.setHeight("500px"); //500 antes
-			productsTable.setItems(products);
+		//	productsTable.setItems(products);
 			productsTable.setSelectionMode(SelectionMode.NONE);
 		  
 		    
@@ -173,6 +202,19 @@ public class MatrixReportLayoutFactory {
 		
 
 		
+		private void showTimePlot(Object item) {
+			//Plot component
+			Product product = (Product) item;
+		
+			Component plot = timePlotLayoutFactory.createComponent(product,reportSettings.getCompetitors(),settings.getMainSeller());
+			VerticalLayout layout = new VerticalLayout();
+			layout.setWidth("100%");	
+			layout.addComponent(plot);
+			subWindow.setContent(layout);
+			subWindow.center();
+			vaadinHybridMenuUI.addWindow(subWindow);
+		}
+
 		public MatrixReportLayout filter() {
 			
 			filter = new GridCellFilter(productsTable);
@@ -220,9 +262,9 @@ public class MatrixReportLayoutFactory {
 			
 			 HeaderRow fistHeaderRow = productsTable.prependHeaderRow();
 			 
-			 /**
+			/**
 		        if (settings.getKeyType().equals("sku")) {
-		        	  fistHeaderRow.join("Mysku", "Myname");
+		        	  fistHeaderRow.join("Hist", "Mysku");
 				        fistHeaderRow.getCell("Mysku")
 				                .setHtml("");
 				}else {
@@ -230,7 +272,7 @@ public class MatrixReportLayoutFactory {
 				        fistHeaderRow.getCell("Myupc")
 				                .setHtml("");
 				}
-		      */  
+		     */   
 		      
 		        HeaderCell join = fistHeaderRow.join("Myname","Myprice");
 		        HorizontalLayout buttonLayout = new HorizontalLayout();
@@ -373,12 +415,20 @@ public class MatrixReportLayoutFactory {
 			h1.setWidth("35%");
 			h1.setMargin(false);
 			
-			VerticalLayout v1 = new VerticalLayout(h1,productsTable);
+			VerticalLayout layout = createContent(productsTable, pagination);
+			layout.setSizeFull();
+			layout.setMargin(false);
+			
+			VerticalLayout v1 = new VerticalLayout(h1,layout);
 			v1.setComponentAlignment(h1, Alignment.MIDDLE_RIGHT);
 			v1.setSizeFull();
 			v1.setMargin(false);
 			
 	        return v1;
+	        
+			
+		//	VerticalLayout layout = createContent(productsTable, pagination);
+		//	return layout;
 		}
 
 		public MatrixReportLayout load() {
@@ -398,6 +448,69 @@ public class MatrixReportLayoutFactory {
 			return this;
 		}
 		
+		
+		public MatrixReportLayout pagination() {
+			
+			page = 1;
+	       	if (products.size()<20) {
+	       		limit = products.size(); 
+	       	}else {
+	       		limit = 20; 
+	       	}
+			 
+	       	
+	       	subProduct = products.subList(0, limit); 
+	       	total = Long.valueOf(products.size());
+	       	productsTable.setItems(subProduct);
+	        
+	        pagination = createPagination(total, page, limit);
+	        pagination.addPageChangeListener(new PaginationChangeListener() {
+	            @Override
+	            public void changed(PaginationResource event) {
+	               
+	                productsTable.setItems(products.subList(event.fromIndex(), event.toIndex()));
+	                productsTable.scrollToStart();
+	                productsTable.removeHeaderRow(2);
+	                
+	                filter = new GridCellFilter(productsTable);
+	    			filter.setLinkFilter("Myname", true, false);
+	    			if (settings.getKeyType().equals("sku")) {
+	    					filter.setTextFilter("Mysku", true, true);
+	    			}else {
+	    					filter.setTextFilter("Myupc", true, true);
+	    			}			
+	    			filter.setNumberFilter("Myprice", Double.class,"invalid input", "inferior", "superior");		
+	    					
+	    			for (String seller : reportSettings.getCompetitors()) {
+	    					filter.setIndicatorFilter(seller);
+	    			}
+	            }
+	        });
+	        
+			return this;
+		}		
+		
+
+	    private Pagination createPagination(long total, int page, int limit) {
+	        final PaginationResource paginationResource = PaginationResource.newBuilder().setTotal(total).setPage(page).setLimit(limit).build();
+	        final Pagination pagination = new Pagination(paginationResource);
+	        if (products.size()>200) {
+	        	pagination.setItemsPerPage(20, 50, 100, 200, products.size());
+	        }else {
+	        	pagination.setItemsPerPage(20, 50, 100, 200);
+	        }
+	        return pagination;
+	    }
+
+	    private VerticalLayout createContent(Grid grid, Pagination pagination) {
+	        final VerticalLayout layout = new VerticalLayout();
+	        layout.setSizeFull();
+	        layout.setSpacing(true);
+	        layout.addComponents(grid, pagination);
+	        layout.setExpandRatio(grid, 1f);
+	        return layout;
+	    }
+	    
 	}
 	
 	@Autowired
@@ -412,8 +525,11 @@ public class MatrixReportLayoutFactory {
 	@Autowired 
 	private ReportsService reportsService;
 	
+	@Autowired
+	private TimePlotLayoutFactory timePlotLayoutFactory;
+	
 	public Component createComponent(ReportSettings reportSettings) {
-		return new MatrixReportLayout(reportSettings).load().init().filter().footer().header().layout();
+		return new MatrixReportLayout(reportSettings).load().init().pagination().filter().header().layout();
 	}
 
 	

@@ -374,8 +374,16 @@ public class VaadinHybridMenuUI extends UI {
 		.build();
 
        hybridMenu.addLeftMenuButton(productsButton);
+				
+		MenuButton reportsButton = LeftMenuButtonBuilder.get()
+				.withCaption("Reportes")
+				.withIcon(VaadinIcons.CHART_GRID)
+				.withNavigateTo(ReportsMainLayout.class)
+				.build();
 
-       
+		hybridMenu.addLeftMenuButton(reportsButton);
+		
+		
 		MenuButton settingsButton = LeftMenuButtonBuilder.get()
 				.withCaption("Ajustes del Sistema")
 				.withIcon(VaadinIcons.COGS)
@@ -384,14 +392,6 @@ public class VaadinHybridMenuUI extends UI {
 
 		hybridMenu.addLeftMenuButton(settingsButton);
 		
-		
-		MenuButton reportsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Reportes")
-				.withIcon(VaadinIcons.CHART_GRID)
-				.withNavigateTo(ReportsMainLayout.class)
-				.build();
-
-		hybridMenu.addLeftMenuButton(reportsButton);
 		
 		/**
 		MenuButton feedsButton = LeftMenuButtonBuilder.get()

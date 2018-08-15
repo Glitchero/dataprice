@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.dataprice.model.crawlers.utils.Configuration;
 import com.dataprice.model.crawlers.utils.CrawlInfo;
 import com.dataprice.model.entity.Product;
+import com.dataprice.model.entity.ProductHistory;
+import com.dataprice.model.entity.ProductHistoryKey;
 import com.dataprice.model.entity.Settings;
 import com.dataprice.model.entity.Task;
 import com.dataprice.model.entity.User;
@@ -616,7 +618,7 @@ public class ShowAllTasksLayoutFactory{
     		   if (!p.getProductKey().equals("")) {
     			   downloadedProducts++;
     			   addProductService.saveProduct(p);
-    			   //addProductHistService.saveProductHist(new ProductHistory(new ProductHistoryKey(p.getProductKey()),p.getPrice()));
+    			   addProductHistService.saveProductHist(new ProductHistory(new ProductHistoryKey(p.getProductKey()),p.getPrice()));
     			   if ((i+1) % 5 == 0 || i+1 == productsInfo.size())  //Update evert 5 downloads or in the last iteration, in the future we can also include the saveProduct.
     			         setTaskProgress(task, (double) (i + 1)/ (double) productsInfo.size());
     		   }else {

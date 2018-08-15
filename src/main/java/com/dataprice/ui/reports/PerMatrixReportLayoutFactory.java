@@ -24,6 +24,9 @@ import com.dataprice.ui.reports.exporter.ExcelExport;
 import com.dataprice.ui.reports.exporter.TableHolder;
 import com.dataprice.ui.reports.gridutil.cell.CellFilterChangedListener;
 import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
+import com.dataprice.ui.reports.pagination.Pagination;
+import com.dataprice.ui.reports.pagination.PaginationChangeListener;
+import com.dataprice.ui.reports.pagination.PaginationResource;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
@@ -72,6 +75,13 @@ public class PerMatrixReportLayoutFactory {
 	private java.util.Date lastUpdate;
 	private DecimalFormat df = new DecimalFormat("####,###,###.00");
 	
+	
+	//Some pagination variables
+	private Pagination pagination;
+	private List<Product> subProduct;
+	private long total;
+	private int limit;
+	private int page;
 	
 	private class PerMatrixReportLayout extends VerticalLayout  {
 
@@ -155,7 +165,7 @@ public class PerMatrixReportLayoutFactory {
 			
 			productsTable.setWidth("100%");
 			productsTable.setHeight("500px");
-			productsTable.setItems(products);
+			//productsTable.setItems(products);
 			productsTable.setSelectionMode(SelectionMode.NONE);
 			
 			return this;
@@ -360,7 +370,12 @@ public class PerMatrixReportLayoutFactory {
 			h1.setWidth("35%");
 			h1.setMargin(false);
 			
-			VerticalLayout v1 = new VerticalLayout(h1,productsTable);
+			VerticalLayout layout = createContent(productsTable, pagination);
+			layout.setSizeFull();
+			layout.setMargin(false);
+			
+			
+			VerticalLayout v1 = new VerticalLayout(h1,layout);
 			v1.setComponentAlignment(h1, Alignment.MIDDLE_RIGHT);
 			v1.setSizeFull();
 			v1.setMargin(false);
@@ -383,6 +398,73 @@ public class PerMatrixReportLayoutFactory {
 			return this;
 		}
 		
+		
+		
+		
+		public PerMatrixReportLayout pagination() {
+			
+			page = 1;
+	       	if (products.size()<20) {
+	       		limit = products.size(); 
+	       	}else {
+	       		limit = 20; 
+	       	}
+			 
+	       	
+	       	subProduct = products.subList(0, limit); 
+	       	total = Long.valueOf(products.size());
+	       	productsTable.setItems(subProduct);
+	        
+	        pagination = createPagination(total, page, limit);
+	        pagination.addPageChangeListener(new PaginationChangeListener() {
+	            @Override
+	            public void changed(PaginationResource event) {
+	               
+	                productsTable.setItems(products.subList(event.fromIndex(), event.toIndex()));
+	                productsTable.scrollToStart();
+	                productsTable.removeHeaderRow(2);
+	                
+	                filter = new GridCellFilter(productsTable);
+	    			filter.setLinkFilter("Myname", true, false);
+	    			if (settings.getKeyType().equals("sku")) {
+	    					filter.setTextFilter("Mysku", true, true);
+	    			}else {
+	    					filter.setTextFilter("Myupc", true, true);
+	    			}			
+	    			filter.setNumberFilter("Myprice", Double.class,"invalid input", "inferior", "superior");		
+	    					
+	    			for (String seller : reportSettings.getCompetitors()) {
+	    					filter.setIndicatorFilter(seller);
+	    			}
+	            }
+	        });
+	        
+			return this;
+		}		
+		
+
+	    private Pagination createPagination(long total, int page, int limit) {
+	        final PaginationResource paginationResource = PaginationResource.newBuilder().setTotal(total).setPage(page).setLimit(limit).build();
+	        final Pagination pagination = new Pagination(paginationResource);
+	        if (products.size()>200) {
+	        	pagination.setItemsPerPage(20, 50, 100, 200, products.size());
+	        }else {
+	        	pagination.setItemsPerPage(20, 50, 100, 200);
+	        }
+	        return pagination;
+	    }
+		
+	    
+	    private VerticalLayout createContent(Grid grid, Pagination pagination) {
+	        final VerticalLayout layout = new VerticalLayout();
+	        layout.setSizeFull();
+	        layout.setSpacing(true);
+	        layout.addComponents(grid, pagination);
+	        layout.setExpandRatio(grid, 1f);
+	        return layout;
+	    }
+	    
+	    
 	}
 
 	@Autowired
@@ -398,7 +480,7 @@ public class PerMatrixReportLayoutFactory {
 	private ReportsService reportsService;
 	
 	public Component createComponent(ReportSettings reportSettings) {
-		return new PerMatrixReportLayout(reportSettings).load().init().filter().footer().header().layout();
+		return new PerMatrixReportLayout(reportSettings).load().init().pagination().filter().header().layout();
 	}
 
 	

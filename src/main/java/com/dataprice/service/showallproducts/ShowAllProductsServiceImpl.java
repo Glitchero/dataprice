@@ -1,6 +1,7 @@
 package com.dataprice.service.showallproducts;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,8 @@ public class ShowAllProductsServiceImpl implements ShowAllProductsService{
 
 
 	@Override
-	public List<Product> getAllProductsFromSku(String sku) {
-		return productRepository.getAllPrductsFromSku(sku);
+	public List<Product> getAllPrductsForTimePlot(String sku, Set<String> competitors, String mainSeller) {
+		return productRepository.getAllPrductsForTimePlot(sku,competitors,mainSeller);
 	}
 
 

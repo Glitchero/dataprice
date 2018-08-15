@@ -56,9 +56,7 @@ public class PhantomFactory
   		
   		desiredCaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
 
-  	//	WebDriver phantomDriver = new PhantomJSDriver(desiredCaps);
-  		
-    	
+  	//	WebDriver phantomDriver = new PhantomJSDriver(desiredCaps); 	
   		
   		WebDriver phantomDriver = null;
   		try {

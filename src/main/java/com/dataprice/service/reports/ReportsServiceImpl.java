@@ -1,6 +1,7 @@
 package com.dataprice.service.reports;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dataprice.model.entity.Product;
 import com.dataprice.repository.product.ProductRepository;
+import com.dataprice.repository.producthistory.ProductHistoryRepository;
 
 @Service
 @Transactional(readOnly=true)
@@ -18,6 +20,10 @@ public class ReportsServiceImpl implements ReportsService{
 
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private ProductHistoryRepository productHistoryRepository;
+	
 
 	@Override
 	public List<String> getCompetitorsList(String mySeller) {
@@ -48,6 +54,11 @@ public class ReportsServiceImpl implements ReportsService{
 	@Override
 	public List<Product> getProductsFromSellerNameAndUpc(String seller, String upc, Date lastDate) {
 		return productRepository.getProductsFromSellerNameAndUpc(seller, upc, lastDate);
+	}
+
+	@Override
+	public Double getHistoricalPriceFromKey(String key, Calendar date) {
+		return productHistoryRepository.getHistoricalPriceFromKey(key, date);
 	}
 
 

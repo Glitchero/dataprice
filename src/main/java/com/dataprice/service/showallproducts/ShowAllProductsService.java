@@ -1,6 +1,7 @@
 package com.dataprice.service.showallproducts;
 
 import java.util.List;
+import java.util.Set;
 
 import com.dataprice.model.entity.Product;
 
@@ -10,7 +11,7 @@ public interface ShowAllProductsService {
 	
 	public List<Product> getAllProducts();
 	
-	public List<Product> getAllProductsFromSku(String sku);
+	public List<Product> getAllPrductsForTimePlot(String sku,Set<String> competitors, String mainSeller);
 	
 	public Product getProductFromKey(String productKey);
 	
