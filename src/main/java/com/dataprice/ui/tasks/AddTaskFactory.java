@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.products.ShowAllProductsLayoutFactory;
-import com.dataprice.utils.StudentsStringUtils;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;

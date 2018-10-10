@@ -36,7 +36,6 @@ import com.dataprice.ui.dashboard.DashboardLayoutFactory;
 import com.dataprice.ui.feed.FeedLayoutFactory;
 import com.dataprice.ui.login.LoginUI;
 import com.dataprice.ui.manager.NavigationManager;
-import com.dataprice.ui.view.AddStudent;
 import com.dataprice.ui.view.ErrorPage;
 import com.dataprice.ui.view.GroupPage;
 import com.dataprice.ui.view.HomePage;
@@ -319,7 +318,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		if(!hasRole(Role.Retailer.name())) {
 		//If is admin user
-		
+		/**
 		MenuButton homeButton = LeftMenuButtonBuilder.get()
 				.withCaption("Dashboard")
 				.withIcon(VaadinIcons.DASHBOARD)
@@ -327,10 +326,10 @@ public class VaadinHybridMenuUI extends UI {
 				.build();
 
 		hybridMenu.addLeftMenuButton(homeButton);
-        
+        */
         
 		MenuButton tasksButton = LeftMenuButtonBuilder.get()
-				.withCaption("Bots")
+				.withCaption(StringUtils.MENU_BOTS.getString())
 				.withIcon(VaadinIcons.BUG)
 				.withNavigateTo(TaskLayoutFactory.class)
 				.build();
@@ -339,7 +338,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		
 		MenuButton exportButton = LeftMenuButtonBuilder.get()
-				.withCaption("Exportar/Importar")
+				.withCaption(StringUtils.MENU_EXPORT_IMPORT.getString())
 				.withIcon(VaadinIcons.REFRESH)
 				.withNavigateTo(TaskExportImportLayoutFactory.class)
 				.build();
@@ -368,7 +367,7 @@ public class VaadinHybridMenuUI extends UI {
 		
 		
 		MenuButton productsButton = LeftMenuButtonBuilder.get()
-		.withCaption("Emparejar Productos")
+		.withCaption(StringUtils.MENU_PRODUCT_MATCHER.getString())
 		.withIcon(VaadinIcons.CART)
 		.withNavigateTo(ProductLayoutFactory.class)
 		.build();
@@ -376,26 +375,16 @@ public class VaadinHybridMenuUI extends UI {
        hybridMenu.addLeftMenuButton(productsButton);
 				
 		MenuButton reportsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Reportes")
+				.withCaption(StringUtils.MENU_REPORTS.getString())
 				.withIcon(VaadinIcons.CHART_GRID)
 				.withNavigateTo(ReportsMainLayout.class)
 				.build();
 
 		hybridMenu.addLeftMenuButton(reportsButton);
-		
-		
-		MenuButton settingsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Ajustes del Sistema")
-				.withIcon(VaadinIcons.COGS)
-				.withNavigateTo(SettingsLayoutFactory.class)
-				.build();
 
-		hybridMenu.addLeftMenuButton(settingsButton);
-		
-		
-		/**
+					
 		MenuButton feedsButton = LeftMenuButtonBuilder.get()
-				.withCaption("Feeds")
+				.withCaption(StringUtils.MENU_FEEDS.getString())
 				.withIcon(VaadinIcons.DATABASE)
 				.withNavigateTo(FeedLayoutFactory.class)
 				.build();
@@ -403,32 +392,41 @@ public class VaadinHybridMenuUI extends UI {
 		hybridMenu.addLeftMenuButton(feedsButton);
 		
 		
+		MenuButton settingsButton = LeftMenuButtonBuilder.get()
+				.withCaption(StringUtils.MENU_SETTINGS.getString())
+				.withIcon(VaadinIcons.COGS)
+				.withNavigateTo(SettingsLayoutFactory.class)
+				.build();
+
+		hybridMenu.addLeftMenuButton(settingsButton);
+		
+		
 		MenuButton userButton = LeftMenuButtonBuilder.get()
-				.withCaption("Users")
+				.withCaption(StringUtils.MENU_USER.getString())
 				.withIcon(VaadinIcons.USER)
 				.withNavigateTo(UserLayoutFactory.class)
 				.build();
 
 		hybridMenu.addLeftMenuButton(userButton);
-		*/
+		
 		
 		}else {
 			//If is retailer
-			MenuButton homeButton = LeftMenuButtonBuilder.get()
-					.withCaption("Dashboard")
-					.withIcon(VaadinIcons.DASHBOARD)
-					.withNavigateTo(DashboardLayoutFactory.class)
-					.build();
-
-			hybridMenu.addLeftMenuButton(homeButton);
-			
 			MenuButton reportsButton = LeftMenuButtonBuilder.get()
-					.withCaption("Reportes")
+					.withCaption(StringUtils.MENU_REPORTS.getString())
 					.withIcon(VaadinIcons.CHART_GRID)
 					.withNavigateTo(ReportsMainLayout.class)
 					.build();
 
 			hybridMenu.addLeftMenuButton(reportsButton);
+			
+			MenuButton feedsButton = LeftMenuButtonBuilder.get()
+					.withCaption("Feeds")
+					.withIcon(VaadinIcons.DATABASE)
+					.withNavigateTo(FeedLayoutFactory.class)
+					.build();
+
+			hybridMenu.addLeftMenuButton(feedsButton);
 		}
         
 	}

@@ -103,7 +103,7 @@ public class Catalogue extends AbstractCrawler{
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			System.out.println("La url es:" + crawlInfo.getUrl());
-			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl(),1000);
 			
 			if (urlResponse == null){  //Task fatal error.		
 				return null;

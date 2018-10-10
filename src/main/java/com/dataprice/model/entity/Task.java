@@ -53,6 +53,7 @@ public class Task {
       private Integer downloadedProducts = 0;
 	  
 	  
+	  
       public Task() {
     	  this.products = new ArrayList<>();
       }

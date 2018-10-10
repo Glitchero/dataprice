@@ -25,8 +25,6 @@ import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.VaadinHybridMenuUI;
-import com.dataprice.utils.NotificationsMessages;
-import com.dataprice.utils.StudentsStringUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
@@ -458,10 +456,10 @@ public class EditProductLayoutFactory {
 		
 		private void edit() {
 	      //Add the limits on the settings !!! DO LATER IS IMPORTANT
-			if (dashboardService.getNumOfProducts(settings.getMainSeller())>199){
-				Notification.show("ERROR","Límite de productos emparejados alcanazado.",Type.ERROR_MESSAGE);
-				return;
-			}
+			//if (dashboardService.getNumOfProducts(settings.getMainSeller())>199){
+			//	Notification.show("ERROR","Límite de productos emparejados alcanazado.",Type.ERROR_MESSAGE);
+			//	return;
+			//}
 			
 			
 			if (product==null){

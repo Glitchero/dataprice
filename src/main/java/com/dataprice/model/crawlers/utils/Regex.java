@@ -62,12 +62,11 @@ public class Regex {
 	public final static String AMAZON_ID = "dp/([0-9a-zA-Z]{10})";
 	public final static String AMAZON_NAME = "<span id=\"productTitle\" class=\"a-size-large\">(.*?)</span>";
 	public final static String AMAZON_DESCRIPTION = "";
-	public final static String AMAZON_BRAND ="";
+	public final static String AMAZON_BRAND ="<a id=\"brand\".*?>(.*?)</a>";
 	public final static String AMAZON_PRICE = "<span id=\"priceblock_.*?price\" class=\"a-size-medium a-color-price\">(.*?)</span>";
 	public final static String AMAZON_IMAGEURL = "data-old-hires=.*?&quot;(.*?)&quot;";
 	public final static String AMAZON_SKU = "";
-	
-	//"data-old-hires=\"(.*?)\"  class=\"a-dynamic-image";
+	public final static String AMAZON_SELLER = "Vendido por <a href=.*?>(.*?)</a>";
 	
 	
 	/**
@@ -260,7 +259,9 @@ public class Regex {
 	public final static String PRISSA_IMAGEURL ="<img data-image-large-src=\"(.*?)\"";
 	
 	
-			
+	public final static String HOMEDEPOT_ID = "-([0-9]{6})";
+	public final static String HOMEDEPOT_NAME ="http://www.homedepot.com.mx/.*?/(.*?)-[0-9]{6}";
+
 	
 	
 }

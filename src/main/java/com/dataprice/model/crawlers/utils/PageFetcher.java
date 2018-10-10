@@ -3,6 +3,9 @@ package com.dataprice.model.crawlers.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -44,21 +47,24 @@ public class PageFetcher {
 	
 	
 	
-	public FetchResults getURLContent(String urlStr) {
+	public FetchResults getURLContent(String urlStr, int politenessDelay) {
 		
 		FetchResults fetchResults = new FetchResults();
 		try {
+			//CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 			URL url = new URL(urlStr);
 	        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			connection.setRequestProperty("User-Agent", USER_AGENT);
 			HttpURLConnection.setFollowRedirects(true); //In case we have 300 code, we follow the redirect!!!.
-			
+			connection.setConnectTimeout(12000);
+			connection.setReadTimeout(12000);
+
 			// Applying Politeness delay
             synchronized (mutex) {
                 long now = (new Date()).getTime();
-                if ((now - lastFetchTime) < Configuration.POLITENESSDELAY) {
+                if ((now - lastFetchTime) < politenessDelay) {
                      try {
-						   Thread.sleep(Configuration.POLITENESSDELAY - (now - lastFetchTime));
+						   Thread.sleep(politenessDelay - (now - lastFetchTime));
 					     } catch (InterruptedException e) {
 						   // TODO Auto-generated catch block
 						   //e.printStackTrace();
@@ -68,7 +74,6 @@ public class PageFetcher {
                 }
                 lastFetchTime = (new Date()).getTime();
             }
-                        
 			connection.connect();
 			int code = connection.getResponseCode();
 			BufferedReader r = new BufferedReader(new InputStreamReader(connection.getInputStream(),Charset.forName("UTF-8")));
@@ -85,6 +90,7 @@ public class PageFetcher {
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println(e);  
 			System.out.println("El servido tiene algún problema con la peticiÃ³n, de repente pasa!!");
 			return new FetchResults();
 		}

@@ -46,14 +46,14 @@ public class UserLayoutFactory extends VerticalLayout implements View,SaveUserLi
 	    h1.setComponentAlignment(showUser, Alignment.MIDDLE_CENTER);
 	    h1.setMargin(false);
 	    
-	    Label mainTittle = new Label("<b><font size=\"5\">Administre los usuarios </font></b>",ContentMode.HTML);	
+	    Label mainTittle = new Label("<b><font size=\"5\">Cambiar Contraseña</font></b>",ContentMode.HTML);	
 
-	    Label subTittle = new Label("<font size=\"2\">Agregue usuarios de tipo retailers al sistema </font>",ContentMode.HTML);	
+	    Label subTittle = new Label("<font size=\"2\">Cambia tu contraseña.</font>",ContentMode.HTML);	
 		
 	    addComponent(mainTittle);
 	    addComponent(subTittle);
-		addComponent(h1);
-	  //  addComponent(showUser);
+		//addComponent(h1);
+	    addComponent(addUser);
 	    
 	}
 

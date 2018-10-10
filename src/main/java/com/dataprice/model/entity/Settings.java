@@ -39,6 +39,9 @@ public class Settings {
 	@Column(name = "main_seller")
 	private String mainSeller = null;	
 	
+	@Column(name = "country_selected")
+	private String countrySelected = null;
+	
 	@Column(name = "num_retrieved")
 	private Double numRetrieved = 10.0;
 	 
@@ -54,7 +57,19 @@ public class Settings {
 	@Column(name = "stop_words")
 	private String stopWords = "";
 	
+	/**
+	@Column(name = "proxy_host")
+	private String proxyHost = "";
 	
+	@Column(name = "proxy_port")
+	private String proxyPort = "";
+	
+	@Column(name = "proxy_username")
+	private String proxyUsername = "";
+	
+	@Column(name = "proxy_password")
+	private String proxyPassword = "";
+	*/
 	
     public Settings() {
     	
@@ -125,6 +140,56 @@ public class Settings {
 
 	public void setStopWords(String stopWords) {
 		this.stopWords = stopWords;
+	}
+
+    /**
+	public String getProxyHost() {
+		return proxyHost;
+	}
+
+
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
+
+
+	public String getProxyPort() {
+		return proxyPort;
+	}
+
+
+	public void setProxyPort(String proxyPort) {
+		this.proxyPort = proxyPort;
+	}
+
+
+	public String getProxyUsername() {
+		return proxyUsername;
+	}
+
+
+	public void setProxyUsername(String proxyUsername) {
+		this.proxyUsername = proxyUsername;
+	}
+
+
+	public String getProxyPassword() {
+		return proxyPassword;
+	}
+
+
+	public void setProxyPassword(String proxyPassword) {
+		this.proxyPassword = proxyPassword;
+	}
+   */
+
+	public String getCountrySelected() {
+		return countrySelected;
+	}
+
+
+	public void setCountrySelected(String countrySelected) {
+		this.countrySelected = countrySelected;
 	}
 	 
 	 

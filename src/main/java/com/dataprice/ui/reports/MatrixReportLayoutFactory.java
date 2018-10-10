@@ -162,7 +162,7 @@ public class MatrixReportLayoutFactory {
 				
 		//	productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150);
 		
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio (en MXN)").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
 			
 			
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
@@ -530,6 +530,7 @@ public class MatrixReportLayoutFactory {
 	
 	public Component createComponent(ReportSettings reportSettings) {
 		return new MatrixReportLayout(reportSettings).load().init().pagination().filter().header().layout();
+		//return new MatrixReportLayout(reportSettings).load().init().filter().header().layout();
 	}
 
 	

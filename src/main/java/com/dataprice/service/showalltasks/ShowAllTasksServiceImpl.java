@@ -35,6 +35,6 @@ public class ShowAllTasksServiceImpl implements ShowAllTasksService{
 	public Integer getNumOfTasks() {
 		return taskRepository.getNumOfTasks();
 	}
-	
+
 
 }

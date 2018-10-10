@@ -8,5 +8,7 @@ public interface ShowAllRetailsService {
 
 	public List<Retail> getAllRetailers();
 	
+	public List<Retail> getAllRetailersFromCountry(String Country);
+	
 	public Retail getRetailFromId(Integer id);
 }

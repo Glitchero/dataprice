@@ -138,7 +138,7 @@ public class PerMatrixReportLayoutFactory {
 			
 		//	productsTable.addColumn(p -> p.getCategory()).setCaption("Categoría").setId("Mycategory");
 				
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio (en MXN)").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
+			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));
 					
 
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
@@ -481,6 +481,7 @@ public class PerMatrixReportLayoutFactory {
 	
 	public Component createComponent(ReportSettings reportSettings) {
 		return new PerMatrixReportLayout(reportSettings).load().init().pagination().filter().header().layout();
+		//return new PerMatrixReportLayout(reportSettings).load().init().filter().header().layout();
 	}
 
 	

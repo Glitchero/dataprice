@@ -129,7 +129,7 @@ public class Coppel extends AbstractCrawler{
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl(),1000);
 			
 			//System.out.println(crawlInfo.getUrl());
 			//System.out.println("tamaño" + urlResponse.getContent().length());

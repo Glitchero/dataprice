@@ -20,6 +20,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Slider;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -29,20 +30,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dataprice.model.entity.*;
 import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.dashboard.DashboardService;
+import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
-import com.dataprice.utils.Gender;
-import com.dataprice.utils.NotificationsMessages;
 
 @org.springframework.stereotype.Component
 public class AddTaskMainLayoutFactory {
 
 	    private class AddTaskMainLayout extends VerticalLayout implements Button.ClickListener{
 		
-      
+	   	private Settings settings;	
+
 	    private TextField taskName;
 	    private ComboBox retail;
 	    private TextField seed;
@@ -52,9 +54,12 @@ public class AddTaskMainLayoutFactory {
         private List<Retail> retailers;
 	    
 	    private Binder<Task> binder;
-	
+	    private Label currentCountry;
+	    
 	    private Task task;
 	
+	
+
 	    
 	    private TaskSavedListener taskSavedListener;
 	    
@@ -69,6 +74,15 @@ public class AddTaskMainLayoutFactory {
 	    	binder = new Binder<>(Task.class);
 	    	
 	    	task = new Task();
+	    	
+	    	if (settings.getCountrySelected()==null) {
+	    		currentCountry = new Label("<b><font size=\"3\">" + "Seleccione al País en Ajustes" + "</font></b>",ContentMode.HTML);	
+				currentCountry.addStyleName(ValoTheme.LABEL_FAILURE);
+			}else {
+				currentCountry = new Label("<b><font size=\"3\">" + "País Seleccionado: " + settings.getCountrySelected() + "</font></b>",ContentMode.HTML);	
+		    	currentCountry.addStyleName(ValoTheme.LABEL_SUCCESS);
+		    }
+	    	
 	    	
 	    	taskName = new TextField("Nombre del Bot:");
 	    //	taskName.setPlaceholder("Escribe el nombre que mejor represente a tu bot");
@@ -165,8 +179,9 @@ public class AddTaskMainLayoutFactory {
 	    	FormLayout form = new FormLayout(taskName,retail,seed);
 	    	form.setWidth("100%");
 	    	
-	    	VerticalLayout vl = new VerticalLayout(form,hbuttons);
-	    	vl.setMargin(false);
+	    	VerticalLayout vl = new VerticalLayout(currentCountry,form,hbuttons);
+	    	vl.setComponentAlignment(currentCountry, Alignment.TOP_LEFT);
+	    	vl.setMargin(true);
 	    	vl.setSizeFull();
 
 	    
@@ -193,10 +208,10 @@ public class AddTaskMainLayoutFactory {
 			}
 			
 			//Add the limits on the settings !!! DO LATER IS IMPORTANT
-			if(dashboardService.getNumOfTasks()>19) {
-				Notification.show("ERROR","Límite de bots alcanzado",Type.ERROR_MESSAGE);
-				return;
-			}
+			//if(dashboardService.getNumOfTasks()>19) {
+			//	Notification.show("ERROR","Límite de bots alcanzado",Type.ERROR_MESSAGE);
+			//	return;
+			//}
 			
 			
 			//System.out.println(task);
@@ -215,11 +230,17 @@ public class AddTaskMainLayoutFactory {
 		}
 
 		public AddTaskMainLayout load() {
-			retailers = showAllRetailsService.getAllRetailers();
+			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			settings = user.getSettings();
+			
+			retailers = showAllRetailsService.getAllRetailersFromCountry(settings.getCountrySelected());
 			return this;
 		}
 	  
 	}
+	    
+	@Autowired 
+	private UserServiceImpl userServiceImpl;
 	
 	@Autowired
     private AddTaskService addtaskService;

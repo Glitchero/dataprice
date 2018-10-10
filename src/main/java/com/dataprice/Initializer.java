@@ -66,6 +66,22 @@ public class Initializer {
 			country.setNickname("MX");
 			addCountryService.saveCountry(country);	
 			
+			
+			Country country2 = new Country();
+			country2.setCountryId(2);
+			country2.setCountryName("United States");
+			country2.setCurrency("USD");
+			country2.setNickname("US");
+			addCountryService.saveCountry(country2);
+			
+			Retail retail0 = new Retail();
+			retail0.setRetailId(100);
+			retail0.setRetailName("Prueba");
+			retail0.setCrawlerName("Prueba");
+			retail0.setCountry(country2);		
+			addRetailService.saveRetail(retail0);
+			
+			
 			Retail retail1 = new Retail();
 			retail1.setRetailId(1);
 			retail1.setRetailName("Mercado Libre");
@@ -110,7 +126,20 @@ public class Initializer {
 			retail6.setCrawlerName("Prissa");
 			retail6.setCountry(country);		
 			addRetailService.saveRetail(retail6);
-             
+			
+			Retail retail7 = new Retail();
+			retail7.setRetailId(7);
+			retail7.setRetailName("AmazonMx");
+			retail7.setCrawlerName("Amazon");
+			retail7.setCountry(country);		
+			addRetailService.saveRetail(retail7);
+			
+			Retail retail8 = new Retail();
+			retail8.setRetailId(8);
+			retail8.setRetailName("HomeDepot");
+			retail8.setCrawlerName("HomeDepot");
+			retail8.setCountry(country);		
+			addRetailService.saveRetail(retail8);
           }
           catch (Exception e)
           {

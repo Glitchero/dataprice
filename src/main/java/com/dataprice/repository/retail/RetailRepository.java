@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.dataprice.model.entity.Retail;
+import com.dataprice.model.entity.Task;
 
 @Repository
 public interface RetailRepository extends JpaRepository<Retail,Integer>{
@@ -18,4 +19,7 @@ public interface RetailRepository extends JpaRepository<Retail,Integer>{
 	@Query("select r from Retail r where r.retailId=:retailKey")
 	Retail getRetailFromId(@Param("retailKey") Integer retailKey);
 
+	@Query("select r from Retail r where r.country.countryName=:countryName")
+	List<Retail> getAllRetailersFromCountry(@Param("countryName") String countryName);
+	
 }

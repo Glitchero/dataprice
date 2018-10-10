@@ -113,7 +113,7 @@ public class MercadoLibre extends AbstractCrawler{
 			
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl(),1000);
 			System.out.println(crawlInfo.getUrl());
 			if (urlResponse == null){  //Task fatal error.		
 				return null;

@@ -92,7 +92,7 @@ public class NutritionDepot extends AbstractCrawler{
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
-			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl());
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl(),1000);
 			
 			if (urlResponse == null){  //Task fatal error.		
 				return null;

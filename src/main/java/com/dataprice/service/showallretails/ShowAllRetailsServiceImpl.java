@@ -23,6 +23,11 @@ public class ShowAllRetailsServiceImpl implements ShowAllRetailsService{
 	public Retail getRetailFromId(Integer id) {
 		return retailersRepository.getRetailFromId(id);
 	}
+
+	@Override
+	public List<Retail> getAllRetailersFromCountry(String Country) {
+		return retailersRepository.getAllRetailersFromCountry(Country);
+	}
 	
 	
 }

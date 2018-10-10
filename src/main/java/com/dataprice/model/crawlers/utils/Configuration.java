@@ -62,13 +62,11 @@ public class Configuration {
 	/** Proxy Configuration
 	 */
 	
-	public final static String ProxyHost = "us-wa.proxymesh.com";
-	public final static int ProxyPort = 31280;
+	public final static String ProxyHost = "Write here proxyHost";
+	public final static int ProxyPort = 0; //Write here proxyport
 
-//	public final static String ProxyHost = "open.proxymesh.com";
-//	public final static int ProxyPort = 31280;
-	public final static String ProxyUsername = "Glitchero";
-	public final static String ProxyPassword = "Harbinger1989?";
+	public final static String ProxyUsername = "Write here Username";
+	public final static String ProxyPassword = "Write here Password";
 	
 	
 	

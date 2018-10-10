@@ -19,7 +19,14 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	public void save(String username, String password, Role role) {
-		
+		//Check if user already exists 
+		if (userRepository.findByUsername(username)!=null) {
+			User user = userRepository.findByUsername(username);
+			user.setPassword(passwordEncoder.encode(password));
+			user.setRole(role);
+			userRepository.save(user);
+		}else {
+
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(passwordEncoder.encode(password));
@@ -28,5 +35,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 		settings.setUser(user);
 		user.setSettings(settings);
 		userRepository.save(user);
+		}
+		
 	}
 }

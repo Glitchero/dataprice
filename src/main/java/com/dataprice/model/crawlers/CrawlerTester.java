@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+import org.openqa.selenium.By;
 import org.slf4j.Logger;
 
 
@@ -35,41 +36,42 @@ public class CrawlerTester {
 		
 	public static void main(String[] args) {
 
-		/**
-		Task task = new Task();
-		task.setSeed("https://www.sephora.com.br/perfumes?cat=37");
-		
-		task.setTaskName("CABALLERO");
-		
-		Catalogue crawler = new Catalogue();
-		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
 	
-		System.out.println("Tamaño total de productos base descargados: " + productsInfo.size());
-		int con = 1;
-		for (CrawlInfo crawlInfo : productsInfo) {
-			System.out.println("------------------------      " + con );
-			List<Product> products = crawler.parseProductsFromUrl(crawlInfo, task);
-			for (int i = 0; i<products.size();i++){	 
-				 System.out.println(products.get(i));
-	      	}
-			con++;
-		}
-	    */
-		
-	
+
 		Task task = new Task();
-		task.setSeed("https://super.walmart.com.mx/cerveza-vinos-y-licores/licores/ron/_/N-4hati4");
+		task.setSeed("http://www.homedepot.com.mx/materiales-de-construccion/basicos-de-construccion#facet:&productBeginIndex:0&facetLimit:&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&");
+	//	task.setSeed("http://www.homedepot.com.mx");
+		task.setTaskName("Ciudad de México,Del. Álvaro Obregón");
 		
-		task.setTaskName("perfumes");
-		
-		Crawler crawler = new SuperWalmart();
+		Crawler crawler = new HomeDepot();
 		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
 	
 		for (CrawlInfo crawlInfo : productsInfo) {
 		    Product p = crawler.parseProductFromURL(crawlInfo, task);
 			System.out.println(p);
 		}
+
 		
+	/**	
+		int total_products_int= 126;
+		int base = 20;
+	    String url = "http://www.homedepot.com.mx/materiales-de-construccion/basicos-de-construccion#facet:&productBeginIndex:0&facetLimit:&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&";
+		if (total_products_int>20) {
+			int loops = total_products_int/20;
+			
+			for (int i =0;i<loops;i++) {
+				url = url.replaceAll("productBeginIndex:(\\d+)&", "productBeginIndex:" + Integer.toString(base) + "&");
+				base = base + 20;
+				System.out.println(url);
+			}
+	
+		}
+	*/
+			
+		
+		
+		
+						
 		
 	}
 
