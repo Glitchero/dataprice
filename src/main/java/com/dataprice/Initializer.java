@@ -59,34 +59,27 @@ public class Initializer {
               
               //Always add this retails when started the application.
             
-          	Country country = new Country();
-			country.setCountryId(1);
-			country.setCountryName("México");
-			country.setCurrency("Peso MXN");
-			country.setNickname("MX");
-			addCountryService.saveCountry(country);	
+          	Country mexico = new Country();
+          	mexico.setCountryId(1);
+          	mexico.setCountryName("México");
+			mexico.setCurrency("Peso MXN");
+			mexico.setNickname("MX");
+			addCountryService.saveCountry(mexico);	
 			
 			
-			Country country2 = new Country();
-			country2.setCountryId(2);
-			country2.setCountryName("United States");
-			country2.setCurrency("USD");
-			country2.setNickname("US");
-			addCountryService.saveCountry(country2);
-			
-			Retail retail0 = new Retail();
-			retail0.setRetailId(100);
-			retail0.setRetailName("Prueba");
-			retail0.setCrawlerName("Prueba");
-			retail0.setCountry(country2);		
-			addRetailService.saveRetail(retail0);
+			Country usa = new Country();
+			usa.setCountryId(2);
+			usa.setCountryName("United States");
+			usa.setCurrency("USD");
+			usa.setNickname("US");
+			addCountryService.saveCountry(usa);
 			
 			
 			Retail retail1 = new Retail();
 			retail1.setRetailId(1);
 			retail1.setRetailName("Mercado Libre");
 			retail1.setCrawlerName("MercadoLibre");
-			retail1.setCountry(country);		
+			retail1.setCountry(mexico);		
 			addRetailService.saveRetail(retail1);
 			
 			
@@ -94,7 +87,7 @@ public class Initializer {
 			retail2.setRetailId(2);
 			retail2.setRetailName("Linio");
 			retail2.setCrawlerName("Linio");
-			retail2.setCountry(country);		
+			retail2.setCountry(mexico);		
 			addRetailService.saveRetail(retail2);
 			
 			
@@ -102,7 +95,7 @@ public class Initializer {
 			retail3.setRetailId(3);
 			retail3.setRetailName("Chedraui");
 			retail3.setCrawlerName("Chedraui");
-			retail3.setCountry(country);		
+			retail3.setCountry(mexico);		
 			addRetailService.saveRetail(retail3);
 			
 			
@@ -110,35 +103,35 @@ public class Initializer {
 			retail4.setRetailId(4);
 			retail4.setRetailName("SuperWalmart");
 			retail4.setCrawlerName("SuperWalmart");
-			retail4.setCountry(country);		
+			retail4.setCountry(mexico);		
 			addRetailService.saveRetail(retail4);
 			
 			Retail retail5 = new Retail();
 			retail5.setRetailId(5);
 			retail5.setRetailName("La Europea");
 			retail5.setCrawlerName("Laeuropea");
-			retail5.setCountry(country);		
+			retail5.setCountry(mexico);		
 			addRetailService.saveRetail(retail5);
 			
 			Retail retail6 = new Retail();
 			retail6.setRetailId(6);
 			retail6.setRetailName("Prissa");
 			retail6.setCrawlerName("Prissa");
-			retail6.setCountry(country);		
+			retail6.setCountry(mexico);		
 			addRetailService.saveRetail(retail6);
 			
 			Retail retail7 = new Retail();
 			retail7.setRetailId(7);
 			retail7.setRetailName("AmazonMx");
 			retail7.setCrawlerName("Amazon");
-			retail7.setCountry(country);		
+			retail7.setCountry(mexico);		
 			addRetailService.saveRetail(retail7);
 			
 			Retail retail8 = new Retail();
 			retail8.setRetailId(8);
 			retail8.setRetailName("HomeDepot");
 			retail8.setCrawlerName("HomeDepot");
-			retail8.setCountry(country);		
+			retail8.setCountry(mexico);		
 			addRetailService.saveRetail(retail8);
           }
           catch (Exception e)
