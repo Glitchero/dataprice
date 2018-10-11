@@ -28,6 +28,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -56,6 +57,8 @@ public class FeedSettingsLayoutFactory {
 				
 	private ComboBox sellerName;
 	
+	private CheckBox checkBox;
+	
 	private Button generateFeed;
 	
 	//private DateField lastDate;
@@ -79,6 +82,7 @@ public class FeedSettingsLayoutFactory {
 			
 			feedSettings = new FeedSettings(settings.getLastUpdateInDays()); //1 day last update!!!
 			
+			checkBox = new CheckBox("Solo emparejados");
 		//	lastDate = new DateField("Seleccione la fecha de última actualización:");
 		//	lastDate.setWidth("20%");
 			
@@ -104,9 +108,8 @@ public class FeedSettingsLayoutFactory {
 			  .asRequired("retailer is required")
 			  .bind("seller");
 			
-	//		binder.forField(lastDate)
-	//		  .asRequired("last date is required")
-	//		  .bind("lastUpdate");
+			binder.forField(checkBox)
+			  .bind("onlyMatches");
 			
 			binder.readBean(feedSettings);
 			
@@ -131,7 +134,7 @@ public class FeedSettingsLayoutFactory {
 			h4.setWidth("20%");
 			h4.setMargin(false);
 			
-			FormLayout f1 = new FormLayout(sellerName);
+			FormLayout f1 = new FormLayout(sellerName,checkBox);
 			
 			
 			VerticalLayout v2 = new VerticalLayout(mainTittle,subTittle,f1,h4);

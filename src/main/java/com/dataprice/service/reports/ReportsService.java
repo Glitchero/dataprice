@@ -24,5 +24,6 @@ public interface ReportsService {
 	
 	public Double getHistoricalPriceFromKey(String key, Calendar date); 
 	
+	List<Product> getProductsForFeedNoMatches(String mySeller,Date lastDate);
 	
 }

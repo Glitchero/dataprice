@@ -92,14 +92,9 @@ public class ExportFeedLayoutFactory {
 			 productsTable.addColumn(p -> p.getDescription()).setCaption("Description").setId("Mydescription");
 			 
 			 productsTable.addColumn(p -> "").setCaption("Short_desc").setId("Myshort");
-
-			 if (feedSettings.getSeller().equals("Amazon")) {
-				 productsTable.addColumn(p -> p.getAffiliate()).setCaption("Url").setId("Myurl");
-			 }else {
-				 productsTable.addColumn(p -> p.getProductUrl()).setCaption("Url").setId("Myurl");
-			 }
+		
+			 productsTable.addColumn(p -> p.getProductUrl()).setCaption("Url").setId("Myurl");
 			
-
 			 productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
 
 			 productsTable.addColumn(p -> "").setCaption("Tags").setId("Mytags");
@@ -279,7 +274,7 @@ public class ExportFeedLayoutFactory {
 		
 		
        public ExportFeedLayout load() {
-			
+			System.out.println(feedSettings.getOnlyMatches());
 			User user = userServiceImpl.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 			settings = user.getSettings();
 			
@@ -288,11 +283,18 @@ public class ExportFeedLayoutFactory {
 			System.out.println("El vendedor seleccionado es: " + feedSettings.getSeller());
 		//	Set<String> competitorsSet = new HashSet<String>(competitors);
 			if (settings.getKeyType().equals("sku")) {
-				competitors = dashboardService.getCompetitorsBySku(feedSettings.getSeller());
-				Set<String> competitorsUsedSet = new HashSet<String>(competitors);
-				if (competitorsUsedSet.size()!=0) {	
-					products = reportsService.getProductsForPriceMatrixBySku(feedSettings.getSeller(), lastUpdate,competitorsUsedSet);
+				if (feedSettings.getOnlyMatches()) { //if true it means it must have matches
+					competitors = dashboardService.getCompetitorsBySku(feedSettings.getSeller());
+					Set<String> competitorsUsedSet = new HashSet<String>(competitors);
+					if (competitorsUsedSet.size()!=0) {	
+						products = reportsService.getProductsForPriceMatrixBySku(feedSettings.getSeller(), lastUpdate,competitorsUsedSet);
+					}
+				}else {
+					
+					products = reportsService.getProductsForFeedNoMatches(feedSettings.getSeller(), lastUpdate);					
+					
 				}
+
 			}else {
 				competitors = dashboardService.getCompetitorsByUpc(feedSettings.getSeller());
 				Set<String> competitorsUsedSet = new HashSet<String>(competitors);

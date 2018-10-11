@@ -7,6 +7,8 @@ public class FeedSettings {
 
 	private String seller;  
 	
+	private boolean onlyMatches;
+	
 	private LocalDate lastUpdate = LocalDate.now().minus(Period.ofDays(1));
 	
     public FeedSettings() {
@@ -35,6 +37,14 @@ public class FeedSettings {
 
 	public void setLastUpdate(LocalDate lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+
+	public boolean getOnlyMatches() {
+		return onlyMatches;
+	}
+
+	public void setOnlyMatches(boolean onlyMatches) {
+		this.onlyMatches = onlyMatches;
 	}
     
     

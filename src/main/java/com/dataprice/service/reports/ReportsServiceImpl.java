@@ -61,6 +61,11 @@ public class ReportsServiceImpl implements ReportsService{
 		return productHistoryRepository.getHistoricalPriceFromKey(key, date);
 	}
 
+	@Override
+	public List<Product> getProductsForFeedNoMatches(String mySeller, Date lastDate) {
+		return productRepository.getProductsForFeedNoMatches(mySeller, lastDate);
+	}
+
 
 	
 	

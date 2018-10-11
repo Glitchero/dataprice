@@ -11,8 +11,8 @@ public enum StringUtils {
 	MENU_SETTINGS("Ajustes"),
 	MENU_USER("Contraseña"),
 	
-	//Tasks or Bots
-	
+	//Tasks 
+
 	
 	//Reports
 	
