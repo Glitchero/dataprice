@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/univers
     username: root
-    password: Harbinger1945
+    password: 12345
     platform: mysql
     initialize: false
   jpa:
