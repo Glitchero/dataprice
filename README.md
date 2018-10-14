@@ -4,9 +4,9 @@ Dataprice is a competitor price tracking and ecommerce scraper software. It uses
 
 ## Use cases
 
- -> Track and compare prices for products in different e-commerce stores.
- -> Create your own e-commerce feeds in order to update price comparison shopping engines
- -> Scrape online stores 
+ - Track and compare prices for products in different e-commerce stores.
+ - Create your own e-commerce feeds in order to update price comparison shopping engines
+ - Scrape online stores (example data: id,name,price,description,url,image,sku,brand and category)
           
 ## Features
 
