@@ -25,6 +25,7 @@ import com.dataprice.service.searchproduct.SearchProductService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
@@ -114,44 +115,44 @@ public class EditProductLayoutFactory {
 		
 		public EditProductLayout init() {
 			
-			textFieldName = new TextField("Nombre:");
+			textFieldName = new TextField(StringUtils.PRODUCT_NAME.getString());
 			textFieldName.setWidth("100%");
 			textFieldName.setEnabled(false);
 			
-			textFieldId = new TextField("Clave:");
+			textFieldId = new TextField(StringUtils.PRODUCT_KEY.getString());
 			textFieldId.setWidth("100%");
 			textFieldId.setEnabled(false);
 			
-			textFieldRetail = new TextField("Retail:");
+			textFieldRetail = new TextField(StringUtils.PRODUCT_RETAIL.getString());
 			textFieldRetail.setWidth("100%");
 			textFieldRetail.setEnabled(false);
 			
-			textFieldPrice = new TextField("Precio:");
+			textFieldPrice = new TextField(StringUtils.PRODUCT_PRICE.getString());
 			textFieldPrice.setWidth("100%");
 			textFieldPrice.setEnabled(false);
 			
 			
-			textFieldUpdateDate = new TextField("Actualizado:");
+			textFieldUpdateDate = new TextField(StringUtils.PRODUCT_UPDATED.getString());
 			textFieldUpdateDate.setWidth("100%");
 			textFieldUpdateDate.setEnabled(false);
 			
-			textFieldTaskName = new TextField("Nombre del Bot:");
+			textFieldTaskName = new TextField(StringUtils.PRODUCT_TASK_NAME.getString());
 			textFieldTaskName.setWidth("100%");
 			textFieldTaskName.setEnabled(false);
 			
 			//Key condition
 			if (settings.getKeyType().equals("sku")) {
-				textFieldKey = new TextField("SKU:");
+				textFieldKey = new TextField(StringUtils.PRODUCT_SKU.getString());
 			}else {
 				textFieldKey = new TextField("UPC:");
             } 
 	
 			textFieldKey.setWidth("100%");
 	
-			textFieldBrand = new TextField("Marca:");
+			textFieldBrand = new TextField(StringUtils.PRODUCT_BRAND.getString());
 			textFieldBrand.setWidth("100%");
 	
-			textFieldCategory = new TextField("Categoría:");
+			textFieldCategory = new TextField(StringUtils.PRODUCT_CATEGORY.getString());
 			textFieldCategory.setWidth("100%");
 			
 			productChecked = new CheckBox("Marcar producto como revisado.");
@@ -159,13 +160,13 @@ public class EditProductLayoutFactory {
 			
 		   	binder = new Binder<>(Product.class);		   	
 		
-			editButton = new Button("Emparejar");
+			editButton = new Button(StringUtils.PRODUCT_MATCH.getString());
 			editButton.setIcon(VaadinIcons.EDIT);
 			editButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			editButton.addClickListener(this);
 			editButton.setWidth("40%");
 					
-			uneditButton = new Button("Desemparejar");
+			uneditButton = new Button(StringUtils.PRODUCT_UNMATCH.getString());
 			uneditButton.setIcon(VaadinIcons.EDIT);
 			uneditButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			uneditButton.addClickListener(this);
@@ -181,7 +182,7 @@ public class EditProductLayoutFactory {
 			description.setEnabled(false);
 			
 			productLink =  new Link();
-			productLink.setCaption("Ver en sitio web");
+			productLink.setCaption(StringUtils.PRODUCT_SEE_WEBSITE.getString());
 		
 			topProductsTable = new Grid<>(Product.class);
 			
@@ -193,13 +194,13 @@ public class EditProductLayoutFactory {
 			    image.setHeight(100,Unit.PIXELS);
 
 			    return image;
-			}).setId("Image").setCaption("Imagen");
+			}).setId("Image").setCaption(StringUtils.PRODUCT_IMAGE.getString());
 			
 			topProductsTable.addColumn(p ->
-		      p.getSeller()).setId("Competence").setCaption("Competencia");
+		      p.getSeller()).setId("Competence").setCaption(StringUtils.PRODUCT_COMPETITION.getString());
 			
 			topProductsTable.addColumn(p ->
-		      p.getName()).setId("RetrievedName").setCaption("Nombre");
+		      p.getName()).setId("RetrievedName").setCaption(StringUtils.PRODUCT_NAME.getString());
 			
 			/**
 			//Key condition
@@ -214,11 +215,11 @@ public class EditProductLayoutFactory {
 			
 			
 			topProductsTable.addColumn(p ->
-		      p.getPrice()).setId("Price").setCaption("Precio");
+		      p.getPrice()).setId("Price").setCaption(StringUtils.PRODUCT_PRICE.getString());
 				
 			topProductsTable.addColumn(p ->
-		      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>ver link!</a>",
-		      new HtmlRenderer()).setId("Links").setCaption("Links");
+		      "<a target=\"_blank\" href='" + p.getProductUrl() + "' target='_top'>"+ StringUtils.PRODUCT_SEE_LINKS.getString() +"</a>",
+		      new HtmlRenderer()).setId("Links").setCaption(StringUtils.PRODUCT_LINKS.getString());
 			
 			
 			topProductsTable.setSelectionMode(SelectionMode.MULTI);
@@ -288,8 +289,8 @@ public class EditProductLayoutFactory {
 			vlform2.setMargin(false); //era true
 
 			
-			Label descr = new Label("descrip");
-			descr.setValue("Descripción:");
+			Label descr = new Label(StringUtils.PRODUCT_DESCRIPTION.getString());
+			descr.setValue(StringUtils.PRODUCT_DESCRIPTION.getString());
 			descr.setWidth("100%");
 			descr.setHeight("10px");
 			VerticalLayout vlform4 = new VerticalLayout(descr,description);
@@ -299,8 +300,8 @@ public class EditProductLayoutFactory {
 			vlform4.setExpandRatio(description, 1);
 
 			
-			Label img = new Label("img");
-			img.setValue("Imagen:");
+			Label img = new Label(StringUtils.PRODUCT_IMAGE.getString());
+			img.setValue(StringUtils.PRODUCT_IMAGE.getString());
 			img.setWidth("100%");
 			//img.setHeight("10px");
 			HorizontalLayout himg = new HorizontalLayout(img,productLink);
@@ -372,12 +373,12 @@ public class EditProductLayoutFactory {
 		private void unedit() {
 			
 			if (product==null){
-				Notification.show("ERROR","Favor de seleccionar un producto",Type.ERROR_MESSAGE);
+				Notification.show("ERROR",StringUtils.PRODUCT_SELECT_AT_LEAST.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			
 			if (product.isChecked()==false){
-				Notification.show("ERROR","El producto ya está desemparejado",Type.ERROR_MESSAGE);
+				Notification.show("ERROR",StringUtils.PRODUCT_ALREADY_UNMATCHED.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -449,7 +450,7 @@ public class EditProductLayoutFactory {
 			productSaveListener.productSaved();
 		//	editData(product); //In order to refreh the topProductsTable
 			uneditClearField();
-			Notification.show("DESEMPAREJADO","El producto fue desemparejado con éxito",Type.WARNING_MESSAGE);
+			Notification.show(StringUtils.PRODUCT_UNMATCHED.getString(),StringUtils.PRODUCT_SUCCESS_UNMATCHED.getString(),Type.WARNING_MESSAGE);
 		}
 		
 		
@@ -463,18 +464,18 @@ public class EditProductLayoutFactory {
 			
 			
 			if (product==null){
-				Notification.show("ERROR","Favor de seleccionar un producto",Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.PRODUCT_SELECT_A_PRODUCT.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			
 			if (product.isChecked()==true){
-				Notification.show("ERROR","El producto ya está emparejado",Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.PRODUCT_ALREADY_MATCHED.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			
 			//At least one selected in top table
 			if (topProductsTable.getSelectedItems().size()==0) {
-				Notification.show("ERROR","Debe seleccionar al menos un producto",Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.PRODUCT_AT_LEAST_ONE_SELECTED.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -545,7 +546,7 @@ public class EditProductLayoutFactory {
 			productSaveListener.productSaved();
 		//	editData(product); //In order to refreh the topProductsTable
 			editClearField();
-			Notification.show("EMPAREJADO","El producto fue emparejado con éxito",Type.WARNING_MESSAGE);
+			Notification.show(StringUtils.PRODUCT_MATCHED.getString(),StringUtils.PRODUCT_MATCHED_SUCCESS.getString(),Type.WARNING_MESSAGE);
 			
 		}
 

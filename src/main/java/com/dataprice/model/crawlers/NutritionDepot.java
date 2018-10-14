@@ -58,7 +58,7 @@ public class NutritionDepot extends AbstractCrawler{
 			
 			//Always have to run this iteration, the set dosent have this page.
 				for (WebElement we : driver.findElements(By.xpath("//*[@id='content']/ul/li/div/div[1]/a"))) {	   
-					 linksList.add(new CrawlInfo(we.getAttribute("href")));
+					linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			        }
 			
 			
@@ -66,7 +66,7 @@ public class NutritionDepot extends AbstractCrawler{
 				 driver.get(taskLink);		
 				 Thread.sleep(Configuration.DRIVERDELAY); 
 				 for (WebElement we : driver.findElements(By.xpath("//*[@id='content']/ul/li/div/div[1]/a"))) {	   
-					 linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			     }
 			}
 			//Destroy

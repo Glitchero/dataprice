@@ -16,6 +16,7 @@ import com.dataprice.service.reports.ReportsService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -82,18 +83,18 @@ public class FeedSettingsLayoutFactory {
 			
 			feedSettings = new FeedSettings(settings.getLastUpdateInDays()); //1 day last update!!!
 			
-			checkBox = new CheckBox("Solo emparejados");
+			checkBox = new CheckBox(StringUtils.FEEDS_ONLY_MATCHED.getString());
 		//	lastDate = new DateField("Seleccione la fecha de última actualización:");
 		//	lastDate.setWidth("20%");
 			
-			mainTittle = new Label("<b><font size=\"5\">Creador de Feeds </font></b>",ContentMode.HTML);	
-			subTittle = new Label("<font size=\"2\">Crea feeds de productos para cada vendedor disponible </font>",ContentMode.HTML);	
+			mainTittle = new Label("<b><font size=\"5\">"+ StringUtils.FEEDS_TITLE.getString() +"</font></b>",ContentMode.HTML);	
+			subTittle = new Label("<font size=\"2\">"+ StringUtils.FEEDS_SUBTITLE.getString() +"</font>",ContentMode.HTML);	
 			
-			sellerName = new ComboBox("Seleccione el Vendedor:");
+			sellerName = new ComboBox(StringUtils.FEEDS_SELLER_SELECTED.getString());
 			sellerName.setItems(sellers);
 			sellerName.setWidth("50%");
 			
-			generateFeed = new Button("Generar Reporte");
+			generateFeed = new Button(StringUtils.FEEDS_GENERATE_REPORT.getString());
 			generateFeed.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			generateFeed.addClickListener(this);
 			generateFeed.setWidth("100%");

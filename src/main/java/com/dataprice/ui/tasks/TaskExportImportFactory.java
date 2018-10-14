@@ -12,6 +12,7 @@ import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -56,10 +57,10 @@ public class TaskExportImportFactory {
 
 		
 		public TaskExportImport init() {
-			exportTittle = new Label("<b><font size=\"5\">Exportar</font></b>",ContentMode.HTML);	
-			importTittle = new Label("<b><font size=\"5\">Importar</font></b>",ContentMode.HTML);	
-			importDescription = new Label("<i><font size=\"3\">Copia y pega tus bots en formato JSON para ingresalos al sistema.</font></i>",ContentMode.HTML);	
-			exportDescription = new Label("<i><font size=\"3\">Descarga tus bots en formato JSON y guardalos en tu máquina local. </font></i>",ContentMode.HTML);	
+			exportTittle = new Label("<b><font size=\"5\">" + StringUtils.EI_EXPORT.getString() + "</font></b>",ContentMode.HTML);	
+			importTittle = new Label("<b><font size=\"5\">" + StringUtils.EI_IMPORT.getString()+ "</font></b>",ContentMode.HTML);	
+			importDescription = new Label("<i><font size=\"3\">"+ StringUtils.EI_IMPORT_DESCRIPTION.getString()+"</font></i>",ContentMode.HTML);	
+			exportDescription = new Label("<i><font size=\"3\">"+ StringUtils.EI_EXPORT_DESCRIPTION.getString()+"</font></i>",ContentMode.HTML);	
 
 			importArea = new TextArea();
 			importArea.setWidth("100%");
@@ -69,12 +70,12 @@ public class TaskExportImportFactory {
 			exportArea.setWidth("100%");
 			exportArea.setHeight("400px");
 			
-			importButton = new Button("Importar");
+			importButton = new Button(StringUtils.EI_IMPORT.getString());
 			importButton.setWidth("25%");
 			importButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			importButton.addClickListener(this);
 			
-			exportButton = new Button("Exportar");
+			exportButton = new Button(StringUtils.EI_EXPORT.getString());
 			exportButton.setWidth("25%");
 			exportButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			exportButton.addClickListener(this);
@@ -123,8 +124,8 @@ public class TaskExportImportFactory {
 				importedTasks = new Gson().fromJson(importArea.getValue(), new TypeToken<List<TaskJson>>(){}.getType());
 				
 				NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-				.withCaption("Notificación")
-				.withDescription("Importación exitosa")
+				.withCaption(StringUtils.STATUS.getString())
+				.withDescription(StringUtils.EI_IMPORT_SUCESS.getString())
 				.withPriority(ENotificationPriority.MEDIUM)
 				.withIcon(VaadinIcons.INFO)
 				.withCloseButton()
@@ -134,8 +135,8 @@ public class TaskExportImportFactory {
 				
 			} catch (Exception e2) {
 				NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-					.withCaption("Notificación")
-					.withDescription("Importación rechazada")
+					.withCaption(StringUtils.STATUS.getString())
+					.withDescription(StringUtils.EI_IMPORT_ERROR.getString())
 					.withPriority(ENotificationPriority.HIGH)
 					.withIcon(VaadinIcons.INFO)
 					.withCloseByHide() 
@@ -145,7 +146,7 @@ public class TaskExportImportFactory {
 			importArea.setValue("");
 			
 			}else {
-				Notification.show("ERROR","No hay entrada JSON", Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.EI_NOT_JSON.getString(), Type.ERROR_MESSAGE);
 			}
 		}
 

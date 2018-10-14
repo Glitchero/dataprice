@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dataprice.utils.StringUtils;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.shared.ui.ContentMode;
@@ -46,9 +47,9 @@ public class UserLayoutFactory extends VerticalLayout implements View,SaveUserLi
 	    h1.setComponentAlignment(showUser, Alignment.MIDDLE_CENTER);
 	    h1.setMargin(false);
 	    
-	    Label mainTittle = new Label("<b><font size=\"5\">Cambiar Contraseña</font></b>",ContentMode.HTML);	
+	    Label mainTittle = new Label("<b><font size=\"5\">" + StringUtils.USER_TITLE.getString() + "</font></b>",ContentMode.HTML);	
 
-	    Label subTittle = new Label("<font size=\"2\">Cambia tu contraseña.</font>",ContentMode.HTML);	
+	    Label subTittle = new Label("<font size=\"2\">"+StringUtils.USER_SUBTITLE.getString()+"</font>",ContentMode.HTML);	
 		
 	    addComponent(mainTittle);
 	    addComponent(subTittle);

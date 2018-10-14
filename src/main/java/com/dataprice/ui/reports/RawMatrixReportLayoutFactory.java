@@ -88,12 +88,12 @@ public class RawMatrixReportLayoutFactory {
 
 		public MatrixReportLayout init() {
 			excelProgressBar = new ProgressBar();
-			excelProgressBar.setCaption("Procesando...");
+			excelProgressBar.setCaption("Processing...");
 			excelProgressBar.setIndeterminate(true);
 			excelProgressBar.setVisible(false);
 			
 			csvProgressBar = new ProgressBar();
-			csvProgressBar.setCaption("Procesando...");
+			csvProgressBar.setCaption("Processing...");
 			csvProgressBar.setIndeterminate(true);
 			csvProgressBar.setVisible(false);
 			
@@ -122,13 +122,13 @@ public class RawMatrixReportLayoutFactory {
 				productLink.setResource(externalResourceLink);
 				productLink.setTargetName("_blank");								
 			    return productLink;
-			}).setCaption("Nombre").setId("Myname").setRenderer(new ComponentRenderer());	
+			}).setCaption("Name").setId("Myname").setRenderer(new ComponentRenderer());	
 			
 	        productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
 			
 			productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
 					
-			productsTable.addColumn(p -> p.getPrice()).setCaption("Mi precio").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));			
+			productsTable.addColumn(p -> p.getPrice()).setCaption("My price").setId("Myprice").setWidth(150).setRenderer(new NumberRenderer(df));			
 			
 			for (String seller : reportSettings.getCompetitors()) {  //Competition
 				 
@@ -223,13 +223,13 @@ public class RawMatrixReportLayoutFactory {
 		        HorizontalLayout buttonLayout = new HorizontalLayout();
 		        buttonLayout.setSpacing(true);
 		        join.setComponent(buttonLayout);
-		        Button clearAllFilters = new Button("Limpiar Filtros", event -> filter.clearAllFilters());
+		        Button clearAllFilters = new Button("Clean filters", event -> filter.clearAllFilters());
 		        clearAllFilters.setIcon(VaadinIcons.CLOSE);
 		        clearAllFilters.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		        buttonLayout.addComponent(clearAllFilters);
 
 		        //Excel exporting section!!
-		        Button excelExportButton = new Button("Exportar a Excel");
+		        Button excelExportButton = new Button("Export to Excel");
 		        excelExportButton.addClickListener(new Button.ClickListener() {
 		        	
 		        	
@@ -260,7 +260,7 @@ public class RawMatrixReportLayoutFactory {
 					            });
 					        						        		     
 				                excelExport = new ExcelExport(tableHolder);
-				                excelExport.setReportTitle("Reporte de Precios");
+				                excelExport.setReportTitle("Price Report");
 				                excelExport.setExportFileName("Excel-Report.xls");
 				                excelExport.setDisplayTotals(false);
 				                excelExport.setRowHeaders(false);							           				                
@@ -281,7 +281,7 @@ public class RawMatrixReportLayoutFactory {
 		        excelExportButton.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		        
 		        //CSV exporting section!!
-		        Button csvExportButton = new Button("Exportar a CSV");
+		        Button csvExportButton = new Button("Export to CSV");
 		        csvExportButton.addClickListener(new Button.ClickListener() {
 		        	
 		        	
@@ -337,7 +337,7 @@ public class RawMatrixReportLayoutFactory {
 
 		            @Override
 		            public void changedFilter(final GridCellFilter cellFilter) {
-		                Notification.show("Filtro ejecutado" , Type.TRAY_NOTIFICATION);
+		                Notification.show("Filter execute" , Type.TRAY_NOTIFICATION);
 		            }
 		        });
 		        
@@ -347,13 +347,13 @@ public class RawMatrixReportLayoutFactory {
 		
 		public Component layout() {
 			
-			HorizontalLayout f1 = new HorizontalLayout(upArrow, new Label("Soy más caro"));
+			HorizontalLayout f1 = new HorizontalLayout(upArrow, new Label("I'm more expensive"));
 			f1.setMargin(false);
 			
-			HorizontalLayout f2 = new HorizontalLayout(equalArrow, new Label("Mismo precio"));
+			HorizontalLayout f2 = new HorizontalLayout(equalArrow, new Label("Same price"));
 			f1.setMargin(false);
 			
-			HorizontalLayout f3 = new HorizontalLayout(downArrow, new Label("Soy más barato"));
+			HorizontalLayout f3 = new HorizontalLayout(downArrow, new Label("I'm cheaper"));
 			f1.setMargin(false);
 			
 			HorizontalLayout h1 = new HorizontalLayout(f1,f2,f3);

@@ -47,7 +47,7 @@ public class PerfumesMexico extends AbstractCrawler{
 			
 			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"center_column\"]/div/div[3]/div/div/div[2]/h5/a"))) {	
 			//	System.out.println(we.getAttribute("href"));
-				linksList.add(new CrawlInfo(we.getAttribute("href")));
+				 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 		        }
 			
 			
@@ -56,7 +56,7 @@ public class PerfumesMexico extends AbstractCrawler{
 					Thread.sleep(Configuration.DRIVERDELAY);
 					 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"center_column\"]/div/div[3]/div/div/div[2]/h5/a"))) {	
 						//	System.out.println(we.getAttribute("href"));
-							linksList.add(new CrawlInfo(we.getAttribute("href")));
+						 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 					 }							
 			 }		 
 			

@@ -39,7 +39,7 @@ public class Sears extends AbstractCrawler{
 			
 			 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"col_der\"]/div[4]/div/div[3]/a"))) {	
 				//System.out.println(we.getAttribute("href"));
-				linksList.add(new CrawlInfo(we.getAttribute("href")));
+				 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 		        }
 			
 			//Destroy

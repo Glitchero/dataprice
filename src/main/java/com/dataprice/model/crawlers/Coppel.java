@@ -67,7 +67,8 @@ public class Coppel extends AbstractCrawler{
 				String url = we.findElement(By.tagName("a")).getAttribute("href");	
 				System.out.println("Url: " + url);
 				System.out.println("Price: " + price);
-				linksList.add(new CrawlInfo(url,Double.valueOf(price)));
+				linksList.add(new CrawlInfo(url,"","",Double.valueOf(price),"","",""));
+			
 	        }
 		
 			

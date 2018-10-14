@@ -34,6 +34,7 @@ import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.products.ComboBoxWithButton;
 import com.dataprice.ui.tasks.ShowAllTasksLayoutFactory;
 import com.dataprice.ui.tasks.TaskSavedListener;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.icons.VaadinIcons;
@@ -98,27 +99,27 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 		
 		 public AddSettingsMainLayout init() {
 
-			mainTittle = new Label("<b><font size=\"5\">Ajustes del Sistema </font></b>",ContentMode.HTML);	
+			mainTittle = new Label("<b><font size=\"5\">" + StringUtils.SETTINGS_TITLE.getString()+ "</font></b>",ContentMode.HTML);	
 
-			subTittle = new Label("<font size=\"2\">Selecciona los ajustes del sistema deseados. </font>",ContentMode.HTML);	
+			subTittle = new Label("<font size=\"2\">"+ StringUtils.SETTINGS_SUBTITLE.getString() +"</font>",ContentMode.HTML);	
 			
-			sellersComboBox = new ComboBox("Vendedores disponibles:");
+			sellersComboBox = new ComboBox(StringUtils.SETTINGS_AVAILABLE_SELLERS.getString());
 			sellersComboBox.setWidth("50%");
 			sellersComboBox.setItems(sellers);
 			
 			
-			countriesComboBox = new ComboBox("Paises disponibles:");
+			countriesComboBox = new ComboBox(StringUtils.SETTINGS__AVAILABLE_COUNTRIES.getString());
 			countriesComboBox.setWidth("50%");
 			countriesComboBox.setItems(countries);		
 			
 			
      
-			daysGroup = new RadioButtonGroup<>("Seleccione la última actualización (en días): ");
+			daysGroup = new RadioButtonGroup<>(StringUtils.SETTINGS_LAST_UPDATE.getString());
 			daysGroup.setItems(1, 2,3,4,5,6,7);
 			daysGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 			
 	
-			coresGroup = new RadioButtonGroup<>("Seleccione en número de cores: ");
+			coresGroup = new RadioButtonGroup<>(StringUtils.SETTINGS_CORES.getString());
 			coresGroup.setItems(1, 2,3,4,5,6,7);
 			coresGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 			
@@ -126,7 +127,7 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			
 			slider =  new Slider(1, 100);
 			slider.setWidth("50%");
-			slider.setCaption("Número máximo de productos similares mostrados: ");
+			slider.setCaption(StringUtils.SETTINGS_TOTAL_SIMILAR.getString());
 			// Shows the value of the vertical slider
 			vertvalue = new Label();
 
@@ -144,14 +145,14 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 			    */
 			});
 			
-			stopWords = new TextArea("Palabras excluidas en búsqueda de similares:");
-			stopWords.setPlaceholder("Escribe las palabras separadas por comma(,)");
+			stopWords = new TextArea(StringUtils.SETTINGS_EXCLUDED_WORDS.getString());
+			stopWords.setPlaceholder(StringUtils.SETTINGS_EXCLUDED_WORDS_DESCRIPTION.getString());
 			stopWords.setWidth("50%");
 			stopWords.setHeight("100%");
 			stopWords.setEnabled(true);			
 			
 			
-			saveButton = new Button("Gurdar Ajustes");
+			saveButton = new Button(StringUtils.SAVE.getString());
 			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			saveButton.addClickListener(this);
 			saveButton.setWidth("100%");			
@@ -248,11 +249,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				try {
 					binder.writeBean(settings);
 				} catch (ValidationException e) {
-					Notification.show("ERROR","Los ajustes no se guardaron",Type.ERROR_MESSAGE);
+					Notification.show(StringUtils.ERROR.getString(),StringUtils.SETTINGS_SAVED.getString(),Type.ERROR_MESSAGE);
 					return;
 				}
 				modifySettingsService.modifySettings(settings);
-				Notification.show("GUARDAR","Ajustes guardados satisfactoriamente",Type.WARNING_MESSAGE);
+				Notification.show(StringUtils.SAVE.getString(),StringUtils.SETTINGS_ERROR.getString(),Type.WARNING_MESSAGE);
 			
 			}
 		

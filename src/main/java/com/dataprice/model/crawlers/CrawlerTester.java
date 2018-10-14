@@ -51,28 +51,6 @@ public class CrawlerTester {
 			System.out.println(p);
 		}
 
-		
-	/**	
-		int total_products_int= 126;
-		int base = 20;
-	    String url = "http://www.homedepot.com.mx/materiales-de-construccion/basicos-de-construccion#facet:&productBeginIndex:0&facetLimit:&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&";
-		if (total_products_int>20) {
-			int loops = total_products_int/20;
-			
-			for (int i =0;i<loops;i++) {
-				url = url.replaceAll("productBeginIndex:(\\d+)&", "productBeginIndex:" + Integer.toString(base) + "&");
-				base = base + 20;
-				System.out.println(url);
-			}
-	
-		}
-	*/
-			
-		
-		
-		
-						
-		
 	}
 
 	

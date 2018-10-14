@@ -54,7 +54,7 @@ public class Amazon extends AbstractCrawler{
 				for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]"))) {
 					String url = we.findElement(By.cssSelector("a.a-link-normal.a-text-normal")).getAttribute("href");	
 				//	System.out.println(url);
-					linksList.add(new CrawlInfo(url));
+					linksList.add(new CrawlInfo(url,"","",0.0,"","",""));
 			    }
 								
 				
@@ -66,7 +66,7 @@ public class Amazon extends AbstractCrawler{
 					Thread.sleep(Configuration.DRIVERDELAY);
 					for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'result_')]"))) {
 						String url = we.findElement(By.cssSelector("a.a-link-normal.a-text-normal")).getAttribute("href");	
-						linksList.add(new CrawlInfo(url));
+						linksList.add(new CrawlInfo(url,"","",0.0,"","",""));
 				    }
 					if (con==10) {  //before it was 40 , later it was 44
 						break;

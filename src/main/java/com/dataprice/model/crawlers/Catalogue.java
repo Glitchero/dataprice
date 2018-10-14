@@ -48,7 +48,7 @@ public class Catalogue extends AbstractCrawler{
 					String brand = we.findElement(By.cssSelector("div.product-manufacturer")).getText(); 						
 					brand = brand.trim();				
 					String url = we.findElement(By.cssSelector("a.product-image")).getAttribute("href");	
-					linksList.add(new CrawlInfo(url,brand));
+					linksList.add(new CrawlInfo(url,"","",0.0,"","",brand));
 		        }
 
 				 while (driver.findElements(By.cssSelector("a.next.i-next")).size()>0) {
@@ -59,7 +59,7 @@ public class Catalogue extends AbstractCrawler{
 						String brand = we.findElement(By.cssSelector("div.product-manufacturer")).getText(); 						
 						brand = brand.trim();				
 						String url = we.findElement(By.cssSelector("a.product-image")).getAttribute("href");	
-						linksList.add(new CrawlInfo(url,brand));
+						linksList.add(new CrawlInfo(url,"","",0.0,"","",brand));
 			        }
 
 				 }

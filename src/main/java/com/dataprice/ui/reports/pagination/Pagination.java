@@ -124,7 +124,7 @@ public class Pagination extends HorizontalLayout {
     }
 
     private HorizontalLayout createItemsPerPage() {
-        final Label itemsPerPageLabel = new Label("&nbsp;Productos por página", ContentMode.HTML);
+        final Label itemsPerPageLabel = new Label("&nbsp;Products per page", ContentMode.HTML);
         itemsPerPageSelect.setTextInputAllowed(false);
         itemsPerPageSelect.setEmptySelectionAllowed(false);
         itemsPerPageSelect.setWidth("80px");
@@ -196,7 +196,7 @@ public class Pagination extends HorizontalLayout {
         currentPageTextField.setWidth("50px");
         currentPageTextField.setStyleName(ValoTheme.TEXTFIELD_SMALL);
 
-        final Label pageLabel = new Label("Página&nbsp;", ContentMode.HTML);
+        final Label pageLabel = new Label("Page&nbsp;", ContentMode.HTML);
         final Label sepLabel = new Label("&nbsp;/&nbsp;", ContentMode.HTML);
         totalPageLabel.setValue(String.valueOf(this.paginationResource.totalPage()));
 

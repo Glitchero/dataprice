@@ -39,7 +39,7 @@ public class PerfumesOnline extends AbstractCrawler{
 			
 			 for (WebElement we : driver.findElements(By.cssSelector("a.product-image"))) {	
 				//System.out.println(we.getAttribute("href"));
-				linksList.add(new CrawlInfo(we.getAttribute("href")));
+				 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 		        }
 			int con = 1;
 			 while (driver.findElements(By.cssSelector("a.next.i-next")).size()>0){
@@ -50,7 +50,7 @@ public class PerfumesOnline extends AbstractCrawler{
 					
 				    for (WebElement we : driver.findElements(By.cssSelector("a.product-image"))) {	
 						//System.out.println(we.getAttribute("href"));
-						linksList.add(new CrawlInfo(we.getAttribute("href")));
+						linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				    }
 				}
 			//Destroy

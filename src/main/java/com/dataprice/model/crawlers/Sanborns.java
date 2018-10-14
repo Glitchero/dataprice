@@ -51,7 +51,7 @@ public class Sanborns extends AbstractCrawler{
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'promocion')]/div[2]/a"))) {	
 				//	System.out.println(we.getAttribute("href"));
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			        }
              
 				
@@ -62,7 +62,7 @@ public class Sanborns extends AbstractCrawler{
 						
 						 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'promocion')]/div[2]/a"))) {	
 							//	System.out.println(we.getAttribute("href"));
-								linksList.add(new CrawlInfo(we.getAttribute("href")));
+							 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 						 }
 					}
 				

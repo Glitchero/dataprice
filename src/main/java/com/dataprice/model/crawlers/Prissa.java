@@ -37,7 +37,7 @@ public class Prissa extends AbstractCrawler{
 				//Navigation
 
 				 for (WebElement we : driver.findElements(By.cssSelector("span.h3.product-title a"))) {	
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			     }
 
 				
@@ -45,7 +45,7 @@ public class Prissa extends AbstractCrawler{
 						driver.findElement(By.cssSelector("a.next.js-search-link")).click();	
 						Thread.sleep(Configuration.DRIVERDELAY);
 						for (WebElement we : driver.findElements(By.cssSelector("span.h3.product-title a"))) {	
-							linksList.add(new CrawlInfo(we.getAttribute("href")));
+							linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 					    }	
 				  }		 
 				 	 

@@ -39,7 +39,7 @@ public class Soriana extends AbstractCrawler{
 				
 				 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
 					//System.out.println(we.getAttribute("href"));
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			        }
 				
 				int con = 1;
@@ -50,7 +50,7 @@ public class Soriana extends AbstractCrawler{
 						Thread.sleep(Configuration.DRIVERDELAY);
 						 for (WebElement we : driver.findElements(By.xpath("/html/body/main/div[3]/div[3]/div[2]/div/div/div[2]/div/a"))) {	
 								//System.out.println(we.getAttribute("href"));
-								linksList.add(new CrawlInfo(we.getAttribute("href")));
+							 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 						  }							
 				 }		
 					

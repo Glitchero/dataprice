@@ -47,7 +47,7 @@ public class Chedraui extends AbstractCrawler{
 			
 			
 			for (WebElement we : driver.findElements(By.xpath("//*[@id='plp_display']/li/a"))) {	   
-				linksList.add(new CrawlInfo(we.getAttribute("href")));
+				linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 	        }
 			
 			while (driver.findElements(By.cssSelector("a.glyphicon.glyphicon-chevron-right")).size()>0){
@@ -56,7 +56,7 @@ public class Chedraui extends AbstractCrawler{
 			    Thread.sleep(Configuration.DRIVERDELAY);
 				
 			    for (WebElement we : driver.findElements(By.xpath("//*[@id='plp_display']/li/a"))) {	   
-			    	linksList.add(new CrawlInfo(we.getAttribute("href")));
+			    	linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 		        }
 			}
 			

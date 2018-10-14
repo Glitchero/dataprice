@@ -37,6 +37,7 @@ import com.dataprice.service.addtask.AddTaskService;
 import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallretails.ShowAllRetailsService;
+import com.dataprice.utils.StringUtils;
 
 @org.springframework.stereotype.Component
 public class AddTaskMainLayoutFactory {
@@ -76,34 +77,34 @@ public class AddTaskMainLayoutFactory {
 	    	task = new Task();
 	    	
 	    	if (settings.getCountrySelected()==null) {
-	    		currentCountry = new Label("<b><font size=\"3\">" + "Seleccione al País en Ajustes" + "</font></b>",ContentMode.HTML);	
+	    		currentCountry = new Label("<b><font size=\"3\">" + StringUtils.TASKS_SELECT_COUNTRY.getString() + "</font></b>",ContentMode.HTML);	
 				currentCountry.addStyleName(ValoTheme.LABEL_FAILURE);
 			}else {
-				currentCountry = new Label("<b><font size=\"3\">" + "País Seleccionado: " + settings.getCountrySelected() + "</font></b>",ContentMode.HTML);	
+				currentCountry = new Label("<b><font size=\"3\">" + StringUtils.TASKS_SELECTED_COUNTRY.getString() + settings.getCountrySelected() + "</font></b>",ContentMode.HTML);	
 		    	currentCountry.addStyleName(ValoTheme.LABEL_SUCCESS);
 		    }
 	    	
 	    	
-	    	taskName = new TextField("Nombre del Bot:");
+	    	taskName = new TextField(StringUtils.TASK_NAME.getString());
 	    //	taskName.setPlaceholder("Escribe el nombre que mejor represente a tu bot");
 	    	taskName.setWidth("35%");
 	    	
-	    	retail = new ComboBox("Retail/Marketplace:");
+	    	retail = new ComboBox(StringUtils.TASK_MARKETPLACE.getString());
 	    //	retail.setPlaceholder("Selecciona el retail o marketplace");
 	    	retail.setWidth("35%");
 	    	
-	    	seed = new TextField("Semilla del Bot:");
+	    	seed = new TextField(StringUtils.TASK_SEED.getString());
 	    //	seed.setPlaceholder("Copia y pega la url donde se encuentran los productos que deseas descargar");
 	    	seed.setWidth("70%");
 	    	
 	    	
 		//	status = new TextField("Status");
 			
-			saveButton = new Button("Guardar");
+			saveButton = new Button(StringUtils.SAVE.getString());
 			saveButton.setWidth("100%");
 			saveButton.setIcon(VaadinIcons.EDIT);
 			
-			clearButton = new Button("Limpiar");
+			clearButton = new Button(StringUtils.ClEAN.getString());
 			clearButton.setWidth("100%");
 			clearButton.setIcon(VaadinIcons.ERASER);
 			
@@ -203,7 +204,7 @@ public class AddTaskMainLayoutFactory {
 			try {
 				binder.writeBean(task);
 			} catch (ValidationException e) {
-				Notification.show("ERROR","El bot no se guardó",Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.NOT_SAVED.getString(),Type.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -218,7 +219,7 @@ public class AddTaskMainLayoutFactory {
 			addtaskService.saveTask(task);
 			taskSavedListener.taskSaved();
 			clearField();
-			Notification.show("GUARDADO","Bot guardado con éxito",Type.WARNING_MESSAGE);
+			Notification.show(StringUtils.SUCESS.getString(),StringUtils.SAVED.getString(),Type.WARNING_MESSAGE);
 		}
 
 		private void clearField() {

@@ -91,21 +91,21 @@ public class ExportFeedLayoutFactory {
 				
 			 productsTable.addColumn(p -> p.getDescription()).setCaption("Description").setId("Mydescription");
 			 
-			 productsTable.addColumn(p -> "").setCaption("Short_desc").setId("Myshort");
+		//	 productsTable.addColumn(p -> "").setCaption("Short_desc").setId("Myshort");
 		
 			 productsTable.addColumn(p -> p.getProductUrl()).setCaption("Url").setId("Myurl");
 			
 			 productsTable.addColumn(p -> p.getCategory()).setCaption("Category").setId("Mycategory");
 
-			 productsTable.addColumn(p -> "").setCaption("Tags").setId("Mytags");
+		//	 productsTable.addColumn(p -> "").setCaption("Tags").setId("Mytags");
 			
 			 productsTable.addColumn(p -> p.getBrand()).setCaption("Brand").setId("Mybrand");
 			
 			 productsTable.addColumn(p -> p.getPrice()).setCaption("Price").setId("Myprice");
 			
-			 productsTable.addColumn(p -> "").setCaption("Shipping").setId("Myshipping");
+		//	 productsTable.addColumn(p -> "").setCaption("Shipping").setId("Myshipping");
 			
-			 productsTable.addColumn(p -> "").setCaption("Shipping_coment").setId("Myshippingcomment");
+		//	 productsTable.addColumn(p -> "").setCaption("Shipping_coment").setId("Myshippingcomment");
 			
 			 productsTable.addColumn(p -> p.getImageUrl()).setCaption("Image").setId("Myimage");
 			 
@@ -115,7 +115,7 @@ public class ExportFeedLayoutFactory {
 				
 			 
 			 
-			 csvExportButton =  new Button("Descargar en CSV");
+			 csvExportButton =  new Button("Download in CSV");
 			 
 			 
 		        csvExportButton.addClickListener(new Button.ClickListener() {
@@ -289,6 +289,7 @@ public class ExportFeedLayoutFactory {
 					if (competitorsUsedSet.size()!=0) {	
 						products = reportsService.getProductsForPriceMatrixBySku(feedSettings.getSeller(), lastUpdate,competitorsUsedSet);
 					}
+					
 				}else {
 					
 					products = reportsService.getProductsForFeedNoMatches(feedSettings.getSeller(), lastUpdate);					

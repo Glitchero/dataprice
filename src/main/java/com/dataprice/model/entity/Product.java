@@ -136,6 +136,22 @@ public class Product {
 		this.updateDay = new Date();
 	}
 
+	public Product(String productKey, String productId,String seller,Task task,String name,String description, Double price, String imageUrl, String productUrl,String sku, String brand, String category) {
+		this.productKey = productKey;
+		this.productId = productId;
+		this.seller = seller;
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.imageUrl = imageUrl;
+		this.productUrl = productUrl;
+		this.task = task;
+		this.sku = sku;
+		this.brand = brand;
+		this.category = category;
+		this.updateDay = new Date();
+	}
+	
 	
 	public String getAffiliate() {
 		return affiliate;

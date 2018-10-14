@@ -11,6 +11,18 @@ public class CrawlInfo {
 	private String brand;
 	
 	
+	public CrawlInfo(String url,String id, String productName, double price, String imageUrl,String seller, String brand) {
+		this.url = url;	
+		this.id = id;
+		this.productName = productName;
+		this.price = price;	
+		this.imageURl = imageUrl;
+		this.seller = seller;
+		this.brand = brand;
+	}
+	
+	
+	/**
 	public CrawlInfo(String url, String brand) {
 		this.url = url;
 		this.brand = brand;
@@ -64,6 +76,8 @@ public class CrawlInfo {
 	public CrawlInfo(String url) {
 		this.url = url;
 	}
+	*/
+	
 	
 	public String getProductName() {
 		return productName;

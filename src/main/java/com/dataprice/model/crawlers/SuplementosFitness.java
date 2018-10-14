@@ -69,7 +69,9 @@ public class SuplementosFitness extends AbstractCrawler{
 		  			System.out.println("url: " + url);
 		  			String id = we.findElement(By.cssSelector("div.yith-wcwl-add-button.show")).findElement(By.tagName("a")).getAttribute("data-product-id");	
 		  			System.out.println("id: " + id);
-					linksList.add(new CrawlInfo(id, Double.parseDouble(price), url));
+				
+					linksList.add(new CrawlInfo(url,id,"",Double.valueOf(price),"","",""));
+
 			        }
 				
 		
@@ -103,7 +105,7 @@ public class SuplementosFitness extends AbstractCrawler{
 				  			System.out.println("url: " + url);
 				  			String id = we.findElement(By.cssSelector("div.yith-wcwl-add-button.show")).findElement(By.tagName("a")).getAttribute("data-product-id");	
 				  			System.out.println("id: " + id);
-							linksList.add(new CrawlInfo(id, Double.parseDouble(price), url));
+				  			linksList.add(new CrawlInfo(url,id,"",Double.valueOf(price),"","",""));
 					     }
 				}
 			

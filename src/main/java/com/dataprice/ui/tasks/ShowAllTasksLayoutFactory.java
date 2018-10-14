@@ -34,6 +34,7 @@ import com.dataprice.ui.reports.exporter.ExcelExport;
 import com.dataprice.ui.reports.gridutil.cell.GridCellFilter;
 import com.dataprice.ui.tasks.TaskExecuteOrder.ITaskIterator;
 import com.dataprice.ui.tasks.TaskExecuteOrder.RandomTaskIterator;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.icons.VaadinIcons;
@@ -96,11 +97,11 @@ public class ShowAllTasksLayoutFactory{
 		public ShowAllTasksLayout init() {
 
 			cancelProgressBar = new ProgressBar();
-			cancelProgressBar.setCaption("Cancelando...");
+			cancelProgressBar.setCaption(StringUtils.TASKS_CANCELLING.getString());
 			cancelProgressBar.setIndeterminate(true);
 			cancelProgressBar.setVisible(false);
 			
-			updateTasksButton = new Button("Actualizar");
+			updateTasksButton = new Button(StringUtils.TASKS_UPDATING.getString());
 			updateTasksButton.setWidth("100%");
 			updateTasksButton.setIcon(VaadinIcons.REFRESH);
 			updateTasksButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -108,24 +109,24 @@ public class ShowAllTasksLayoutFactory{
 			
 			
 			removeProgressBar = new ProgressBar();
-			removeProgressBar.setCaption("Removiendo...");
+			removeProgressBar.setCaption(StringUtils.TASKS_REMOVING.getString());
 			removeProgressBar.setIndeterminate(true);
 			removeProgressBar.setVisible(false);
 	        
 	        
-			removeTasksButton = new Button("Eliminar");
+			removeTasksButton = new Button(StringUtils.DELETE.getString());
 			removeTasksButton.addClickListener(this);
 			removeTasksButton.setIcon(VaadinIcons.TRASH);
 			removeTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
 			removeTasksButton.setWidth("100%");
 							
-			runTasksButton = new Button("Correr");
+			runTasksButton = new Button(StringUtils.TASKS_RUN.getString());
 			runTasksButton.setWidth("100%");
 			runTasksButton.addClickListener(this);
 			runTasksButton.setIcon(VaadinIcons.PLAY_CIRCLE);
 			runTasksButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 	
-			stopTasksButton =  new Button("Cancelar");
+			stopTasksButton =  new Button(StringUtils.TASKS_CANCEL.getString());
 			stopTasksButton.setWidth("100%");
 			stopTasksButton.setIcon(VaadinIcons.STOP);
 			stopTasksButton.setStyleName(ValoTheme.BUTTON_DANGER);
@@ -135,12 +136,12 @@ public class ShowAllTasksLayoutFactory{
 			tasksTable.removeAllColumns();
 			tasksTable.setWidth("100%");
 			
-			tasksTable.addColumn(p -> p.getTaskName()).setCaption("Nombre").setId("Mytaskname");
-			tasksTable.addColumn(p -> p.getRetail().getRetailName()).setCaption("Retail").setId("Myretailname");
+			tasksTable.addColumn(p -> p.getTaskName()).setCaption(StringUtils.TASK_NAME.getString()).setId("Mytaskname");
+			tasksTable.addColumn(p -> p.getRetail().getRetailName()).setCaption(StringUtils.TASKS_RETAIL.getString()).setId("Myretailname");
 
 			tasksTable.addColumn(t ->
 		      t.getProgress(),
-		      new ProgressBarRenderer()).setCaption("Progreso");
+		      new ProgressBarRenderer()).setCaption(StringUtils.TASKS_PROGRESS.getString());
 			
 			
 			tasksTable.addComponentColumn(t -> {
@@ -173,15 +174,15 @@ public class ShowAllTasksLayoutFactory{
 			
 			
 			tasksTable.addColumn(t ->
-		       t.getDownloadedProducts()).setCaption("Núm.").setWidth(90);
+		       t.getDownloadedProducts()).setCaption(StringUtils.TASKS_NUM.getString()).setWidth(90);
 			
 			tasksTable.addColumn(t ->
 		      t.getRunDateTime(),
-		      new DateRenderer()).setCaption("Fecha y Tiempo de Descarga");
+		      new DateRenderer()).setCaption(StringUtils.TASKS_DATE_TIME.getString());
 
 			tasksTable.addColumn(t ->
-		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>Semilla</a>",
-		      new HtmlRenderer()).setCaption("Semillas");
+		      "<a target=\"_blank\" href='" + t.getSeed() + "' target='_top'>Seed</a>",
+		      new HtmlRenderer()).setCaption(StringUtils.TASKS_SEEDS.getString());
 			
 			tasksTable.setItems(tasks);
 			tasksTable.setSelectionMode(SelectionMode.MULTI);
@@ -211,11 +212,11 @@ public class ShowAllTasksLayoutFactory{
 			refreshTable();
 			
 			if (!vaadinHybridMenuUI.isTaskSetRunning()) {
-				System.out.println("Los tasks no se están ejecutando");
-				Notification.show("ESTATUS","Los Bots no se están ejecutando", Type.WARNING_MESSAGE);
+			//	System.out.println("Los tasks no se están ejecutando");
+				Notification.show(StringUtils.STATUS.getString(),StringUtils.TASKS_NOT_RUNNING.getString(), Type.WARNING_MESSAGE);
 			}else {
-				System.out.println("Los tasks se están ejecutando");
-				Notification.show("ESTATUS","Los Bots se están ejecutando", Type.WARNING_MESSAGE);
+			//	System.out.println("Los tasks se están ejecutando");
+				Notification.show(StringUtils.STATUS.getString(),StringUtils.TASKS_RUNNING.getString(), Type.WARNING_MESSAGE);
 			}
 			
 		}
@@ -266,7 +267,7 @@ public class ShowAllTasksLayoutFactory{
 			 //   vaadinHybridMenuUI.stopTasksExecution();
 				  stopTasksInNewThread();
 			}else {
-				Notification.show("ERROR","No se puede cancelar ya que no hay bots en ejecución", Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.TASKS_CANCELLING_NOTIFICATION.getString(), Type.ERROR_MESSAGE);
 			}
 	     }
 		
@@ -278,8 +279,8 @@ public class ShowAllTasksLayoutFactory{
 				
             	vaadinHybridMenuUI.access(() -> {
    		           NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-       	    	  .withCaption("Notificación")
-				      .withDescription("Señal para cancelar enviada.")
+       	    	  .withCaption(StringUtils.STATUS.getString())
+				      .withDescription(StringUtils.TASKS_CANCELLING_SIGNAL.getString())
 				      .withPriority(ENotificationPriority.HIGH)
 				      .withIcon(VaadinIcons.INFO)
 				      .withCloseButton()
@@ -338,18 +339,18 @@ public class ShowAllTasksLayoutFactory{
    			    	vaadinHybridMenuUI.access(() -> {
    			    		removeProgressBar.setVisible(false);
    			    		removeTasksButton.setVisible(true);
-   			    		Notification.show("ELIMINAR","Los bots fueron eliminados con éxito", Type.WARNING_MESSAGE);
+   			    		Notification.show(StringUtils.DELETE.getString(),StringUtils.TASKS_DELETED_SUCCESS.getString(), Type.WARNING_MESSAGE);
    		            });
    			    	 
    			     }else {
    			    	vaadinHybridMenuUI.access(() -> {
-   			    		Notification.show("ERROR","Seleccione al menos un bot para borrar", Type.ERROR_MESSAGE);
+   			    		Notification.show(StringUtils.ERROR.getString(),StringUtils.TASKS_AT_LEAST_TO_DELETE.getString(), Type.ERROR_MESSAGE);
    		             });	 
    			     }
    				     
    			}else {
 			    	vaadinHybridMenuUI.access(() -> {
-		   				Notification.show("ERROR","No se permite eliminar bots durante la ejecución", Type.ERROR_MESSAGE);
+		   				Notification.show(StringUtils.ERROR.getString(),StringUtils.TASKS_CANNOT_DELETE.getString(), Type.ERROR_MESSAGE);
    		             });	
    			}   
     	  }).start();	
@@ -374,8 +375,8 @@ public class ShowAllTasksLayoutFactory{
 					// Send notification
  
 					 NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
-						.withCaption("Notificacíon")
-						.withDescription(tasksTable.getSelectedItems().size() + " bots se van a ejecutar")
+						.withCaption(StringUtils.STATUS.getString())
+						.withDescription(tasksTable.getSelectedItems().size() + StringUtils.TASKS_SOME_TASKS_RUNNING.getString())
 						.withPriority(ENotificationPriority.MEDIUM)
 						.withIcon(VaadinIcons.INFO)
 						.withCloseButton()
@@ -387,8 +388,8 @@ public class ShowAllTasksLayoutFactory{
     					vaadinHybridMenuUI.startTasksExecution(tasksExecutor);  
     					
     					NotificationBuilder.get(vaadinHybridMenuUI.getHybridMenu().getNotificationCenter())
- 						.withCaption("Notificacíon")
- 						.withDescription("Todos los bots se van a ejecutar")
+ 						.withCaption(StringUtils.STATUS.getString())
+ 						.withDescription(StringUtils.TASKS_ALL_TASKS_RUNNING.getString())
  						.withPriority(ENotificationPriority.MEDIUM)
  						.withIcon(VaadinIcons.INFO)
  						.withCloseButton()
@@ -396,10 +397,10 @@ public class ShowAllTasksLayoutFactory{
                 }	
 				
 			}else {
-				Notification.show("ERROR","Los bots se están ejecutando", Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.TASKS_RUNNING.getString(), Type.ERROR_MESSAGE);
 			}
          }else {
-				Notification.show("ERROR","No hay bots ingresados", Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.TASKS_THERE_ARE_NO_TASKS.getString(), Type.ERROR_MESSAGE);
 			}
          
          

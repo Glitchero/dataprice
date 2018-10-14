@@ -9,6 +9,7 @@ import com.dataprice.service.dashboard.DashboardService;
 import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.dashboard.HeaderLayoutFactory;
 import com.dataprice.ui.products.ShowAllProductsLayoutFactory;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.shared.ui.ContentMode;
@@ -50,8 +51,8 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 		
 		
     	
-		mainTittle = new Label("<b><font size=\"5\">Administrador de Bots </font></b>",ContentMode.HTML);	
-		subTittle = new Label("<font size=\"2\">Agregue, ejecute y elimine bots. </font>",ContentMode.HTML);	
+		mainTittle = new Label("<b><font size=\"5\">"+ StringUtils.TASKS_TITLE.getString()+"</font></b>",ContentMode.HTML);	
+		subTittle = new Label("<font size=\"2\">"+ StringUtils.TASKS_SUBTITLE.getString() + "</font>",ContentMode.HTML);	
 		
 		
 		
@@ -61,8 +62,8 @@ public class TaskLayoutFactory extends VerticalLayout implements View, TaskSaved
 		Component showTasks = showTasksLayoutFactory.createComponent(this,this);
 	
 		
-	 	tabSheet.addTab(addTasks,"Agrega Bots");
-		tabSheet.addTab(showTasks,"Visualizar Bots");
+	 	tabSheet.addTab(addTasks,StringUtils.TASKS_ADD_TASKS.getString());
+		tabSheet.addTab(showTasks,StringUtils.TASKS_SHOW_TASKS.getString());
         
         
 		addComponent(mainTittle);

@@ -89,7 +89,8 @@ public class Walmart extends AbstractCrawler{
 	  			String seller = we.findElement(By.cssSelector("div.productList-sellerName")).getText();
 	  			seller = seller.replace("Vendido por:", "");
 	  			seller = seller.trim();
-				linksList.add(new CrawlInfo(url,name,Double.valueOf(price),seller));
+			
+				linksList.add(new CrawlInfo(url,"",name,Double.valueOf(price),"",seller,""));
 	        		   
 	        	   }
 	        }

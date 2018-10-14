@@ -38,14 +38,14 @@ public class Arome extends AbstractCrawler{
 				//Navigation
 
 				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"pagination_contents\"]/div[3]/div/div/form/div/div[2]/a"))) {	
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
+					linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			        }
 
 				 while (driver.findElements(By.cssSelector("a.ty-pagination__item.ty-pagination__btn.ty-pagination__next.cm-history.cm-ajax")).size()>0){		
 					driver.findElement(By.cssSelector("a.ty-pagination__item.ty-pagination__btn.ty-pagination__next.cm-history.cm-ajax")).click();						
 					Thread.sleep(Configuration.DRIVERDELAY);
 					for (WebElement we : driver.findElements(By.xpath("//*[@id=\"pagination_contents\"]/div[3]/div/div/form/div/div[2]/a"))) {	
-						linksList.add(new CrawlInfo(we.getAttribute("href")));
+						linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				    }
 
 				 }

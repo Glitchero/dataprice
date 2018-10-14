@@ -52,7 +52,7 @@ public class ExpoPerfumes extends AbstractCrawler{
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'row_')]/table/tbody/tr[1]/td/a"))) {	
 				//	System.out.println(we.getAttribute("href"));
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			        }
 				 
 				int con = 1;
@@ -64,7 +64,7 @@ public class ExpoPerfumes extends AbstractCrawler{
 						
 					    for (WebElement we : driver.findElements(By.xpath("//*[starts-with(@id, 'row_')]/table/tbody/tr[1]/td/a"))) {	
 						//	System.out.println(we.getAttribute("href"));
-							linksList.add(new CrawlInfo(we.getAttribute("href")));
+					    	linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 					     }
 					}
 					

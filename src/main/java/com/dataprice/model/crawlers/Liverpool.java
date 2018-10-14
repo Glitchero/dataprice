@@ -44,7 +44,7 @@ public class Liverpool extends AbstractCrawler{
 			//Navigation
 
 			for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {
-				linksList.add(new CrawlInfo(we.getAttribute("href")));
+				linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 		        }
 			
 			boolean isFirstIteration = true;
@@ -66,7 +66,7 @@ public class Liverpool extends AbstractCrawler{
 				   Thread.sleep(Configuration.DRIVERDELAY);
 			      
 				   for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'productName')]"))) {	   
-					   linksList.add(new CrawlInfo(we.getAttribute("href")));
+					   linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			        }
 			}
 			

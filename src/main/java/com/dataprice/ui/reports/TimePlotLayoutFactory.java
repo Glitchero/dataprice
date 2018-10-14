@@ -104,7 +104,7 @@ public class TimePlotLayoutFactory {
 	                .display(true)
 	                .scaleLabel()
 	                    .display(true)
-	                    .labelString("Precio")
+	                    .labelString("Price")
 	                    .and()
 	                .ticks()
 	                    .suggestedMin(0)

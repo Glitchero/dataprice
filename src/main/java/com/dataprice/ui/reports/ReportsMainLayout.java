@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dataprice.model.entity.ReportSettings;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -59,11 +60,11 @@ public class ReportsMainLayout extends VerticalLayout implements View,GenerateRe
 	@Override
 	public void generateReport(ReportSettings reportSettings) {
 		removeAllComponents();
-		if (reportSettings.getTypeOfReport().equals("Matriz de Precios con Indicadores")) {
+		if (reportSettings.getTypeOfReport().equals(StringUtils.REPORTS_PRICE_MATRIX_INDICATORS.getString())) {
 			Component priceMatrixReport = matrixReportLayoutFactory.createComponent(reportSettings);
 			addComponent(priceMatrixReport);
 		}else {
-			if (reportSettings.getTypeOfReport().equals("Matriz de Precios en Porcentajes")) {
+			if (reportSettings.getTypeOfReport().equals(StringUtils.REPORTS_PRICE_MATRIX_BARS.getString())) {
 				Component priceMatrixReport = perMatrixReportLayoutFactory.createComponent(reportSettings);
 				addComponent(priceMatrixReport);
 			}else {

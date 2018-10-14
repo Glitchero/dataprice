@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.dataprice.utils.StringUtils;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -44,17 +45,17 @@ public class LoginFormFactory {
 			root.setMargin(true);
 			root.setHeight("100%");
 			
-			panel = new Panel("Autentificación");
+			panel = new Panel(StringUtils.LOGIN_AUTEN.getString());
 			panel.setSizeUndefined();
 			
-			loginButton = new Button("Aceptar");
+			loginButton = new Button(StringUtils.LOGIN_ACCEPT.getString());
 			loginButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 		//	signupButton = new Button("Sign up");
 		//	signupButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 			
-			username = new TextField("Usuario");
+			username = new TextField(StringUtils.LOGIN_USER.getString());
 		//	username.setValue("Usuario de Prueba");
-			passwordField = new PasswordField("Contraseña");
+			passwordField = new PasswordField(StringUtils.LOGIN_PASSWORD.getString());
 		//	passwordField.setValue("12345");
 			
 			return this;
@@ -83,7 +84,7 @@ public class LoginFormFactory {
 					//	UI.getCurrent().getPage().setLocation("/dataprice-0.0.1-SNAPSHOT/ui");
 						UI.getCurrent().getPage().setLocation("/ui");
 					} catch (AuthenticationException e) {
-						Notification.show("Error!", "El acceso falló! Vuelva a intentarlo.", Type.ERROR_MESSAGE);
+						Notification.show(StringUtils.ERROR.getString(), StringUtils.LOGIN_ERROR.getString(), Type.ERROR_MESSAGE);
 						System.out.println(e.getMessage());
 					}
 					

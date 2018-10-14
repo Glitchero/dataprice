@@ -18,6 +18,7 @@ import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.service.showalltasks.ShowAllTasksService;
 import com.dataprice.ui.UIComponentBuilder;
 import com.dataprice.ui.VaadinHybridMenuUI;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -86,13 +87,13 @@ public class ShowAllProductsLayoutFactory {
 			
 			textFieldWithTwoButtons = new TextFieldWithTwoButtons(VaadinIcons.SEARCH, VaadinIcons.REFRESH, onClick -> searchProduct(), onClick -> refresh());
 			textFieldWithTwoButtons.setWidth("97%");
-			textFieldWithTwoButtons.getTextfield().setPlaceholder("Busca por nombre");
+			textFieldWithTwoButtons.getTextfield().setPlaceholder(StringUtils.PRODUCTS_SEARCH_BY_NAME.getString());
 			
 			if (settings.getMainSeller()==null || products.size()==0) {
-				currentSeller = new Label("<b><font size=\"3\">" + "Seleccione Vendedor en Ajustes" + "</font></b>",ContentMode.HTML);	
+				currentSeller = new Label("<b><font size=\"3\">" + StringUtils.PRODUCTS_SELECT_SELLER.getString() + "</font></b>",ContentMode.HTML);	
 				currentSeller.addStyleName(ValoTheme.LABEL_FAILURE);
 			}else {
-		    	currentSeller = new Label("<b><font size=\"3\">" + "Vendedor Seleccionado: " + settings.getMainSeller() + "</font></b>",ContentMode.HTML);	
+		    	currentSeller = new Label("<b><font size=\"3\">" + StringUtils.PRODUCTS_SELLER_SELECTED.getString() + settings.getMainSeller() + "</font></b>",ContentMode.HTML);	
 		    	currentSeller.addStyleName(ValoTheme.LABEL_SUCCESS);
 		    }
 				
@@ -113,7 +114,7 @@ public class ShowAllProductsLayoutFactory {
 			productsTable.addColumn(p -> products.indexOf(p) + 1).setId("num").setCaption(" # ").setWidth(90);
 
 	        
-			productsTable.addColumn(p -> p.getName()).setId("name").setCaption("Nombre");
+			productsTable.addColumn(p -> p.getName()).setId("name").setCaption(StringUtils.TASKS_NAME.getString());
 			
 			/**
 			productsTable.addColumn(p -> p.getBrand()).setCaption("Marca");
@@ -174,9 +175,9 @@ public class ShowAllProductsLayoutFactory {
 		
 		public Component layout() {
 		
-			Label mainTittle = new Label("<b><font size=\"5\">Empareja Productos </font></b>",ContentMode.HTML);	
+			Label mainTittle = new Label("<b><font size=\"5\">"+ StringUtils.PRODUCTS_MATCHING_TITLE.getString() +"</font></b>",ContentMode.HTML);	
 
-			Label subTittle = new Label("<font size=\"2\">Empareja tus productos con los de la competancia </font>",ContentMode.HTML);	
+			Label subTittle = new Label("<font size=\"2\">" + StringUtils.PRODUCTS_MATCHING_SUBTITLE.getString() + "</font>",ContentMode.HTML);	
 			
 			
 			HorizontalLayout hmain = new HorizontalLayout(mainTittle,currentSeller);

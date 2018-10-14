@@ -10,6 +10,7 @@ import com.dataprice.model.entity.Role;
 import com.dataprice.model.entity.User;
 import com.dataprice.repository.security.UserRepository;
 import com.dataprice.service.security.RegisterUserService;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.event.selection.SelectionEvent;
@@ -60,7 +61,7 @@ public class AddUserLayoutFactory {
 			
 		//	checkbox1 = new CheckBox("Admin");
 			
-			saveButton = new Button("Cambia la contraseña de Administrador");
+			saveButton = new Button(StringUtils.USER_CHANGE_PASSWORD.getString());
 			saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			saveButton.setWidth("100%");
 			
@@ -69,10 +70,10 @@ public class AddUserLayoutFactory {
 	//		username.setCaption("admin");
 	//		username.setEnabled(false);
 			
-			passwordField = new PasswordField("Contraseña");
+			passwordField = new PasswordField(StringUtils.USER_PASSWORD.getString());
 			passwordField.setWidth("100%");
 			
-			passwordAgainField = new PasswordField("Nueva Contraseña");
+			passwordAgainField = new PasswordField(StringUtils.USER_NEW_PASSWORD.getString());
 			passwordAgainField.setWidth("100%");
 			
 			saveButton.addClickListener(new ClickListener() {
@@ -81,18 +82,18 @@ public class AddUserLayoutFactory {
 					try {
 						binder.writeBean(user);
 					} catch (ValidationException e) {
-						Notification.show("ERROR","Error",Type.ERROR_MESSAGE);
+						Notification.show(StringUtils.ERROR.getString(),StringUtils.ERROR.getString(),Type.ERROR_MESSAGE);
 						return;
 					}
 					
 					
 					
 					if( !passwordAgainField.getValue().equals(passwordField.getValue()) ) {
-						Notification.show("Error", "Passwords do not match!", Type.ERROR_MESSAGE);
+						Notification.show(StringUtils.ERROR.getString(), StringUtils.USER_DO_NOT_MATCH.getString(), Type.ERROR_MESSAGE);
 						return;
 					}
 					
-					Notification.show("Sucess", "Password Updated", Type.WARNING_MESSAGE);
+					Notification.show(StringUtils.SUCESS.getString(), StringUtils.USER_SUCESS.getString(), Type.WARNING_MESSAGE);
 				//	if (checkbox1.getValue()==true) {
 						registerUserService.save("admin", passwordField.getValue(),Role.Admin);
 				//	}else {
@@ -106,8 +107,8 @@ public class AddUserLayoutFactory {
 			userTable = new Grid<>(User.class);
 			
 			userTable.removeAllColumns();
-			userTable.addColumn(u -> u.getUsername()).setCaption("Nombre de Usuario");
-			userTable.addColumn(u -> u.getRole()).setCaption("Rol del Usuario");
+			userTable.addColumn(u -> u.getUsername()).setCaption(StringUtils.USER_USER.getString());
+			userTable.addColumn(u -> u.getRole()).setCaption(StringUtils.USER_ROLE.getString());
 
 			userTable.setItems(users);
 			userTable.setWidth("50%");

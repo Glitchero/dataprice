@@ -114,7 +114,8 @@ public class HomeDepot extends AbstractCrawler{
 	  				price = price.substring(0, price.length() - 2) + "." + price.substring(price.length() - 2, price.length());
 	  				System.out.println(price);	
 	  			//	Thread.sleep(5000);
-					linksList.add(new CrawlInfo(url,Double.valueOf(price)));			    
+						
+					linksList.add(new CrawlInfo(url,"","",Double.valueOf(price),"","",""));
 				 }
 				
 				con++;
@@ -155,7 +156,7 @@ public class HomeDepot extends AbstractCrawler{
 			  				price = price.substring(0, price.length() - 2) + "." + price.substring(price.length() - 2, price.length());
 			  				System.out.println(price);	
 			  			//	Thread.sleep(5000);
-							linksList.add(new CrawlInfo(url,Double.valueOf(price)));			    
+			  				linksList.add(new CrawlInfo(url,"","",Double.valueOf(price),"","",""));		    
 						 }
 						
 						con++;

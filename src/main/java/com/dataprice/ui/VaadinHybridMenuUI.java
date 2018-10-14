@@ -217,7 +217,7 @@ public class VaadinHybridMenuUI extends UI {
 		});
 		*/
 		userAccountMenu.addHr();
-		userAccountMenu.addButton("Cerrar Sesión").addClickListener(new ClickListener() {
+		userAccountMenu.addButton(StringUtils.LOGOUT.getString()).addClickListener(new ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				//SecurityContext context = SecurityContextHolder.getContext();
 		        //context.setAuthentication(null);

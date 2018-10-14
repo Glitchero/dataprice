@@ -60,8 +60,7 @@ public class SuperWalmart extends AbstractCrawler{
 				
 				image = we.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[1]/a/div/img")).get(counter).getAttribute("src");
 				System.out.println(image);
-				
-				linksList.add(new CrawlInfo(url,name,image,Double.valueOf(price)));
+				linksList.add(new CrawlInfo(url,"",name,Double.valueOf(price),image,"",""));
 				counter++;				
 			}
 		
@@ -101,7 +100,7 @@ public class SuperWalmart extends AbstractCrawler{
 					image = we.findElements(By.xpath("//*[starts-with(@id, 'root')]/div/div/main/div[1]/section/div[1]/div[4]/div[2]/div/div/div/div/div[1]/a/div/img")).get(counter).getAttribute("src");
 					System.out.println(image);
 					
-					linksList.add(new CrawlInfo(url,name,image,Double.valueOf(price)));
+					linksList.add(new CrawlInfo(url,"",name,Double.valueOf(price),image,"",""));
 					counter++;				
 				}
 				

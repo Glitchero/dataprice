@@ -52,7 +52,7 @@ public class Linio extends AbstractCrawler{
 				//In case we have pagination 
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
-						linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				     }
 
 					 driver.findElement(By.cssSelector("a.page-link.page-link-icon")).click();	
@@ -60,7 +60,7 @@ public class Linio extends AbstractCrawler{
 					 
 					 
 					 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
-						 linksList.add(new CrawlInfo(we.getAttribute("href")));
+						 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 					  }
 					 
 					 int con = 0;
@@ -75,7 +75,7 @@ public class Linio extends AbstractCrawler{
 							
 						    for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {		
 						        //System.out.println(we.getAttribute("href"));
-						    	linksList.add(new CrawlInfo(we.getAttribute("href")));
+						    	linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				            }
 						    con ++;
 						    if (con==30) {
@@ -88,7 +88,7 @@ public class Linio extends AbstractCrawler{
 				
 				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"catalogue-product-container\"]/div/a"))) {	
 						//System.out.println(we.getAttribute("href"));
-						linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				 }
 				 
 				

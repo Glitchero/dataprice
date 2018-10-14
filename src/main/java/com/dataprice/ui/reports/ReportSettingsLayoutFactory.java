@@ -15,6 +15,7 @@ import com.dataprice.service.security.UserServiceImpl;
 import com.dataprice.service.showallproducts.ShowAllProductsService;
 import com.dataprice.ui.VaadinHybridMenuUI;
 import com.dataprice.ui.reports.exporter.CsvExport;
+import com.dataprice.utils.StringUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -84,24 +85,26 @@ public class ReportSettingsLayoutFactory {
 			
 			reportSettings = new ReportSettings(settings.getLastUpdateInDays()); //1 day last update!!!
 			
-			mainTittle = new Label("<b><font size=\"5\">Creador de Reportes </font></b>",ContentMode.HTML);	
-			subTittle = new Label("<font size=\"2\">Crea reportes con los parámetros deseados y visualízalos en el navegador o en Excel. </font>",ContentMode.HTML);	
+			mainTittle = new Label("<b><font size=\"5\">"+ StringUtils.REPORTS_TITLE.getString() + "</font></b>",ContentMode.HTML);	
+			subTittle = new Label("<font size=\"2\">" + StringUtils.REPORTS_SUBTITLE.getString()+ "</font>",ContentMode.HTML);	
 			
-			competitorsSelect = new TwinColSelect<>("Selecciona tu competencia:");
+			competitorsSelect = new TwinColSelect<>(StringUtils.REPORTS_SELECT_COMPETITION.getString());
 			competitorsSelect.setItems(competitors);
 			competitorsSelect.addSelectionListener(event -> addComponent(new Label("Selected: " + event.getNewSelection())));
 			
-			typeOfReport = new ComboBox("Seleccione el tipo de reporte:");
-			typeOfReport.setItems("Distribución de Precios","Matriz de Precios con Indicadores","Matriz de Precios en Porcentajes");
+			typeOfReport = new ComboBox(StringUtils.REPORTS_REPORT_TYPE.getString());
+			typeOfReport.clear();
+			typeOfReport.setValue(StringUtils.REPORTS_PRICE_DISTRIBUTION.getString());
+			typeOfReport.setItems(StringUtils.REPORTS_PRICE_DISTRIBUTION.getString(),StringUtils.REPORTS_PRICE_MATRIX_INDICATORS.getString(),StringUtils.REPORTS_PRICE_MATRIX_BARS.getString());
 			typeOfReport.setWidth("36%");
 			
-			generateReport = new Button("Generar Reporte");
+			generateReport = new Button(StringUtils.REPORTS_GENERATE_REPORTS.getString());
 			generateReport.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 			generateReport.addClickListener(this);
 			generateReport.setWidth("100%");
 			
 			progressBar = new ProgressBar();
-			progressBar.setCaption("Procesando...");
+			progressBar.setCaption(StringUtils.REPORTS_PROCESSING.getString());
 			progressBar.setIndeterminate(true);
 			progressBar.setVisible(false);
 			
@@ -169,7 +172,7 @@ public class ReportSettingsLayoutFactory {
 			try {
 				binder.writeBean(reportSettings);
 			} catch (ValidationException e) {
-				Notification.show("ERROR","Error en los ajustes del reporte",Type.ERROR_MESSAGE);
+				Notification.show(StringUtils.ERROR.getString(),StringUtils.REPORTS_ERROR.getString(),Type.ERROR_MESSAGE);
 				return;
 			}	
 			

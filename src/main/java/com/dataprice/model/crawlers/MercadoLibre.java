@@ -48,7 +48,7 @@ public class MercadoLibre extends AbstractCrawler{
 				
 				if (driver.findElements(By.xpath("//*[contains(@id, 'ML')]/a")).size()>0) {
 					 for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'ML')]/a"))) {	
-							 linksList.add(new CrawlInfo(we.getAttribute("href")));
+						 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 					        }
 					 int con = 0;
 	
@@ -57,7 +57,7 @@ public class MercadoLibre extends AbstractCrawler{
 							driver.findElement(By.cssSelector("li.pagination__next a")).click();						
 							Thread.sleep(Configuration.DRIVERDELAY);
 							for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'ML')]/a"))) {
-								linksList.add(new CrawlInfo(we.getAttribute("href")));
+								linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 							}
 						 	con++;
 						 	if (con==25)
@@ -68,7 +68,7 @@ public class MercadoLibre extends AbstractCrawler{
 					
 					
 					for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'ML')]/div[1]/div/div/a"))) {	
-						 linksList.add(new CrawlInfo(we.getAttribute("href")));
+						linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				        }
 					
 					int con = 0;
@@ -78,7 +78,7 @@ public class MercadoLibre extends AbstractCrawler{
 						driver.findElement(By.cssSelector("li.pagination__next a")).click();						
 						Thread.sleep(Configuration.DRIVERDELAY);
 						for (WebElement we : driver.findElements(By.xpath("//*[contains(@id, 'ML')]/div[1]/div/div/a"))) {
-							linksList.add(new CrawlInfo(we.getAttribute("href")));
+							linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 						}
 					 	con++;
 					 	if (con==25)
@@ -181,7 +181,7 @@ public class MercadoLibre extends AbstractCrawler{
 			seller = seller.replace("%C3%91", "ñ");	
 		//	System.out.println(seller);
 			
-			/**
+			
 			String sku = ContentParser.parseContent(urlContent, Regex.MERCADOLIBRE_SKU);		
 			if (sku == null) {  
 				sku = ""; //Unlike name, sometimes we don't have a sku.
@@ -191,13 +191,13 @@ public class MercadoLibre extends AbstractCrawler{
 			if (brand == null) {  
 				brand = ""; //Unlike name, sometimes we don't have a brand.
 			}
-			*/
-			String sku = "";
-			String brand = "";
+			
+			
+		//	String brand = "";
 			String upc = "";
 			
 		
-		    return new Product(id+getCrawlingStrategy(),id,seller,taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+		    return new Product(id+getCrawlingStrategy(),id,seller,taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,brand,taskDAO.getTaskName());
 		
 			
 		} catch (Exception e) {

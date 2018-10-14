@@ -68,7 +68,7 @@ public class Osom extends AbstractCrawler{
 					
 				    for (WebElement we : driver.findElements(By.cssSelector("a.itm-link"))) {	
 					//	System.out.println(we.getAttribute("href"));
-						linksList.add(new CrawlInfo(we.getAttribute("href")));
+				    	linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 				    }
 				}
 			

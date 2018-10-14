@@ -38,14 +38,14 @@ public class Laeuropea extends AbstractCrawler{
 				//Navigation
 
 				 for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
-					linksList.add(new CrawlInfo(we.getAttribute("href")));
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 			     }
 
 				 while (!(driver.findElements(By.cssSelector("li.c-next.disabled")).size()>0)){		
 						driver.findElement(By.cssSelector("li.c-next a")).click();	
 						Thread.sleep(Configuration.DRIVERDELAY);
 						for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
-							linksList.add(new CrawlInfo(we.getAttribute("href")));
+							linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
 					    }	
 				  }		 
 				 
