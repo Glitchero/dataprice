@@ -1,6 +1,4 @@
-# DATAPRICE 
-
-Dataprice is a competitor price tracking and ecommerce scraper software. It uses open source software in order to fetch online stores and extract all the necessary information for benchmarking prices. It also provides a framework for extracting e-commerce products data. Dataprice is built in java.
+Dataprice uses open source software in order to fetch online stores and extract all the necessary information for benchmarking prices. It also provides a framework for extracting e-commerce products data. Dataprice is built in java.
 
 ## Use cases
 
