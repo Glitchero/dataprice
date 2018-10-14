@@ -66,15 +66,15 @@ Finally, go to the browser and see the application in http://xxx.xx.xxx.xxx:8080
 
 ## Installation videos
 
-[Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=N878vHbl2O8)
-[Installation in Local Machine Windows](https://www.youtube.com/watch?v=N878vHbl2O8)
-[How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=N878vHbl2O8)
+ - [Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=N878vHbl2O8)
+ - [Installation in Local Machine Windows](https://www.youtube.com/watch?v=N878vHbl2O8)
+ - [How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=N878vHbl2O8)
 
 ## How to create a scraper
 
 See all the tutorials about how to scrape a site using dataprice:
 
-[Scraping Amazon](https://www.youtube.com/watch?v=N878vHbl2O8)
-[Scraping Mercado Libre](https://www.youtube.com/watch?v=N878vHbl2O8)
-[Scraping Linio](https://www.youtube.com/watch?v=N878vHbl2O8)
+[Amazon](https://www.youtube.com/watch?v=N878vHbl2O8) , 
+[Mercado Libre](https://www.youtube.com/watch?v=N878vHbl2O8) , 
+[Linio](https://www.youtube.com/watch?v=N878vHbl2O8)
 
