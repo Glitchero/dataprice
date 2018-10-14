@@ -34,10 +34,6 @@ In order to install dataprice software, you will need:
 *   Java 8
 *   Maven (Last Version)
 
-```
-Give examples
-```
-
 ### Installing
 
 Please follow the instructions:
@@ -60,67 +56,25 @@ docker run -d     --name dataprice-app     --link demo-mysql:mysql     -p 8080:8
 
 ```
 
-And repeat
+In order to see the logs, please use the command:
 
 ```
-until finished
+docker logs dataprice-app
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Finally, go to the browser and see the application in http://xxx.xx.xxx.xxx:8080/login (for local http://localhost:8080/login).
 
-## Running the tests
+## Installation videos
 
-Explain how to run the automated tests for this system
+[Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=N878vHbl2O8)
+[Installation in Local Machine Windows](https://www.youtube.com/watch?v=N878vHbl2O8)
+[How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=N878vHbl2O8)
 
-### Break down into end to end tests
+## How to create a scraper
 
-Explain what these tests test and why
+See all the tutorials about how to scrape a site using dataprice:
 
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
-
+[Scraping Amazon](https://www.youtube.com/watch?v=N878vHbl2O8)
+[Scraping Mercado Libre](https://www.youtube.com/watch?v=N878vHbl2O8)
+[Scraping Linio](https://www.youtube.com/watch?v=N878vHbl2O8)
 
