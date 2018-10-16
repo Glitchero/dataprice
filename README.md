@@ -30,9 +30,9 @@ These instructions will get you a copy of the project up and running on your ser
 
 In order to install dataprice software, you will need:
 
-*   Docker (Last Version)
+*   Docker (tested on 17.03.2-ce)
 *   Java 8
-*   Maven (Last Version)
+*   Maven (tested on 3.0.5)
 
 ### Installing
 
@@ -64,10 +64,12 @@ docker logs dataprice-app
 
 Finally, go to the browser and see the application in http://xxx.xx.xxx.xxx:8080/login (for local http://localhost:8080/login).
 
+The user is admin and the password is 12345
+
+
 ## Installation videos
 
  - [Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=N878vHbl2O8)
- - [Installation in Local Machine Windows](https://www.youtube.com/watch?v=N878vHbl2O8)
  - [How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=N878vHbl2O8)
 
 ## How to create a scraper
