@@ -228,8 +228,41 @@ retail.setCountry(mexico);
 addRetailService.saveRetail(retail);
 ```
 
-### Examples
+### Use a proxy for difficult websitels like Amazon
 
-### Watch our application working with different tasks 
+Use PhantomFactoryWithProxy and PageFetcherWithProxy instead of PhantomFactory and PageFetcher respectively. Finally, add your credentials in the class configuration.
+
+```
+/** Proxy Configuration*/
+	
+public final static String ProxyHost = "Write here proxyHost";
+public final static int ProxyPort = 0; //Write here proxyport
+
+public final static String ProxyUsername = "Write here Username";
+public final static String ProxyPassword = "Write here Password";
+```
+
+### More examples (Have fun checking our examples)
+
+Crawler name  | Main web page
+------------- | -------------
+Amazon        | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+Arome         | Content Cell
+
+
+### Watch our application working with different websites. 
 [Arome México](https://www.youtube.com/watch?v=N878vHbl2O8) 
 
