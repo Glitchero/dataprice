@@ -18,7 +18,7 @@ public class ReportSettings {
 
 	private LocalDate lastUpdate = LocalDate.now().minus(Period.ofDays(1));  //Between today and yesterday
 	
-	private String typeOfReport="Matriz de Precios con Indicadores";
+	private String typeOfReport="Price matrix with arrows";
 	
 	public ReportSettings() {
 		

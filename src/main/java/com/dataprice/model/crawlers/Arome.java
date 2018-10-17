@@ -19,6 +19,8 @@ import com.dataprice.model.crawlers.utils.Regex;
 import com.dataprice.model.entity.Product;
 import com.dataprice.model.entity.Task;
 
+//Web page: https://www.arome.mx/
+
 @Component
 public class Arome extends AbstractCrawler{
 

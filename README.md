@@ -73,11 +73,142 @@ The user is admin and the password is 12345
  - [Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=IKwTQ51pTnc&t=4s)
  - [How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=-r4mlMg-WpI&list=PLuAkh4GnBZuG1Rw49SC_R2ZwLWhXuu2pX)
 
-## How to create a scraper
+## How to create a task
 
-See all the tutorials about how to scrape a site using dataprice:
+In order to create a task you will need to extend the class __AbstractCrawler__. Also, remember to add __@Component__ on top of the class.
 
-### For Country Mexico
-[Amazon](https://www.youtube.com/watch?v=N878vHbl2O8) , 
-[Mercado Libre](https://www.youtube.com/watch?v=N878vHbl2O8) , 
+```
+//Web page: https://www.arome.mx/
+
+@Component
+public class Arome extends AbstractCrawler{
+
+	@Override
+	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
+	    WebDriver driver = null;
+			
+			try {
+			
+				//Initialization Phase
+				driver = PhantomFactory.getInstance().getDriver();
+				driver.get(taskDAO.getSeed());
+				System.out.println("Inicializando Phantom");
+				LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
+				Thread.sleep(1000);
+				
+				//Navigation
+
+				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"pagination_contents\"]/div[3]/div/div/form/div/div[2]/a"))) {	
+					linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
+			        }
+
+				 while (driver.findElements(By.cssSelector("a.ty-pagination__item.ty-pagination__btn.ty-pagination__next.cm-history.cm-ajax")).size()>0){		
+					driver.findElement(By.cssSelector("a.ty-pagination__item.ty-pagination__btn.ty-pagination__next.cm-history.cm-ajax")).click();						
+					Thread.sleep(Configuration.DRIVERDELAY);
+					for (WebElement we : driver.findElements(By.xpath("//*[@id=\"pagination_contents\"]/div[3]/div/div/form/div/div[2]/a"))) {	
+						linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
+				    }
+
+				 }
+			
+				//Destroy
+				PhantomFactory.getInstance().removeDriver();		
+				Thread.sleep(1000);
+				return linksList;
+			}  catch (Exception e) {
+				//System.out.println("Error en phantom" + e);
+				try {
+					   if (driver!=null) { //Check if driver exists, research another option for checking this.
+						   PhantomFactory.getInstance().removeDriver();
+					   }
+					} catch (Exception e2) {
+						return null;
+					}
+				return null;
+			}
+	}
+
+	
+	
+	
+	@Override
+	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
+         try {
+		    
+			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
+	    	
+			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl(),1000);
+			
+			if (urlResponse == null){  //Task fatal error.		
+				return null;
+	    	}
+			
+			if (urlResponse.getContent().equals("")){   
+				return new Product();
+	    	}
+		
+			String urlContent = urlResponse.getContent(); 
+
+			String id = ContentParser.parseContent(urlContent, Regex.AROME_ID);
+			if (id==null)
+				return new Product();
+			
+			String name = ContentParser.parseContent(urlContent, Regex.AROME_NAME);
+			if (name==null)
+				return new Product();
+			name = name.trim();
+			name = Jsoup.parse(name).text();
+			String description = "";
+			/**
+			String description = ContentParser.parseContent(urlContent, Regex.MERCADOLIBRE_DESCRIPTION);
+			if (description==null)
+				description = "No disponible";  //Unlike name, sometimes we don't have a description.
+			description = description.trim();
+			description = Jsoup.parse(description).text();
+			*/
+			
+			String price = ContentParser.parseContent(urlContent, Regex.AROME_PRICE); 	
+			if (price == null) {  
+				return new Product();
+			}
+
+			price = price.replace(",", "");
+			price = price.replace("$", "");
+			price = price.trim();
+			
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.AROME_IMAGEURL);
+			if (imageUrl == null) {  
+				return new Product();
+			}
+			
+						
+			String sku = "";
+			
+			String brand = ContentParser.parseContent(urlContent, Regex.AROME_BRAND);	
+			if (brand == null) {  
+				brand = ""; //Unlike name, sometimes we don't have a brand.
+			}
+			
+		//	String upc = id;
+			String upc = "";
+
+		      return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+		  //	return new Product(id+"Catalogue",id,"Catalogue",null,name,description,0.00,imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+			
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Override
+	public String getCrawlingStrategy() {
+		return "Arome";
+	}
+
+}
+
+```
+
+### Watch our application working with different tasks 
+[Arome México](https://www.youtube.com/watch?v=N878vHbl2O8) 
 
