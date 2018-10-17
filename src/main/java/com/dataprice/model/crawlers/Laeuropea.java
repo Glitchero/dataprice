@@ -96,14 +96,8 @@ public class Laeuropea extends AbstractCrawler{
 				return new Product();
 			name = name.trim();
 			name = Jsoup.parse(name).text();
+			
 			String description = "";
-			/**
-			String description = ContentParser.parseContent(urlContent, Regex.MERCADOLIBRE_DESCRIPTION);
-			if (description==null)
-				description = "No disponible";  //Unlike name, sometimes we don't have a description.
-			description = description.trim();
-			description = Jsoup.parse(description).text();
-			*/
 			
 			String price = ContentParser.parseContent(urlContent, Regex.LAEUROPEA_PRICE); 	
 			System.out.println(price);
@@ -130,8 +124,7 @@ public class Laeuropea extends AbstractCrawler{
 			
 			String upc = "";
 
-		      return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
-		  //	return new Product(id+"Catalogue",id,"Catalogue",null,name,description,0.00,imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			
 		} catch (Exception e) {
 			return null;

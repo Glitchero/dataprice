@@ -73,19 +73,17 @@ The user is admin and the password is 12345
  - [Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=IKwTQ51pTnc&t=4s)
  - [How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=-r4mlMg-WpI&list=PLuAkh4GnBZuG1Rw49SC_R2ZwLWhXuu2pX)
 
-## How to create a task
+## QuickStart
 
 In order to create a task you will need to extend the class __AbstractCrawler__. Also, remember to add __@Component__ on top of the class.
 
 ```
-//Web page: https://www.arome.mx/
-
 @Component
-public class Arome extends AbstractCrawler{
+public class Laeuropea extends AbstractCrawler{
 
 	@Override
 	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
-	    WebDriver driver = null;
+	       WebDriver driver = null;
 			
 			try {
 			
@@ -98,19 +96,19 @@ public class Arome extends AbstractCrawler{
 				
 				//Navigation
 
-				 for (WebElement we : driver.findElements(By.xpath("//*[@id=\"pagination_contents\"]/div[3]/div/div/form/div/div[2]/a"))) {	
-					linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
-			        }
+				 for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
+					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
+			     }
 
-				 while (driver.findElements(By.cssSelector("a.ty-pagination__item.ty-pagination__btn.ty-pagination__next.cm-history.cm-ajax")).size()>0){		
-					driver.findElement(By.cssSelector("a.ty-pagination__item.ty-pagination__btn.ty-pagination__next.cm-history.cm-ajax")).click();						
-					Thread.sleep(Configuration.DRIVERDELAY);
-					for (WebElement we : driver.findElements(By.xpath("//*[@id=\"pagination_contents\"]/div[3]/div/div/form/div/div[2]/a"))) {	
-						linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
-				    }
-
-				 }
-			
+				 while (!(driver.findElements(By.cssSelector("li.c-next.disabled")).size()>0)){		
+						driver.findElement(By.cssSelector("li.c-next a")).click();	
+						Thread.sleep(Configuration.DRIVERDELAY);
+						for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
+							linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
+					    }	
+				  }		 
+				 
+				 
 				//Destroy
 				PhantomFactory.getInstance().removeDriver();		
 				Thread.sleep(1000);
@@ -128,17 +126,14 @@ public class Arome extends AbstractCrawler{
 			}
 	}
 
-	
-	
-	
 	@Override
 	public Product parseProductFromURL(CrawlInfo crawlInfo, Task taskDAO) {
-         try {
+        try {
 		    
 			PageFetcher pageFetcher = PageFetcher.getInstance(getCrawlingStrategy());
 	    	
 			FetchResults urlResponse = pageFetcher.getURLContent(crawlInfo.getUrl(),1000);
-			
+			System.out.println(crawlInfo.getUrl());
 			if (urlResponse == null){  //Task fatal error.		
 				return null;
 	    	}
@@ -149,51 +144,46 @@ public class Arome extends AbstractCrawler{
 		
 			String urlContent = urlResponse.getContent(); 
 
-			String id = ContentParser.parseContent(urlContent, Regex.AROME_ID);
+			String id = ContentParser.parseContent(urlContent, Regex.LAEUROPEA_ID);
+			System.out.println(id);
 			if (id==null)
 				return new Product();
 			
-			String name = ContentParser.parseContent(urlContent, Regex.AROME_NAME);
+			String name = ContentParser.parseContent(urlContent, Regex.LAEUROPEA_NAME);
+			System.out.println(name);
 			if (name==null)
 				return new Product();
 			name = name.trim();
 			name = Jsoup.parse(name).text();
-			String description = "";
-			/**
-			String description = ContentParser.parseContent(urlContent, Regex.MERCADOLIBRE_DESCRIPTION);
-			if (description==null)
-				description = "No disponible";  //Unlike name, sometimes we don't have a description.
-			description = description.trim();
-			description = Jsoup.parse(description).text();
-			*/
 			
-			String price = ContentParser.parseContent(urlContent, Regex.AROME_PRICE); 	
+			String description = "";
+			
+			String price = ContentParser.parseContent(urlContent, Regex.LAEUROPEA_PRICE); 	
+			System.out.println(price);
 			if (price == null) {  
 				return new Product();
 			}
 
 			price = price.replace(",", "");
 			price = price.replace("$", "");
+			price = price.replaceAll("[^\\d.]", "");
 			price = price.trim();
 			
-			String imageUrl = ContentParser.parseContent(urlContent, Regex.AROME_IMAGEURL);
+			String imageUrl = ContentParser.parseContent(urlContent, Regex.LAEUROPEA_IMAGEURL);
+			System.out.println(imageUrl);
 			if (imageUrl == null) {  
 				return new Product();
 			}
 			
+			imageUrl = "https://www.laeuropea.com.mx" + imageUrl;
 						
 			String sku = "";
 			
-			String brand = ContentParser.parseContent(urlContent, Regex.AROME_BRAND);	
-			if (brand == null) {  
-				brand = ""; //Unlike name, sometimes we don't have a brand.
-			}
+			String brand = "";
 			
-		//	String upc = id;
 			String upc = "";
 
-		      return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
-		  //	return new Product(id+"Catalogue",id,"Catalogue",null,name,description,0.00,imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
+		    return new Product(id+getCrawlingStrategy(),id,getCrawlingStrategy(),taskDAO,name,description,Double.parseDouble(price),imageUrl,crawlInfo.getUrl(),sku,upc,brand,taskDAO.getTaskName());
 			
 		} catch (Exception e) {
 			return null;
@@ -202,12 +192,47 @@ public class Arome extends AbstractCrawler{
 
 	@Override
 	public String getCrawlingStrategy() {
-		return "Arome";
+		return "Laeuropea";  //Name of the store. Recommendation, use the class name.
 	}
 
 }
+```
+
+As can be seen in the above code, there are three main functions that should be overridden:
+
+*   __getUrlsFromTask__ .- Receives a task object (which contains the seed url) and return a crawlInfo object. The crawlInfo object contains all the information that can be gathered from a page with pagination, for example the url, name or price. In the example above, the line of code "new CrawlInfo(we.getAttribute("href"),"","",0.0,"","","")" only stores the url in the crawlInfo object. crawlInfo is then passed to the method parseProductFromURL.
+*   __parseProductFromURL__ .- Receives a crawlInfo and a task object. This method extracts the information from a product page (the product page dosen't have a pagination) and returns a product object. The product object includes all the information from a product. 
+*   __getCrawlingStrategy__ .- Returns the store name.
+
+Use the regex class to store the regexes:
 
 ```
+	public final static String LAEUROPEA_ID = "<div class=\"c-product-meta detailItem\" data-code=\"(.*?)\"";
+	public final static String LAEUROPEA_NAME = "<h3 class=\"c-font-bold\">(.*?)</h3>";
+	public final static String LAEUROPEA_PRICE = "<div class=\"c-product-price\">(.*?)<";
+	public final static String LAEUROPEA_IMAGEURL ="<div class=\"c-zoom\"><img src=\"(.*?)\"";
+
+```
+
+Finally create the country and the reail in the database using the Initializer class:
+
+```
+   Country mexico = new Country();
+   mexico.setCountryId(1);
+   mexico.setCountryName("México");
+   mexico.setCurrency("Peso MXN");
+   mexico.setNickname("MX");
+   addCountryService.saveCountry(mexico);	
+			
+	Retail retail = new Retail();
+	retail.setRetailId();
+	retail.setRetailName("La Europea");
+	retail.setCrawlerName("Laeuropea"); // The name given in getCrawlingStrategy.
+	retail.setCountry(mexico);		
+	addRetailService.saveRetail(retail);
+```
+
+### Examples
 
 ### Watch our application working with different tasks 
 [Arome México](https://www.youtube.com/watch?v=N878vHbl2O8) 
