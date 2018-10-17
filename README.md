@@ -228,7 +228,7 @@ retail.setCountry(mexico);
 addRetailService.saveRetail(retail);
 ```
 
-### Use a proxy for difficult websitels like Amazon
+### Use a proxy for difficult web-sites like Amazon
 
 Use PhantomFactoryWithProxy and PageFetcherWithProxy instead of PhantomFactory and PageFetcher respectively. Finally, add your credentials in the class configuration.
 
@@ -244,23 +244,24 @@ public final static String ProxyPassword = "Write here Password";
 
 ### More examples (Have fun checking our examples)
 
-Crawler name  | Main web page
-------------- | -------------
-Amazon        | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
-Arome         | Content Cell
+Crawler name       | Main web page
+-----------------  | -----------------
+Amazon             | https://www.amazon.com.mx/
+Arome              | https://www.arome.mx/
+Chedraui           | https://www.chedraui.com.mx/
+Laeuropea          | https://www.laeuropea.com.mx
+Linio              | https://www.linio.com.mx/
+Liverpool          | https://www.liverpool.com.mx
+MercadoLibre       | https://www.mercadolibre.com.mx/
+Osom               | https://www.osom.com
+PerfumesMexico     | http://www.perfumesmexico.com/
+PerfumesOnline     | http://www.perfumesonline.com.mx/
+Prissa             | https://www.prissa.com.mx
+Sanborns           | https://www.sanborns.com.mx/
+Soriana            | https://www.soriana.com
+Walmart            | https://www.walmart.com.mx/
+SuperWalmart  	   | https://super.walmart.com.mx/
+suplementosfitness | https://www.suplementosfitness.com.mx/
 
 
 ### Watch our application working with different websites. 
