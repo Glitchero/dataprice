@@ -249,11 +249,11 @@ public class AddSettingsMainLayoutFactory implements UIComponentBuilder {
 				try {
 					binder.writeBean(settings);
 				} catch (ValidationException e) {
-					Notification.show(StringUtils.ERROR.getString(),StringUtils.SETTINGS_SAVED.getString(),Type.ERROR_MESSAGE);
+					Notification.show(StringUtils.ERROR.getString(),StringUtils.SETTINGS_ERROR.getString(),Type.ERROR_MESSAGE);
 					return;
 				}
 				modifySettingsService.modifySettings(settings);
-				Notification.show(StringUtils.SAVE.getString(),StringUtils.SETTINGS_ERROR.getString(),Type.WARNING_MESSAGE);
+				Notification.show(StringUtils.SAVE.getString(),StringUtils.SETTINGS_SAVED.getString(),Type.WARNING_MESSAGE);
 			
 			}
 		

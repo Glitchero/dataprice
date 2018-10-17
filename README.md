@@ -33,6 +33,7 @@ In order to install dataprice software, you will need:
 *   Docker (tested on 17.03.2-ce)
 *   Java 8
 *   Maven (tested on 3.0.5)
+*   Putty (for SSH connection, windows only)
 
 ### Installing
 
@@ -67,16 +68,16 @@ Finally, go to the browser and see the application in http://xxx.xx.xxx.xxx:8080
 The user is admin and the password is 12345
 
 
-## Installation videos
+## Installation videos (Subtitles in English, please activate them)
 
- - [Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=N878vHbl2O8)
- - [How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=N878vHbl2O8)
+ - [Installation in Ubuntu Server Digital Ocean](https://www.youtube.com/watch?v=IKwTQ51pTnc&t=4s)
+ - [How to Test a Scraper Locally with eclipse](https://www.youtube.com/watch?v=-r4mlMg-WpI&list=PLuAkh4GnBZuG1Rw49SC_R2ZwLWhXuu2pX)
 
 ## How to create a scraper
 
 See all the tutorials about how to scrape a site using dataprice:
 
+### For Country Mexico
 [Amazon](https://www.youtube.com/watch?v=N878vHbl2O8) , 
 [Mercado Libre](https://www.youtube.com/watch?v=N878vHbl2O8) , 
-[Linio](https://www.youtube.com/watch?v=N878vHbl2O8)
 
