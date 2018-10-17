@@ -75,7 +75,7 @@ The user is admin and the password is 12345
 
 ## QuickStart
 
-In order to create a task you will need to extend the class __AbstractCrawler__. Also, remember to add __@Component__ on top of the class.
+In order to create a task you will need to extend the class __AbstractCrawler__. Also, remember to add __@Component__ on top of the class. The package has to be com.dataprice.model.crawlers.
 
 ```
 @Component
@@ -200,7 +200,7 @@ As can be seen in the above code, there are three main functions that should be 
 *   __parseProductFromURL__ .- Receives a crawlInfo and a task object. This method extracts the information from a product page (the product page dosen't have a pagination) and returns a product object. The product object includes all the information from a product. 
 *   __getCrawlingStrategy__ .- Returns the store name.
 
-Use the regex class to store the regexes:
+Use the regex class (in package com.dataprice.model.crawlers.utils) to store the regexes:
 
 ```
 public final static String LAEUROPEA_ID = "<div class=\"c-product-meta detailItem\" data-code=\"(.*?)\"";
@@ -210,7 +210,7 @@ public final static String LAEUROPEA_IMAGEURL ="<div class=\"c-zoom\"><img src=\
 
 ```
 
-Finally create the country and the reail in the database using the Initializer class:
+Finally create the country and the reail in the database using the Initializer class (in package com.dataprice):
 
 ```
 Country mexico = new Country();
@@ -230,7 +230,7 @@ addRetailService.saveRetail(retail);
 
 ### Use a proxy for difficult web-sites like Amazon
 
-Use PhantomFactoryWithProxy and PageFetcherWithProxy instead of PhantomFactory and PageFetcher respectively. Finally, add your credentials in the class configuration.
+Use PhantomFactoryWithProxy and PageFetcherWithProxy instead of PhantomFactory and PageFetcher respectively. Finally, add your credentials in the class configuration (in package com.dataprice.model.crawlers.utils).
 
 ```
 /** Proxy Configuration*/
@@ -244,8 +244,8 @@ public final static String ProxyPassword = "Write here Password";
 
 ### More examples (Have fun checking our examples)
 
-First Header  | Second Header
-------------- | -------------
+You can find these classes in package com.dataprice.model.crawlers
+
 Amazon             | https://www.amazon.com.mx/
 Arome              | https://www.arome.mx/
 Chedraui           | https://www.chedraui.com.mx/
@@ -261,7 +261,7 @@ Sanborns           | https://www.sanborns.com.mx/
 Soriana            | https://www.soriana.com
 Walmart            | https://www.walmart.com.mx/
 SuperWalmart  	   | https://super.walmart.com.mx/
-suplementosfitness | https://www.suplementosfitness.com.mx/
+Suplementosfitness | https://www.suplementosfitness.com.mx/
 
 
 ### Watch our application working with different websites. 
