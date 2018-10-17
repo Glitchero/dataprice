@@ -244,8 +244,8 @@ public final static String ProxyPassword = "Write here Password";
 
 ### More examples (Have fun checking our examples)
 
-__Crawler name__       | __Main web page__
--------------      | -------------
+First Header  | Second Header
+------------- | -------------
 Amazon             | https://www.amazon.com.mx/
 Arome              | https://www.arome.mx/
 Chedraui           | https://www.chedraui.com.mx/
