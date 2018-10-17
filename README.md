@@ -244,8 +244,10 @@ public final static String ProxyPassword = "Write here Password";
 
 ### More examples (Have fun checking our examples)
 
-You can find these classes in package com.dataprice.model.crawlers
+You can find these classes in package com.dataprice.model.crawlers.
 
+First Header  | Second Header
+------------- | -------------
 Amazon             | https://www.amazon.com.mx/
 Arome              | https://www.arome.mx/
 Chedraui           | https://www.chedraui.com.mx/
