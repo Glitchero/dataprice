@@ -83,45 +83,41 @@ public class Laeuropea extends AbstractCrawler{
 
 	@Override
 	public List<CrawlInfo> getUrlsFromTask(Task taskDAO) {
-	       WebDriver driver = null;
-			
-			try {
-			
-				//Initialization Phase
-				driver = PhantomFactory.getInstance().getDriver();
-				driver.get(taskDAO.getSeed());
-				System.out.println("Inicializando Phantom");
-				LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
-				Thread.sleep(1000);
+	  WebDriver driver = null;
+		try {	
+			//Initialization Phase
+			driver = PhantomFactory.getInstance().getDriver();
+			driver.get(taskDAO.getSeed());
+			System.out.println("Inicializando Phantom");
+			LinkedList<CrawlInfo> linksList = new LinkedList<CrawlInfo>();
+			Thread.sleep(1000);
 				
-				//Navigation
+			//Navigation
+			for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
+				linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
+			}
 
-				 for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
-					 linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
-			     }
-
-				 while (!(driver.findElements(By.cssSelector("li.c-next.disabled")).size()>0)){		
-						driver.findElement(By.cssSelector("li.c-next a")).click();	
-						Thread.sleep(Configuration.DRIVERDELAY);
-						for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
-							linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
-					    }	
-				  }		 
-				 
-				 
-				//Destroy
-				PhantomFactory.getInstance().removeDriver();		
-				Thread.sleep(1000);
-				return linksList;
+			while (!(driver.findElements(By.cssSelector("li.c-next.disabled")).size()>0)){		
+				driver.findElement(By.cssSelector("li.c-next a")).click();	
+				Thread.sleep(Configuration.DRIVERDELAY);
+				for (WebElement we : driver.findElements(By.cssSelector("div.c-overlay-content a"))) {	
+					linksList.add(new CrawlInfo(we.getAttribute("href"),"","",0.0,"","",""));
+				}	
+			}		 
+				 	 
+			//Destroy
+			PhantomFactory.getInstance().removeDriver();		
+			Thread.sleep(1000);
+			return linksList;
 			}  catch (Exception e) {
 				//System.out.println("Error en phantom" + e);
 				try {
-					   if (driver!=null) { //Check if driver exists, research another option for checking this.
-						   PhantomFactory.getInstance().removeDriver();
-					   }
-					} catch (Exception e2) {
-						return null;
-					}
+					 if (driver!=null) { //Check if driver exists, research another option for checking this.
+						  PhantomFactory.getInstance().removeDriver();
+					  }
+				} catch (Exception e2) {
+					return null;
+				}
 				return null;
 			}
 	}
@@ -207,29 +203,29 @@ As can be seen in the above code, there are three main functions that should be 
 Use the regex class to store the regexes:
 
 ```
-	public final static String LAEUROPEA_ID = "<div class=\"c-product-meta detailItem\" data-code=\"(.*?)\"";
-	public final static String LAEUROPEA_NAME = "<h3 class=\"c-font-bold\">(.*?)</h3>";
-	public final static String LAEUROPEA_PRICE = "<div class=\"c-product-price\">(.*?)<";
-	public final static String LAEUROPEA_IMAGEURL ="<div class=\"c-zoom\"><img src=\"(.*?)\"";
+public final static String LAEUROPEA_ID = "<div class=\"c-product-meta detailItem\" data-code=\"(.*?)\"";
+public final static String LAEUROPEA_NAME = "<h3 class=\"c-font-bold\">(.*?)</h3>";
+public final static String LAEUROPEA_PRICE = "<div class=\"c-product-price\">(.*?)<";
+public final static String LAEUROPEA_IMAGEURL ="<div class=\"c-zoom\"><img src=\"(.*?)\"";
 
 ```
 
 Finally create the country and the reail in the database using the Initializer class:
 
 ```
-   Country mexico = new Country();
-   mexico.setCountryId(1);
-   mexico.setCountryName("México");
-   mexico.setCurrency("Peso MXN");
-   mexico.setNickname("MX");
-   addCountryService.saveCountry(mexico);	
+Country mexico = new Country();
+mexico.setCountryId(1);
+mexico.setCountryName("México");
+mexico.setCurrency("Peso MXN");
+mexico.setNickname("MX");
+addCountryService.saveCountry(mexico);	
 			
-	Retail retail = new Retail();
-	retail.setRetailId();
-	retail.setRetailName("La Europea");
-	retail.setCrawlerName("Laeuropea"); // The name given in getCrawlingStrategy.
-	retail.setCountry(mexico);		
-	addRetailService.saveRetail(retail);
+Retail retail = new Retail();
+retail.setRetailId();
+retail.setRetailName("La Europea");
+retail.setCrawlerName("Laeuropea"); // The name given in getCrawlingStrategy.
+retail.setCountry(mexico);		
+addRetailService.saveRetail(retail);
 ```
 
 ### Examples
