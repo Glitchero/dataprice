@@ -15,7 +15,7 @@ Dataprice uses open source software in order to fetch online stores and extract 
  - Multithread, you can run several tasks at the same time.
  - Possibility to add a proxy to yout task, in order to avoid ip blocking.
  - Easy installation with docker, in order words, great portability
- - Matching section for normalizing data.
+ - Matching section for normalizing data, use Hibernate search (lucene) for matching similar product names.
  - Price matrices reports
  - One month price history with plot included. 
  - Authentication and the possibility to change password 
@@ -242,13 +242,13 @@ public final static String ProxyUsername = "Write here Username";
 public final static String ProxyPassword = "Write here Password";
 ```
 
-### More examples (Have fun checking our examples)
+### More examples 
 
 You can find these classes in package com.dataprice.model.crawlers.
 
 Crawler  | Official Website   | Video
 ------------- | ------------- | -------------
-Amazon             | https://www.amazon.com.mx/  | [Amazon video](https://www.youtube.com/watch?v=N878vHbl2O8) 
+Amazon             | https://www.amazon.com.mx/  | [Amazon video](https://www.youtube.com/watch?v=b-HamNBzkhU&t=6s) 
 Arome              | https://www.arome.mx/
 Chedraui           | https://www.chedraui.com.mx/
 Laeuropea          | https://www.laeuropea.com.mx
@@ -266,6 +266,6 @@ SuperWalmart  	   | https://super.walmart.com.mx/
 Suplementosfitness | https://www.suplementosfitness.com.mx/
 
 
-## Do you have questions or suggestions?, need a specific store crawler? you can contact me on facebook.   
+## Do you have questions or suggestions?, you can contact me on facebook.   
 [DATAPRICE Facebook](https://www.facebook.com/Dataprice-197830137522387) 
 
