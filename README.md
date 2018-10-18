@@ -221,7 +221,7 @@ mexico.setNickname("MX");
 addCountryService.saveCountry(mexico);	
 			
 Retail retail = new Retail();
-retail.setRetailId();
+retail.setRetailId(1); //Assign a number
 retail.setRetailName("La Europea");
 retail.setCrawlerName("Laeuropea"); // The name given in getCrawlingStrategy.
 retail.setCountry(mexico);		
@@ -246,9 +246,9 @@ public final static String ProxyPassword = "Write here Password";
 
 You can find these classes in package com.dataprice.model.crawlers.
 
-First Header  | Second Header
-------------- | -------------
-Amazon             | https://www.amazon.com.mx/
+Crawler  | Official Website   | Video
+------------- | ------------- | -------------
+Amazon             | https://www.amazon.com.mx/  | [Amazon video](https://www.youtube.com/watch?v=N878vHbl2O8) 
 Arome              | https://www.arome.mx/
 Chedraui           | https://www.chedraui.com.mx/
 Laeuropea          | https://www.laeuropea.com.mx
@@ -266,6 +266,6 @@ SuperWalmart  	   | https://super.walmart.com.mx/
 Suplementosfitness | https://www.suplementosfitness.com.mx/
 
 
-### Watch our application working with different websites. 
-[Arome México](https://www.youtube.com/watch?v=N878vHbl2O8) 
+## Do you have questions or suggestions?, need a specific store crawler? you can contact me on facebook.   
+[DATAPRICE Facebook](https://www.facebook.com/Dataprice-197830137522387) 
 
