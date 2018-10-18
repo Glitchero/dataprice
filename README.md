@@ -266,6 +266,3 @@ SuperWalmart  	   | https://super.walmart.com.mx/
 Suplementosfitness | https://www.suplementosfitness.com.mx/
 
 
-## Do you have questions or suggestions?, you can contact me on facebook.   
-[DATAPRICE Facebook](https://www.facebook.com/Dataprice-197830137522387) 
-
