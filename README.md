@@ -242,6 +242,34 @@ public final static String ProxyUsername = "Write here Username";
 public final static String ProxyPassword = "Write here Password";
 ```
 
+
+
+### TEST A TASK WITHOUT THE GUI
+
+Test a task without the gui in order to check for errors.
+
+```
+public class CrawlerTester {	
+	public static void main(String[] args) {
+
+		Task task = new Task();
+		task.setSeed("https://www.laeuropea.com.mx/categorias/vinos");
+
+		task.setTaskName("");
+		
+		Crawler crawler = new Laeuropea();
+		List<CrawlInfo> productsInfo = crawler.getUrlsFromTask(task);
+	
+		for (CrawlInfo crawlInfo : productsInfo) {
+		    Product p = crawler.parseProductFromURL(crawlInfo, task);
+		    System.out.println(p);
+		}
+	}	
+}
+```
+
+
+
 ### More examples 
 
 You can find these classes in package com.dataprice.model.crawlers.
@@ -266,6 +294,6 @@ SuperWalmart  	   | https://super.walmart.com.mx/
 Suplementosfitness | https://www.suplementosfitness.com.mx/
 
 
-###Do you have questions or suggestions?, you can contact me on facebook or send me an email.
+### Do you have questions or suggestions?, you can contact me on facebook or send me an email.
 EMAIL: renetatua@gmail.com , [FACEBOOK](https://www.facebook.com/Dataprice-197830137522387) 
 
