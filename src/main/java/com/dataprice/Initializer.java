@@ -77,16 +77,16 @@ public class Initializer {
 			
 			Retail retail1 = new Retail();
 			retail1.setRetailId(1);
-			retail1.setRetailName("Mercado Libre");
-			retail1.setCrawlerName("MercadoLibre");
+			retail1.setRetailName("Amazon");
+			retail1.setCrawlerName("Amazon");
 			retail1.setCountry(mexico);		
 			addRetailService.saveRetail(retail1);
 			
 			
 			Retail retail2 = new Retail();
 			retail2.setRetailId(2);
-			retail2.setRetailName("Linio");
-			retail2.setCrawlerName("Linio");
+			retail2.setRetailName("Arome");
+			retail2.setCrawlerName("Arome");
 			retail2.setCountry(mexico);		
 			addRetailService.saveRetail(retail2);
 			
@@ -101,38 +101,109 @@ public class Initializer {
 			
 			Retail retail4 = new Retail();
 			retail4.setRetailId(4);
-			retail4.setRetailName("SuperWalmart");
-			retail4.setCrawlerName("SuperWalmart");
+			retail4.setRetailName("Laeuropea");
+			retail4.setCrawlerName("Laeuropea");
 			retail4.setCountry(mexico);		
 			addRetailService.saveRetail(retail4);
 			
 			Retail retail5 = new Retail();
 			retail5.setRetailId(5);
-			retail5.setRetailName("La Europea");
-			retail5.setCrawlerName("Laeuropea");
+			retail5.setRetailName("Linio");
+			retail5.setCrawlerName("Linio");
 			retail5.setCountry(mexico);		
 			addRetailService.saveRetail(retail5);
 			
 			Retail retail6 = new Retail();
 			retail6.setRetailId(6);
-			retail6.setRetailName("Prissa");
-			retail6.setCrawlerName("Prissa");
+			retail6.setRetailName("Liverpool");
+			retail6.setCrawlerName("Liverpool");
 			retail6.setCountry(mexico);		
 			addRetailService.saveRetail(retail6);
 			
 			Retail retail7 = new Retail();
 			retail7.setRetailId(7);
-			retail7.setRetailName("AmazonMx");
-			retail7.setCrawlerName("Amazon");
+			retail7.setRetailName("MercadoLibre");
+			retail7.setCrawlerName("MercadoLibre");
 			retail7.setCountry(mexico);		
 			addRetailService.saveRetail(retail7);
 			
 			Retail retail8 = new Retail();
 			retail8.setRetailId(8);
-			retail8.setRetailName("HomeDepot");
-			retail8.setCrawlerName("HomeDepot");
+			retail8.setRetailName("NutritionDepot");
+			retail8.setCrawlerName("NutritionDepot");
 			retail8.setCountry(mexico);		
 			addRetailService.saveRetail(retail8);
+			
+			Retail retail9 = new Retail();
+			retail9.setRetailId(9);
+			retail9.setRetailName("Osom");
+			retail9.setCrawlerName("Osom");
+			retail9.setCountry(mexico);		
+			addRetailService.saveRetail(retail9);
+			
+			Retail retail10 = new Retail();
+			retail10.setRetailId(10);
+			retail10.setRetailName("PerfumesMexico");
+			retail10.setCrawlerName("PerfumesMexico");
+			retail10.setCountry(mexico);		
+			addRetailService.saveRetail(retail10);
+			
+			Retail retail11 = new Retail();
+			retail11.setRetailId(11);
+			retail11.setRetailName("PerfumesOnline");
+			retail11.setCrawlerName("PerfumesOnline");
+			retail11.setCountry(mexico);		
+			addRetailService.saveRetail(retail11);
+			
+			
+			Retail retail12 = new Retail();
+			retail12.setRetailId(12);
+			retail12.setRetailName("Prissa");
+			retail12.setCrawlerName("Prissa");
+			retail12.setCountry(mexico);		
+			addRetailService.saveRetail(retail12);
+			
+			
+			
+			Retail retail13 = new Retail();
+			retail13.setRetailId(13);
+			retail13.setRetailName("Sanborns");
+			retail13.setCrawlerName("Sanborns");
+			retail13.setCountry(mexico);		
+			addRetailService.saveRetail(retail13);
+			
+			
+			Retail retail14 = new Retail();
+			retail14.setRetailId(14);
+			retail14.setRetailName("Soriana");
+			retail14.setCrawlerName("Soriana");
+			retail14.setCountry(mexico);		
+			addRetailService.saveRetail(retail14);
+			
+			
+			Retail retail15 = new Retail();
+			retail15.setRetailId(15);
+			retail15.setRetailName("SuperWalmart");
+			retail15.setCrawlerName("SuperWalmart");
+			retail15.setCountry(mexico);		
+			addRetailService.saveRetail(retail15);
+			
+			
+			Retail retail16 = new Retail();
+			retail16.setRetailId(16);
+			retail16.setRetailName("SuplementosFitness");
+			retail16.setCrawlerName("SuplementosFitness");
+			retail16.setCountry(mexico);		
+			addRetailService.saveRetail(retail16);
+			
+			
+			
+			Retail retail17 = new Retail();
+			retail17.setRetailId(17);
+			retail17.setRetailName("Walmart");
+			retail17.setCrawlerName("Walmart");
+			retail17.setCountry(mexico);		
+			addRetailService.saveRetail(retail17);
           }
           catch (Exception e)
           {
