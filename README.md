@@ -47,7 +47,7 @@ docker run --name demo-mysql -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_DATABASE=univ
 docker run --restart unless-stopped -d -p 8910:8910 wernight/phantomjs phantomjs --webdriver=8910
 
 # Step 3
-Clone dataprice repository 
+Clone dataprice repository from github, the project was deleted from gitbip (now is free).
 
 # Step 4 : Inside the dataprice folder run the following command.
 mvn clean package docker:build
